@@ -20,15 +20,23 @@ Get overwritten part 2 - overwritten - Denis Dysen
   - MaximumMark (int)
   - Topic (string)
     - Stored initially as String in Question table, but can be changed to be a separate table for normalisation
-- Quiz table
+- Mark table
+  - Quiz
   - Username
   - DateTime
     - Recorded when the entire quiz finishes
     - Two quizzes cannot be submitted at the samee time by the same user
-    - Is a composite key with Username 
+    - Is a composite key with Username and Quiz
   - Question
     - Foreign Key to ID in Question table 
   - Mark
+- Quiz table
+  - NameOfQuiz
+  - Username (user that made the quiz)
+- QuizQuestion
+  - Quiz
+  - Question
+  - Order (int)  
 
 FooterNote:
 Essay-style questions can be added in the future via displaying the answer to the user and asking them to self-mark, but as of right now, Single Answer and Multiple Choice Questions are the priority.
