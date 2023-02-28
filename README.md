@@ -41,13 +41,49 @@ Get overwritten part 2 - overwritten - Denis Dysen
 FooterNote:
 Essay-style questions can be added in the future via displaying the answer to the user and asking them to self-mark, but as of right now, Single Answer and Multiple Choice Questions are the priority.
 
-## Planning
-### Oli
+### Olis suggested Database Modification
+tblQuiz
+-    UserID (Auto Number) (foreign key)
+-    QuizID (primary key) (Number)
+-    QuizName (String)
+     Explanation: Quizzes can be created by multiple users so the userID needs to be stored so that we can identify which quiz is related to which user. QuizID used to represent a quiz as the quiz name may be the same (user1 could have a quiz called science but so could user2 so the quizname can’t be the primary key).
 
-- 
-### Kai
+tblQuestion
+-	QuestionID (Number) (Primary Key)
+-	Question (String)
+-	Answer (String)
+-	MaximumMarks (Number)
+-	QuestionType (String)
+-	TopicName (foreign key) (String)
+     Explanation: Stores the questions and answers for quizzes. QuestionID uniquely identifies a question, topicName is a foreign key to the tblTopic.
 
-- 
-### Denis 
+tblQuizQuestion
+-    QuizID (foreign key) (Number)
+-    QuestionID (foreign key) (Number)
+-    Order (Number)
+     Explanation: Quiz question links a question to a specific quiz. Composite primary key created by the two foreign keys. Order is used to determine the index of the question in a quiz.
 
-- 
+tblTopic
+-    TopicName (String) (Primary key)
+-    Topic Description (String)
+     Explanation: Used to reference a topic (used in question table). Thought it should be in a separate class so that if someone was to alter a topic name, they could do so by altering this table only (not having to loop through all values in the question table).
+
+tblUser
+-    UsersName (String) (Primary key)
+-    UserID (Auto Number) (Primary key)
+     Explanation: Defines a user. Two users may share the same name so a UserID should be used to uniquely identify each user.
+
+tblQuizSubmission
+-    SubmissionID (Auto Number) (Primary key)
+-    DateOfCompletion (Date/Time)
+-    UserID (foreign key) (Number)
+-    QuizID (foreign key) (Number)
+     Explanation: Quiz Submission represents when a user submits a quiz. It has a submissionID field to identify the quizzes submission uniquely. The userID represents the user that took the quiz (QuizID) at the DateOfCompletion.
+
+tblMark
+-    submissionID (foreign key) (Number)
+-    QuestionID (foreign key) (Number)
+-    Score (number)
+     Explanation: Stores the mark for each question submitted. Query can be made with the submissionID (representing the quiz submitted) to get all marks for questions taken in that quiz.
+
+
