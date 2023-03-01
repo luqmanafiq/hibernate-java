@@ -112,5 +112,14 @@ tblMark
      Explanation: Stores the mark for each question submitted. Query can be made with the submissionID (representing the quiz submitted) to get all marks for questions taken in that quiz.
 
 
+Suggestion:
+tblQuestionStatement 
+- Stores the QuestionID (foreign key)
+- QuestionString (A question or question item if multiple choice)
+
+To get all statements for the questions you would use the questionID of the question
+ to query the database for all questionStatements for that questionsID (gets/ returns 
+all the question statements as a list).
+
 ## Thoughts
 We could use a keyword-searching system for marking longer answer questions
