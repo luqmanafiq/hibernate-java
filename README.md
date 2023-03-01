@@ -60,7 +60,7 @@ tblQuestion
 tblQuizQuestion
 -    QuizID (foreign key) (Number)
 -    QuestionID (foreign key) (Number)
--    Order (Number)
+-    QuestionIndex (Number)
      Explanation: Quiz question links a question to a specific quiz. Composite primary key created by the two foreign keys. Order is used to determine the index of the question in a quiz.
 
 tblTopic
