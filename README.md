@@ -10,6 +10,7 @@ Get overwritten part 2 - overwritten - Denis Dysen
 - https://ncl.instructure.com/courses/48552/pages/project-2-faqs-and-hints?module_item_id=2645037
 - https://ncl.instructure.com/courses/48552/pages/connecting-to-your-database-using-intellij-ultimate-on-campus-cluster-room?module_item_id=2645033
 - https://ncl.instructure.com/groups/44138/pages/resources
+- Google Doc https://docs.google.com/document/u/0/d/1Qez-gaIznbHCW7S3rB0arWZpoPBggAEG2HvbgaswpEw/mobilebasic
 
 ## Database Structure
 - Question Table
