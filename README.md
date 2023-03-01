@@ -35,6 +35,24 @@ Get overwritten part 2 - overwritten - Denis Dysen
   - Attributes
     - QuestionList
     - Name
+- UserIO
+  - Static
+  - Methods
+    - Generating quiz
+    - CRUD a question from question table
+    - CRUD a quiz 
+    - Import/Export List of questions
+    - List all questions
+    - List questions of a certain category
+    - RandomQuiz
+      - CategoryQuiz
+        - Asks to choose a topic after querying available topics from question table
+        - Creates a quiz with an autogen name containing every question from the category
+      - User can specify size, topic, and incorrectly answered questions only
+    - Report
+      - Report on any quiz done in the past
+      - Allow user to specify all questions, just incorrect questions, just correct questions
+      - Show final mark
 
 ## Database Structure
 - Question Table
