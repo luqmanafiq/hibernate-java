@@ -12,6 +12,30 @@ Get overwritten part 2 - overwritten - Denis Dysen
 - https://ncl.instructure.com/groups/44138/pages/resources
 - Google Doc https://docs.google.com/document/u/0/d/1Qez-gaIznbHCW7S3rB0arWZpoPBggAEG2HvbgaswpEw/mobilebasic
 
+## Class Structure
+- DatabaseIO
+  - Static
+  - Public
+  - Handles SQL queries to the database
+  - We need to choose standards for interfacing with database methods
+  - Attributes
+    - SQL connection
+    - SQL reader object
+    - etc
+- Question
+  - Abstract
+  - Subclasses
+    - Short Answer Questions
+    - Multiple Choice Questions
+  - Attributes
+    - QuestionString
+    - AnswerString
+    - MaximumMark
+- Quiz
+  - Attributes
+    - QuestionList
+    - Name
+
 ## Database Structure
 - Question Table
   - QuestionType (string)
@@ -88,3 +112,5 @@ tblMark
      Explanation: Stores the mark for each question submitted. Query can be made with the submissionID (representing the quiz submitted) to get all marks for questions taken in that quiz.
 
 
+## Thoughts
+We could use a keyword-searching system for marking longer answer questions
