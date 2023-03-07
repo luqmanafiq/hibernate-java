@@ -26,5 +26,27 @@ public abstract class Question {
     }
 }
 class MCQ extends Question {
-    //new ArrayList;
+    private ArrayList<String> optionList = new ArrayList<>();
+
+    public ArrayList <String> getOptionList() {
+        return this.optionList;
+    }
+    public void setOptionList(ArrayList questionList) {
+        this.optionList = questionList;
+    }
+    public void createQuestionOption(String option) {
+        this.optionList.add(option);
+    }
+    public String readQuestionOption(int index) {
+        return this.optionList.get(index);
+    }
+    public void deleteQuestionOption(int index) {
+        this.optionList.remove(index);
+    }
+    public void updateQuestionOption(int index, String option) {
+        this.optionList.set(index, option);
+    }
+}
+class SAQ extends Question {
+
 }
