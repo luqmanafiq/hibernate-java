@@ -69,6 +69,13 @@ class MCQ extends Question {
     public void updateQuestionOption(int index, String option) {
         this.optionList.set(index, option);
     }
+    public int returnMark (String answer) {
+        if (this.getAnswerString().equals(answer)) {
+            return this.getMaximumMark();
+        } else {
+            return 0;
+        }
+    }
 }
 class SAQ extends Question {
 
