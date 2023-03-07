@@ -16,6 +16,14 @@ public class TblQuiz {
     @Column(name = "QuizName", nullable = false, length = 50)
     private String quizName;
 
+    public TblQuiz() {
+    }
+
+    public TblQuiz(TblUser username, String quizName) {
+        this.username = username;
+        this.quizName = quizName;
+    }
+
     public Integer getId() {
         return id;
     }

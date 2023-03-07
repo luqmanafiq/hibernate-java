@@ -14,8 +14,14 @@
         <property name="format_sql">true</property>
         <property name="hbm2ddl.auto">update </property>
 
-        <mapping class="csc1035.project2.CLASS" /> <!--- Add a new mapping class for a new table in the database -->
-        <mapping class="csc1035.project2.CLASS" />
+        <mapping class="csc1035.project2.DatabaseTables.TblUser" /> <!--- Add a new mapping class for a new table in the database -->
+        <mapping class="csc1035.project2.DatabaseTables.TblQuestion" />
+        <mapping class="csc1035.project2.DatabaseTables.TblQuizSubmission" />
+        <mapping class="csc1035.project2.DatabaseTables.TblQuiz" />
+        <mapping class="csc1035.project2.DatabaseTables.TblMark" />
+        <mapping class="csc1035.project2.DatabaseTables.TblQuestionOption" />
+        <mapping class="csc1035.project2.DatabaseTables.TblTopic" />
+        <mapping class="csc1035.project2.DatabaseTables.TblQuizQuestion" />
 
     </session-factory>
 </hibernate-configuration>

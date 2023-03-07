@@ -15,6 +15,14 @@ public class TblTopic {
     @Column(name = "TopicDescription")
     private String topicDescription;
 
+    public TblTopic() {
+    }
+
+    public TblTopic(String id, String topicDescription) {
+        this.id = id;
+        this.topicDescription = topicDescription;
+    }
+
     public String getId() {
         return id;
     }

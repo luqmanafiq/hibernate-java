@@ -25,6 +25,17 @@ public class TblQuestion {
     @JoinColumn(name = "TopicName")
     private TblTopic topicName;
 
+    public TblQuestion() {
+    }
+
+    public TblQuestion(String question, String answer, Integer maximumMarks, String questionType, TblTopic topicName) {
+        this.question = question;
+        this.answer = answer;
+        this.maximumMarks = maximumMarks;
+        this.questionType = questionType;
+        this.topicName = topicName;
+    }
+
     public Integer getId() {
         return id;
     }

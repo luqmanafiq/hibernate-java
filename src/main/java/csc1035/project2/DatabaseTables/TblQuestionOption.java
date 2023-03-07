@@ -16,6 +16,14 @@ public class TblQuestionOption {
     @Column(name = "QuestionOption", nullable = false)
     private String questionOption;
 
+    public TblQuestionOption() {
+    }
+
+    public TblQuestionOption(TblQuestion questionID, String questionOption) {
+        this.questionID = questionID;
+        this.questionOption = questionOption;
+    }
+
     public Integer getId() {
         return id;
     }

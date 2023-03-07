@@ -7,9 +7,7 @@ import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
 
-@Embeddable
 public class TblMarkId implements Serializable {
-    private static final long serialVersionUID = 23423311078067103L;
     @Column(name = "SubmissionID", nullable = false)
     private Integer submissionID;
 

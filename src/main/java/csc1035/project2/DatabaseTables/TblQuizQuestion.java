@@ -4,16 +4,15 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "tblQuizQuestion")
+@IdClass(TblQuizQuestionId.class)
 public class TblQuizQuestion {
-    @EmbeddedId
-    private TblQuizQuestionId id;
 
-    @MapsId("quizID")
+    @Id
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "QuizID", nullable = false)
     private TblQuiz quizID;
 
-    @MapsId("questionID")
+    @Id
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "QuestionID", nullable = false)
     private TblQuestion questionID;
@@ -21,12 +20,13 @@ public class TblQuizQuestion {
     @Column(name = "OrderIndex", nullable = false)
     private Integer orderIndex;
 
-    public TblQuizQuestionId getId() {
-        return id;
+    public TblQuizQuestion() {
     }
 
-    public void setId(TblQuizQuestionId id) {
-        this.id = id;
+    public TblQuizQuestion(TblQuiz quizID, TblQuestion questionID, Integer orderIndex) {
+        this.quizID = quizID;
+        this.questionID = questionID;
+        this.orderIndex = orderIndex;
     }
 
     public TblQuiz getQuizID() {

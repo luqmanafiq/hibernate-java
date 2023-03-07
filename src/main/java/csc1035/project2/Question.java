@@ -27,7 +27,7 @@ public abstract class Question {
         this.maximumMark = mark;
     }
     public String getTopic() {
-        return questionTopicopic;
+        return questionTopic;
     }
     public void setTopic(String topic) {
         this.questionTopic = topic;

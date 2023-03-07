@@ -21,6 +21,15 @@ public class TblQuizSubmission {
     @JoinColumn(name = "QuizID", nullable = false)
     private TblQuiz quizID;
 
+    public TblQuizSubmission() {
+    }
+
+    public TblQuizSubmission(Instant dateOfSubmission, TblUser username, TblQuiz quizID) {
+        this.dateOfSubmission = dateOfSubmission;
+        this.username = username;
+        this.quizID = quizID;
+    }
+
     public Integer getId() {
         return id;
     }

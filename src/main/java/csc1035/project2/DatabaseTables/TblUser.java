@@ -12,6 +12,13 @@ public class TblUser {
     @Column(name = "Username", nullable = false, length = 50)
     private String username;
 
+    public TblUser() {
+    }
+
+    public TblUser(String username) {
+        this.username = username;
+    }
+
     public String getUsername() {
         return username;
     }

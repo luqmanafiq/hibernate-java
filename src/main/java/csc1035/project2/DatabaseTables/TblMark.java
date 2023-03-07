@@ -4,16 +4,15 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "tblMark")
+@IdClass(TblMarkId.class)
 public class TblMark {
-    @EmbeddedId
-    private TblMarkId id;
 
-    @MapsId("submissionID")
+    @Id
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "SubmissionID", nullable = false)
     private TblQuizSubmission submissionID;
 
-    @MapsId("questionID")
+    @Id
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "QuestionID", nullable = false)
     private TblQuestion questionID;
@@ -21,12 +20,13 @@ public class TblMark {
     @Column(name = "Score", nullable = false)
     private Integer score;
 
-    public TblMarkId getId() {
-        return id;
+    public TblMark() {
     }
 
-    public void setId(TblMarkId id) {
-        this.id = id;
+    public TblMark(TblQuizSubmission submissionID, TblQuestion questionID, int score) {
+        this.submissionID = submissionID;
+        this.questionID = questionID;
+        this.score = score;
     }
 
     public TblQuizSubmission getSubmissionID() {
