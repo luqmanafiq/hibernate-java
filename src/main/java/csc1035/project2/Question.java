@@ -43,6 +43,9 @@ class MCQ extends Question {
     public void deleteQuestionOption(int index) {
         this.optionList.remove(index);
     }
+    public void deleteAllQuestionOptions() {
+        this.optionList.clear();
+    }
     public void updateQuestionOption(int index, String option) {
         this.optionList.set(index, option);
     }
