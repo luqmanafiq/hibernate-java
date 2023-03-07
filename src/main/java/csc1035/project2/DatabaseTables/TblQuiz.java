@@ -6,6 +6,7 @@ import javax.persistence.*;
 @Table(name = "tblQuiz")
 public class TblQuiz {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "QuizID", nullable = false)
     private Integer id;
 

@@ -7,6 +7,7 @@ import java.time.Instant;
 @Table(name = "tblQuizSubmission")
 public class TblQuizSubmission {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "SubmissionID", nullable = false)
     private Integer id;
 
