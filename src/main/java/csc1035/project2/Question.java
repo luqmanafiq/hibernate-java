@@ -2,8 +2,16 @@ package csc1035.project2;
 
 import java.util.ArrayList;
 
+/*
+add constructor
+add method to check if answer is correct
+return marks
+ */
+
 public abstract class Question {
     private int questionID;
+    private int maximumMark;
+    private String questionTopic;
     private String questionTitle;
     private String answerString;
     public int getID() {
@@ -11,6 +19,18 @@ public abstract class Question {
     }
     public void setID(int ID) {
         this.questionID = ID;
+    }
+    public int getMaximumMark() {
+        return maximumMark;
+    }
+    public void setMaximumMark(int mark) {
+        this.maximumMark = mark;
+    }
+    public String getTopic() {
+        return questionTopicopic;
+    }
+    public void setTopic(String topic) {
+        this.questionTopic = topic;
     }
     public String getTitle() {
         return questionTitle;
@@ -23,6 +43,15 @@ public abstract class Question {
     }
     public void setAnswerString(String answerString) {
         this.answerString = answerString;
+    }
+
+    // checks if answer is correct; 0 is returned for incorrect; maximumMark of the question is returned for correct
+    public int returnMark (String answer) {
+        if (this.getAnswerString().equals(answer)) {
+            return this.getMaximumMark();
+        } else {
+            return 0;
+        }
     }
 }
 class MCQ extends Question {
@@ -42,6 +71,9 @@ class MCQ extends Question {
     }
     public void deleteQuestionOption(int index) {
         this.optionList.remove(index);
+    }
+    public void deleteAllQuestionOptions() {
+        this.optionList.clear();
     }
     public void updateQuestionOption(int index, String option) {
         this.optionList.set(index, option);
