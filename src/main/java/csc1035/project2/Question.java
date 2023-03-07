@@ -69,6 +69,7 @@ class MCQ extends Question {
     public void updateQuestionOption(int index, String option) {
         this.optionList.set(index, option);
     }
+    // checks if answer is correct; 0 is returned for incorrect; maximumMark of the question is returned for correct
     public int returnMark (String answer) {
         if (this.getAnswerString().equals(answer)) {
             return this.getMaximumMark();
