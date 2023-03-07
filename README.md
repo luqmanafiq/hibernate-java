@@ -3,7 +3,7 @@ CSC1035 Project 2 (Team Project)
 
 Details on how to connect with your database can be found on your Canvas group.
 
-Get overwritten part 2 - overwritten - Denis Dysen
+Get overwritten part 3 - overwritten the overwritten - Kai D
 
 ## Relevant Links
 - https://ncl.instructure.com/courses/48552/pages/csc1035-project-2-team-project?module_item_id=2645028
