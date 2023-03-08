@@ -2,11 +2,12 @@ package csc1035.project2;
 
 import java.util.ArrayList;
 
+import csc1035.project2.DatabaseTables.TblQuestion;
+
 /*
 add constructor
 add method to check if answer is correct
 return marks
- */
 
 public abstract class Question {
     private int questionID;
@@ -44,23 +45,15 @@ public abstract class Question {
     public void setAnswerString(String answerString) {
         this.answerString = answerString;
     }
-
-    // checks if answer is correct; 0 is returned for incorrect; maximumMark of the question is returned for correct
-    public int returnMark (String answer) {
-        if (this.getAnswerString().equals(answer)) {
-            return this.getMaximumMark();
-        } else {
-            return 0;
-        }
-    }
 }
-class MCQ extends Question {
+*/
+class MCQ extends TblQuestion {
     private ArrayList<String> optionList = new ArrayList<>();
 
     public ArrayList <String> getOptionList() {
         return this.optionList;
     }
-    public void setOptionList(ArrayList questionList) {
+    public void setOptionList(ArrayList<String> questionList) {
         this.optionList = questionList;
     }
     public void createQuestionOption(String option) {
@@ -79,6 +72,6 @@ class MCQ extends Question {
         this.optionList.set(index, option);
     }
 }
-class SAQ extends Question {
+class SAQ extends TblQuestion {
 
 }

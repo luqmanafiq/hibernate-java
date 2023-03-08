@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "tblQuestion")
-public class TblQuestion {
+public abstract class TblQuestion {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "QuestionID", nullable = false)
@@ -85,4 +85,12 @@ public class TblQuestion {
         this.topicName = topicName;
     }
 
+    // checks if answer is correct; 0 is returned for incorrect; maximumMark of the question is returned for correct
+    public int returnMark (String answer) {
+        if (this.getAnswer().toLowerCase().equals(answer.toLowerCase())) { // case insensitive
+            return this.getMaximumMarks();
+        } else {
+            return 0;
+        }
+    }
 }
