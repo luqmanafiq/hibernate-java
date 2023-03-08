@@ -70,13 +70,17 @@ public class User {
     /**
      * Removes a given user from the tblUser by the username of the user (case-insensitive).
      * @param username : String representing the username entity attribute
-     * @return int : 1 if user does not exist, 0 if user existed and was removed successfully
+     * @return int : 1 if user does not exist, 2 if user can't be removed (foreign key dependencies),
+     * 0 if user existed and was removed successfully
      * **/
     public static int RemoveUser(String username) {
         if (!CheckUserExists(username)) {
             return 1;
         }
-        DatabaseIO.RemoveFromDatabase(GetUser(username));
+        try {
+            DatabaseIO.RemoveFromDatabase(GetUser(username));
+        }
+        catch (Exception e){return 2;}
         return 0;
     }
 }
