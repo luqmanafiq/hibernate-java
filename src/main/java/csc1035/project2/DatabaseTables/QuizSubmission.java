@@ -5,7 +5,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "tblQuizSubmission")
-public class TblQuizSubmission {
+public class QuizSubmission {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "SubmissionID", nullable = false)
@@ -16,16 +16,16 @@ public class TblQuizSubmission {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "Username", nullable = false)
-    private TblUser username;
+    private User username;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "QuizID", nullable = false)
     private TblQuiz quizID;
 
-    public TblQuizSubmission() {
+    public QuizSubmission() {
     }
 
-    public TblQuizSubmission(Instant dateOfSubmission, TblUser username, TblQuiz quizID) {
+    public QuizSubmission(Instant dateOfSubmission, User username, TblQuiz quizID) {
         this.dateOfSubmission = dateOfSubmission;
         this.username = username;
         this.quizID = quizID;
@@ -47,11 +47,11 @@ public class TblQuizSubmission {
         this.dateOfSubmission = dateOfSubmission;
     }
 
-    public TblUser getUsername() {
+    public User getUsername() {
         return username;
     }
 
-    public void setUsername(TblUser username) {
+    public void setUsername(User username) {
         this.username = username;
     }
 

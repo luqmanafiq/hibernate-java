@@ -4,13 +4,13 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "tblMark")
-@IdClass(TblMarkId.class)
-public class TblMark {
+@IdClass(MarkId.class)
+public class Mark {
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "SubmissionID", nullable = false)
-    private TblQuizSubmission submissionID;
+    private QuizSubmission submissionID;
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -20,20 +20,20 @@ public class TblMark {
     @Column(name = "Score", nullable = false)
     private Integer score;
 
-    public TblMark() {
+    public Mark() {
     }
 
-    public TblMark(TblQuizSubmission submissionID, TblQuestion questionID, int score) {
+    public Mark(QuizSubmission submissionID, TblQuestion questionID, int score) {
         this.submissionID = submissionID;
         this.questionID = questionID;
         this.score = score;
     }
 
-    public TblQuizSubmission getSubmissionID() {
+    public QuizSubmission getSubmissionID() {
         return submissionID;
     }
 
-    public void setSubmissionID(TblQuizSubmission submissionID) {
+    public void setSubmissionID(QuizSubmission submissionID) {
         this.submissionID = submissionID;
     }
 

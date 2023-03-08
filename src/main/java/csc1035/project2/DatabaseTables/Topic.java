@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tblTopic")
-public class TblTopic {
+public class Topic {
     @Id
     @Column(name = "TopicName", nullable = false, length = 50)
     private String id;
@@ -15,10 +15,10 @@ public class TblTopic {
     @Column(name = "TopicDescription")
     private String topicDescription;
 
-    public TblTopic() {
+    public Topic() {
     }
 
-    public TblTopic(String id, String topicDescription) {
+    public Topic(String id, String topicDescription) {
         this.id = id;
         this.topicDescription = topicDescription;
     }

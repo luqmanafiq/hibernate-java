@@ -24,12 +24,12 @@ public class TblQuestion {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TopicName")
-    private TblTopic topicName;
+    private Topic topicName;
 
     public TblQuestion() {
     }
 
-    public TblQuestion(String question, String answer, Integer maximumMarks, String questionType, TblTopic topicName) {
+    public TblQuestion(String question, String answer, Integer maximumMarks, String questionType, Topic topicName) {
         this.question = question;
         this.answer = answer;
         this.maximumMarks = maximumMarks;
@@ -77,11 +77,11 @@ public class TblQuestion {
         this.questionType = questionType;
     }
 
-    public TblTopic getTopicName() {
+    public Topic getTopicName() {
         return topicName;
     }
 
-    public void setTopicName(TblTopic topicName) {
+    public void setTopicName(Topic topicName) {
         this.topicName = topicName;
     }
 

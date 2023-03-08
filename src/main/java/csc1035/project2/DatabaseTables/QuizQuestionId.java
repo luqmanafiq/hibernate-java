@@ -3,11 +3,10 @@ package csc1035.project2.DatabaseTables;
 import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class TblQuizQuestionId implements Serializable {
+public class QuizQuestionId implements Serializable {
     @Column(name = "QuizID", nullable = false)
     private Integer quizID;
 
@@ -34,7 +33,7 @@ public class TblQuizQuestionId implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        TblQuizQuestionId entity = (TblQuizQuestionId) o;
+        QuizQuestionId entity = (QuizQuestionId) o;
         return Objects.equals(this.questionID, entity.questionID) &&
                 Objects.equals(this.quizID, entity.quizID);
     }

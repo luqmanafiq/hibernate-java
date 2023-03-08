@@ -4,8 +4,8 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "tblQuizQuestion")
-@IdClass(TblQuizQuestionId.class)
-public class TblQuizQuestion {
+@IdClass(QuizQuestionId.class)
+public class QuizQuestion {
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -20,10 +20,10 @@ public class TblQuizQuestion {
     @Column(name = "OrderIndex", nullable = false)
     private Integer orderIndex;
 
-    public TblQuizQuestion() {
+    public QuizQuestion() {
     }
 
-    public TblQuizQuestion(TblQuiz quizID, TblQuestion questionID, Integer orderIndex) {
+    public QuizQuestion(TblQuiz quizID, TblQuestion questionID, Integer orderIndex) {
         this.quizID = quizID;
         this.questionID = questionID;
         this.orderIndex = orderIndex;

@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "tblQuestionOption")
-public class TblQuestionOption {
+public class QuestionOption {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "QuestionOptionID", nullable = false)
@@ -17,10 +17,10 @@ public class TblQuestionOption {
     @Column(name = "QuestionOption", nullable = false)
     private String questionOption;
 
-    public TblQuestionOption() {
+    public QuestionOption() {
     }
 
-    public TblQuestionOption(TblQuestion questionID, String questionOption) {
+    public QuestionOption(TblQuestion questionID, String questionOption) {
         this.questionID = questionID;
         this.questionOption = questionOption;
     }

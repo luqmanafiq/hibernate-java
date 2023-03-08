@@ -12,7 +12,7 @@ public class TblQuiz {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "Username", nullable = false)
-    private TblUser username;
+    private User username;
 
     @Column(name = "QuizName", nullable = false, length = 50)
     private String quizName;
@@ -20,7 +20,7 @@ public class TblQuiz {
     public TblQuiz() {
     }
 
-    public TblQuiz(TblUser username, String quizName) {
+    public TblQuiz(User username, String quizName) {
         this.username = username;
         this.quizName = quizName;
     }
@@ -33,11 +33,11 @@ public class TblQuiz {
         this.id = id;
     }
 
-    public TblUser getUsername() {
+    public User getUsername() {
         return username;
     }
 
-    public void setUsername(TblUser username) {
+    public void setUsername(User username) {
         this.username = username;
     }
 

@@ -7,15 +7,15 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tblUser")
-public class TblUser {
+public class User {
     @Id
     @Column(name = "Username", nullable = false, length = 50)
     private String username;
 
-    public TblUser() {
+    public User() {
     }
 
-    public TblUser(String username) {
+    public User(String username) {
         this.username = username;
     }
 
