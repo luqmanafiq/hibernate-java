@@ -2,9 +2,11 @@ package csc1035.project2;
 
 import java.util.ArrayList;
 
+import csc1035.project2.DatabaseTables.TblQuestion;
+
 public class Quiz {
     private String quizName;
-    private ArrayList<Question> questionList;
+    private ArrayList<TblQuestion> questionList;
 
     public String getQuizName() {
         return quizName;
@@ -12,13 +14,13 @@ public class Quiz {
     public void setQuizName(String quizName) {
         this.quizName = quizName;
     }
-    public ArrayList<Question> getQuestionList() {
+    public ArrayList<TblQuestion> getQuestionList() {
         return getQuestionList();
     }
-    public void setQuestionList(ArrayList<Question> list) {
+    public void setQuestionList(ArrayList<TblQuestion> list) {
         this.questionList = list;
     }
-    public Question getQuestion(int index) {
+    public TblQuestion getQuestion(int index) {
         return questionList.get(index);
     }
 }
