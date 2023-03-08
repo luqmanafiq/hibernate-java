@@ -37,20 +37,19 @@ public class DatabaseIO {
     }
 
     /**
-     * Checks if a user exists in tblUser with a given username.
-     * @param username : String representing the username (case-insensitive)
-     * @return : User object if user exists, null if user does not exist
+     * Checks whether a record exists in the database on a specified table by matching a search term with a record.
+     * @param attribute String: Attribute in the table you with to search
+     * @param entity String: Name of the database entity
+     * @param searchTerm String: Term to see if record attribute matches search term
+     * @return Object: null of object does not exist, object if it does exist
      * **/
-    public static User CheckUserExists(String username) {
-        User newUser = new User(username.toLowerCase());
-        List<User> currentUsers = (List<User>)(Object)HQLQueryDatabase("FROM User");
-        for (User usr: currentUsers) {
-            if(newUser.getUsername().equalsIgnoreCase(usr.getUsername())) {
-                return usr;
-            }
-        }
+    public static Object CheckExists (String searchTerm, String attribute, String entity) {
+        List<Object> response = HQLQueryDatabase(String.format("FROM %s WHERE %s = %s", entity, attribute,
+                searchTerm));
+        if(response.size() != 0) {return response.get(0);}
         return null;
     }
+
 
     /**
      * Checks whether a username (case-insensitive) is unique (valid) then adds the user to the table
@@ -60,7 +59,8 @@ public class DatabaseIO {
      * @return : TblUser object representing all user table information
      * **/
     public static User AddUser(String username) {
-        User newUser = CheckUserExists(username);
+        User newUser = (User)CheckExists(String.format("'%s'", username.toLowerCase()),
+                "Username", "User");
         if(newUser == null) {
             User usr = new User(username.toLowerCase());
             AddToDatabase(usr);
@@ -75,7 +75,8 @@ public class DatabaseIO {
      * @return int : 1 if user does not exist, 0 if user existed and was removed successfully
      * **/
     public static int RemoveUser(String username) {
-        User usr = CheckUserExists(username);
+        User usr = (User)CheckExists(String.format("'%s'", username.toLowerCase()),
+                "Username", "User");
         if (usr == null) {
             return 1;
         }
@@ -92,7 +93,7 @@ public class DatabaseIO {
      * **/
     public static int AddQuiz(String username, String quizName) {
         List<TblQuiz> quizzes = (List<TblQuiz>)(Object) HQLQueryDatabase("FROM TblQuiz");
-        User usr = CheckUserExists(username);
+        User usr = (User)CheckExists(String.format("'%s'",username), "Username", "User");
         if(usr == null) {return 1;}
         for(TblQuiz quiz : quizzes) {
             if(quiz.getQuizName().equalsIgnoreCase(quizName) &&
@@ -106,7 +107,6 @@ public class DatabaseIO {
     }
 
     public static void main(String[] args) {
-        System.out.println(AddQuiz("bob", "Science"));
         // Query query = session.createQuery(hql String);
         // List<ItemEntity> results = query.list();
         // save item to the database: session.save();
