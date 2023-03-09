@@ -3,16 +3,18 @@ package csc1035.project2;
 import csc1035.project2.DatabaseTables.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.annotations.Check;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.query.Query;
 
 import javax.persistence.EntityManager;
 import javax.xml.crypto.Data;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.RunnableScheduledFuture;
 
-public class DatabaseIO {
+public abstract class DatabaseIO {
     private static Session _session = HibernateUtil.getSessionFactory().openSession();
 
     //region Database Interaction
@@ -333,6 +335,30 @@ public class DatabaseIO {
     }
     //endregion
 
+    //region Quiz Submission
+    public static Boolean CheckQuizSubmissionExists(int submissionID) {
+        return CheckObjectExists(QuizSubmission.class, String.valueOf(submissionID));
+    }
+
+    public static QuizSubmission AddQuizSubmission(QuizSubmission quizSubmission) {
+        return AddObject(QuizSubmission.class,String.valueOf(quizSubmission.getId()),quizSubmission);
+    }
+
+    public static int RemoveQuizSubmission(QuizSubmission quizSubmission) {
+        return RemoveObject(QuizSubmission.class, String.valueOf(quizSubmission.getId()));
+    }
+
+    public static int RemoveQuizSubmission(int submissionID) {
+        return RemoveObject(QuizSubmission.class, String.valueOf(submissionID));
+    }
+
+    public static QuizSubmission GetQuizSubmission(int submissionID) {
+        return GetObject(QuizSubmission.class, String.valueOf(submissionID));
+    }
+
+    //endregion
+
     public static void main(String[] args) {
+
     }
 }
