@@ -76,6 +76,10 @@ public class DatabaseIO {
                 new User(username.toLowerCase()));
     }
 
+    public static User AddUser(User user) {
+        return AddObject(User.class, user.getUsername(), user);
+    }
+
     public static int RemoveUser(String username) {
         return RemoveObject(User.class, username.toLowerCase());
     }
@@ -110,6 +114,10 @@ public class DatabaseIO {
      * **/
     public static Topic AddTopic(String topicName, String topicDescription) {
         return AddObject(Topic.class, topicName.toLowerCase(), new Topic(topicName.toLowerCase(), topicDescription));
+    }
+
+    public static Topic AddTopic(Topic topic) {
+        return AddObject(Topic.class, topic.getId(), topic);
     }
 
     /**
@@ -197,6 +205,8 @@ public class DatabaseIO {
         return RemoveObject(TblQuiz.class, quizID);
     }
     //endregion
+
+
 
     //region privateDatabaseIO
     private static <T> T GetObject(Class<T> clazz, String queryString) {
