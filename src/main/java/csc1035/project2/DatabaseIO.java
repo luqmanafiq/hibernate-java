@@ -2,6 +2,8 @@ package csc1035.project2;
 
 import csc1035.project2.DatabaseTables.*;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.query.Query;
 
 import java.util.ArrayList;
@@ -37,20 +39,6 @@ public class DatabaseIO {
         _session.getTransaction().commit();
     }
 
-    /**
-     * Checks whether a record exists in the database on a specified table by matching a search term with a record.
-     * @param attribute String: Attribute in the table you with to search
-     * @param entity String: Name of the database entity
-     * @param searchTerm String: Term to see if record attribute matches search term
-     * @return Object: null of object does not exist, object if it does exist
-     * **/
-    public static Object CheckExists (String searchTerm, String attribute, String entity) {
-        List<Object> response = HQLQueryDatabase(String.format("FROM %s WHERE %s = %s", entity, attribute,
-                searchTerm));
-        if(response.size() != 0) {return response.get(0);}
-        return null;
-    }
-
     //region User
     /**
      * Gets user related to the given username
@@ -58,10 +46,7 @@ public class DatabaseIO {
      * @return User : User object representing the user. Null if not user associated with the username
      * **/
     public static User GetUser(String username) {
-        List<User> userResponse = (List<User>)(Object)DatabaseIO.HQLQueryDatabase(String.format("FROM User WHERE " +
-                "Username = '%s'", username.toLowerCase()));
-        if(userResponse.size() == 0) {return null;}
-        return userResponse.get(0);
+        return GetObject(User.class, username.toLowerCase());
     }
 
     /**
@@ -70,42 +55,23 @@ public class DatabaseIO {
      * @return Boolean: True if user exists, false if not
      * **/
     public static Boolean CheckUserExists(String username) {
-        User u = GetUser(username);
-        if (u == null) {return false;}
-        return true;
+        return CheckObjectExists(User.class, username.toLowerCase());
     }
 
     /**
      * Checks whether a username (case-insensitive) is unique (valid) then adds the user to the table
      * (username will be lowercase added to the database).
      * Returns TblUser object of the new user if successful or null if the name was invalid.
-     * @param username : String representation of the username
-     * @return : TblUser object representing all user table information
+     * @param username : String representation of the username (case-insensitive)
+     * @return : User object representing added user
      * **/
     public static User AddUser(String username) {
-        if(!CheckUserExists(username)) {
-            User usr = new User(username.toLowerCase());
-            DatabaseIO.AddToDatabase(usr);
-            return usr;
-        }
-        return null;
+        return AddObject(User.class, username.toLowerCase(),
+                new User(username.toLowerCase()));
     }
 
-    /**
-     * Removes a given user from the tblUser by the username of the user (case-insensitive).
-     * @param username : String representing the username entity attribute
-     * @return int : 1 if user does not exist, 2 if user can't be removed (foreign key dependencies),
-     * 0 if user existed and was removed successfully
-     * **/
     public static int RemoveUser(String username) {
-        if (!CheckUserExists(username)) {
-            return 1;
-        }
-        try {
-            DatabaseIO.RemoveFromDatabase(GetUser(username));
-        }
-        catch (Exception e){return 2;}
-        return 0;
+        return RemoveObject(User.class, username.toLowerCase());
     }
     //endregion
 
@@ -116,10 +82,7 @@ public class DatabaseIO {
      * @return User : Topic object representing the topic. Null if no topic associated with the topicName
      * **/
     public static Topic GetTopic(String topicName) {
-        List<Topic> topicResponse = (List<Topic>)(Object)DatabaseIO.HQLQueryDatabase(String.format("FROM Topic WHERE " +
-                "TopicName = '%s'", topicName.toLowerCase()));
-        if(topicResponse.size() == 0) {return null;}
-        return topicResponse.get(0);
+        return GetObject(Topic.class, topicName.toLowerCase());
     }
 
     /**
@@ -128,9 +91,7 @@ public class DatabaseIO {
      * @return Boolean: True if topic exists, false if not
      * **/
     public static Boolean CheckTopicExists(String topicName) {
-        Topic t = GetTopic(topicName);
-        if (t == null) {return false;}
-        return true;
+        return CheckObjectExists(Topic.class, topicName.toLowerCase());
     }
 
     /**
@@ -142,12 +103,7 @@ public class DatabaseIO {
      * @return : Topic object added to database or null if operation was unsuccessful
      * **/
     public static Topic AddTopic(String topicName, String topicDescription) {
-        if(!CheckTopicExists(topicName)) {
-            Topic topic = new Topic(topicName.toLowerCase(), topicDescription);
-            DatabaseIO.AddToDatabase(topic);
-            return topic;
-        }
-        return null;
+        return AddObject(Topic.class, topicName.toLowerCase(), new Topic(topicName.toLowerCase(), topicDescription));
     }
 
     /**
@@ -157,20 +113,82 @@ public class DatabaseIO {
      * 0 if topic existed and was removed successfully
      * **/
     public static int RemoveTopic(String topicName) {
-        if (!CheckTopicExists(topicName)) {
+        return RemoveObject(Topic.class, topicName.toLowerCase());
+    }
+    //endregion
+
+    //region Question
+    //endregion
+
+    //region privateDatabaseIO
+    private static <T> T GetObject(Class<T> clazz, String queryString) {
+        if(!queryString.contains("FROM")) {
+            queryString = CreateQueryString(clazz, queryString);
+        }
+        List<T> response = (List<T>) (Object) DatabaseIO.HQLQueryDatabase(queryString);
+        if (response.size() == 0) {
+            return null;
+        }
+        return response.get(0);
+    }
+
+    private static boolean CheckObjectExists(Class<?> clazz, String queryString) {
+        if(!queryString.contains("FROM")) {
+            queryString = CreateQueryString(clazz, queryString);
+        }
+        Object obj = GetObject(clazz, queryString);
+        return obj != null;
+    }
+
+    private static <T> T AddObject(Class<T> clazz, String checkQueryString, Object objectToAdd) {
+        if(!checkQueryString.contains("FROM")) {
+            checkQueryString = CreateQueryString(clazz, checkQueryString);
+        }
+        if(!CheckObjectExists(clazz, checkQueryString)) {
+            DatabaseIO.AddToDatabase(objectToAdd);
+            return (T) objectToAdd;
+        }
+        return null;
+    }
+
+    /**
+     * Removes a given object from the database by the parametrized value (case-insensitive).
+     * @return int : 1 if does not exist, 2 if can't be removed (foreign key dependencies),
+     * 0 if existed and was removed successfully
+     * **/
+    private static int RemoveObject(Class clazz ,String queryString) {
+        if(!queryString.contains("FROM")) {
+            queryString = CreateQueryString(clazz, queryString);
+        }
+        if (!CheckObjectExists(clazz,queryString)) {
             return 1;
         }
         try {
-            DatabaseIO.RemoveFromDatabase(GetTopic(topicName));
+            DatabaseIO.RemoveFromDatabase(GetObject(clazz, queryString));
+            return 0;
         }
         catch (Exception e){return 2;}
-        return 0;
+    }
+
+    private static String CreateQueryString(Class clazz, String searchTerm) {
+        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+        ClassMetadata classMetadata = sessionFactory.getClassMetadata(clazz);
+        String queryString = "";
+        try {
+            Integer.parseInt(searchTerm);
+            queryString = String.format("FROM %s WHERE %s = %s", classMetadata.getEntityName(),
+                    classMetadata.getIdentifierPropertyName(), searchTerm);
+            return queryString;
+        }
+        catch (Exception e){
+            queryString = String.format("FROM %s WHERE %s = '%s'", classMetadata.getEntityName(),
+                    classMetadata.getIdentifierPropertyName(), searchTerm);
+            return queryString;
+        }
     }
     //endregion
 
     public static void main(String[] args) {
-        // Query query = session.createQuery(hql String);
-        // List<ItemEntity> results = query.list();
-        // save item to the database: session.save();
+
     }
 }
