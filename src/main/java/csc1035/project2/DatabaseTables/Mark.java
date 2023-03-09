@@ -4,9 +4,8 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "tblMark")
-@IdClass(MarkId.class)
+@IdClass(MarkPK.class)
 public class Mark {
-
     @Id
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "SubmissionID", nullable = false)
@@ -23,9 +22,9 @@ public class Mark {
     public Mark() {
     }
 
-    public Mark(QuizSubmission submissionID, Question questionID, int score) {
-        this.submissionID = submissionID;
-        this.questionID = questionID;
+    public Mark(QuizSubmission submission, Question question, int score) {
+        this.submissionID = submission;
+        this.questionID = question;
         this.score = score;
     }
 

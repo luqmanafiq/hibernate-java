@@ -15,13 +15,15 @@
         <property name="hbm2ddl.auto">update </property>
 
         <mapping class="csc1035.project2.DatabaseTables.User" /> <!--- Add a new mapping class for a new table in the database -->
-        <mapping class="csc1035.project2.DatabaseTables.TblQuestion" />
+        <mapping class="csc1035.project2.DatabaseTables.Question" />
         <mapping class="csc1035.project2.DatabaseTables.QuizSubmission" />
         <mapping class="csc1035.project2.DatabaseTables.TblQuiz" />
         <mapping class="csc1035.project2.DatabaseTables.Mark" />
         <mapping class="csc1035.project2.DatabaseTables.QuestionOption" />
         <mapping class="csc1035.project2.DatabaseTables.Topic" />
         <mapping class="csc1035.project2.DatabaseTables.QuizQuestion" />
+        <mapping class="csc1035.project2.DatabaseTables.QuizQuestionPK" />
+        <mapping class="csc1035.project2.DatabaseTables.MarkPK" />
 
     </session-factory>
 </hibernate-configuration>
