@@ -7,8 +7,10 @@ import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.query.Query;
 
 import javax.persistence.EntityManager;
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.RunnableScheduledFuture;
 
 public class DatabaseIO {
     private static Session _session = HibernateUtil.getSessionFactory().openSession();
@@ -141,6 +143,61 @@ public class DatabaseIO {
     }
     //endregion
 
+    //region Quiz
+    public static TblQuiz GetQuiz(String quizID) {
+        return GetObject(TblQuiz.class, quizID);
+    }
+
+    public static Boolean CheckQuizExists(String quizID, String username, String quizName) {
+        List<TblQuiz> quizzes = GetAllQuizzes();
+        for(TblQuiz q: quizzes) {
+            if(q.getUsername().getUsername().equalsIgnoreCase(username.toLowerCase()) && q.getQuizName()
+                    .equalsIgnoreCase(quizName.toLowerCase())) {
+                return true;
+            }
+        }
+        if(CheckObjectExists(TblQuiz.class, quizID)) {
+            return true;
+        }
+        return false;
+    }
+
+    public static Boolean CheckQuizExists(String username, String quizName) {
+        List<TblQuiz> quizzes = GetAllQuizzes();
+        for(TblQuiz q: quizzes) {
+            if(q.getUsername().getUsername().equalsIgnoreCase(username.toLowerCase()) && q.getQuizName()
+                    .equalsIgnoreCase(quizName.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static List<TblQuiz> GetAllQuizzes() {
+        return GetAllObjects(TblQuiz.class);
+    }
+
+    public static TblQuiz AddQuiz(TblQuiz quiz) {
+        if(CheckQuizExists(quiz.getUsername().getUsername(), quiz.getQuizName())) {
+            return null;
+        }
+        AddToDatabase(quiz);
+        return quiz;
+    }
+
+    public static int RemoveQuiz(TblQuiz quiz) {
+        if(CheckQuizExists(quiz.getId().toString(), quiz.getUsername().getUsername(), quiz.getQuizName())) {
+            RemoveFromDatabase(quiz);
+            return 0;
+        }
+        return 1;
+    }
+
+    public static int RemoveQuiz(String quizID) {
+        return RemoveObject(TblQuiz.class, quizID);
+    }
+    //endregion
+
     //region privateDatabaseIO
     private static <T> T GetObject(Class<T> clazz, String queryString) {
         if(!queryString.contains("FROM")) {
@@ -170,6 +227,12 @@ public class DatabaseIO {
             return (T) objectToAdd;
         }
         return null;
+    }
+
+    private static <T> List<T> GetAllObjects(Class<T> clazz) {
+        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+        ClassMetadata classMetadata = sessionFactory.getClassMetadata(clazz);
+        return (List<T>) HQLQueryDatabase(String.format("FROM %s", classMetadata.getEntityName()));
     }
 
     /**
@@ -210,6 +273,5 @@ public class DatabaseIO {
     //endregion
 
     public static void main(String[] args) {
-
     }
 }
