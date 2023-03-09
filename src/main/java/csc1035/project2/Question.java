@@ -2,7 +2,7 @@ package csc1035.project2;
 
 import java.util.ArrayList;
 
-import csc1035.project2.DatabaseTables.TblQuestion;
+import csc1035.project2.DatabaseTables.Question;
 
 /*
 add constructor
@@ -47,7 +47,7 @@ public abstract class Question {
     }
 }
 */
-class MCQ extends TblQuestion {
+class MCQ extends Question {
     private ArrayList<String> optionList = new ArrayList<>();
 
     public ArrayList <String> getOptionList() {
@@ -72,6 +72,6 @@ class MCQ extends TblQuestion {
         this.optionList.set(index, option);
     }
 }
-class SAQ extends TblQuestion {
+class SAQ extends Question {
 
 }

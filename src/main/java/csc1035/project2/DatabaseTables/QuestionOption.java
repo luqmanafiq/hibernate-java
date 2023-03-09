@@ -12,7 +12,7 @@ public class QuestionOption {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "QuestionID", nullable = false)
-    private TblQuestion questionID;
+    private Question questionID;
 
     @Column(name = "QuestionOption", nullable = false)
     private String questionOption;
@@ -20,7 +20,7 @@ public class QuestionOption {
     public QuestionOption() {
     }
 
-    public QuestionOption(TblQuestion questionID, String questionOption) {
+    public QuestionOption(Question questionID, String questionOption) {
         this.questionID = questionID;
         this.questionOption = questionOption;
     }
@@ -33,11 +33,11 @@ public class QuestionOption {
         this.id = id;
     }
 
-    public TblQuestion getQuestionID() {
+    public Question getQuestionID() {
         return questionID;
     }
 
-    public void setQuestionID(TblQuestion questionID) {
+    public void setQuestionID(Question questionID) {
         this.questionID = questionID;
     }
 

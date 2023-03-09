@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "tblQuestion")
-public abstract class TblQuestion {
+public abstract class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "QuestionID", nullable = false)
@@ -26,10 +26,10 @@ public abstract class TblQuestion {
     @JoinColumn(name = "TopicName")
     private Topic topicName;
 
-    public TblQuestion() {
+    public Question() {
     }
 
-    public TblQuestion(String question, String answer, Integer maximumMarks, String questionType, Topic topicName) {
+    public Question(String question, String answer, Integer maximumMarks, String questionType, Topic topicName) {
         this.question = question;
         this.answer = answer;
         this.maximumMarks = maximumMarks;

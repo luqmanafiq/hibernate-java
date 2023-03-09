@@ -15,7 +15,7 @@ public class Mark {
     @Id
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "QuestionID", nullable = false)
-    private TblQuestion questionID;
+    private Question questionID;
 
     @Column(name = "Score", nullable = false)
     private Integer score;
@@ -23,7 +23,7 @@ public class Mark {
     public Mark() {
     }
 
-    public Mark(QuizSubmission submissionID, TblQuestion questionID, int score) {
+    public Mark(QuizSubmission submissionID, Question questionID, int score) {
         this.submissionID = submissionID;
         this.questionID = questionID;
         this.score = score;
@@ -37,11 +37,11 @@ public class Mark {
         this.submissionID = submissionID;
     }
 
-    public TblQuestion getQuestionID() {
+    public Question getQuestionID() {
         return questionID;
     }
 
-    public void setQuestionID(TblQuestion questionID) {
+    public void setQuestionID(Question questionID) {
         this.questionID = questionID;
     }
 
