@@ -10,6 +10,13 @@ public class MarkPK implements Serializable {
     private Integer submissionID;
     private Integer questionID;
 
+    public MarkPK() {}
+
+    public MarkPK(Question question, QuizSubmission submission) {
+        this.questionID = question.getId();
+        this.submissionID = submission.getId();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
