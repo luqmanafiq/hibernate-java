@@ -45,6 +45,81 @@ public class DatabaseIO {
     }
     //endregion
 
+    //region privateDatabaseIO
+    private static <T> T GetObject(Class<T> clazz, String queryString) {
+        if(!queryString.contains("FROM")) {
+            queryString = CreateQueryString(clazz, queryString);
+        }
+        List<T> response = (List<T>) (Object) DatabaseIO.HQLQueryDatabase(queryString);
+        if (response.size() == 0) {
+            return null;
+        }
+        return response.get(0);
+    }
+
+    private static boolean CheckObjectExists(Class<?> clazz, String queryString) {
+        if(!queryString.contains("FROM")) {
+            queryString = CreateQueryString(clazz, queryString);
+        }
+        Object obj = GetObject(clazz, queryString);
+        return obj != null;
+    }
+
+    private static <T> T AddObject(Class<T> clazz, String checkQueryString, Object objectToAdd) {
+        if(!checkQueryString.contains("FROM")) {
+            checkQueryString = CreateQueryString(clazz, checkQueryString);
+        }
+
+        if(!CheckObjectExists(clazz, checkQueryString)) {
+            DatabaseIO.AddToDatabase(objectToAdd);
+            return (T) objectToAdd;
+        }
+        return null;
+    }
+
+    private static <T> List<T> GetAllObjects(Class<T> clazz) {
+        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+        ClassMetadata classMetadata = sessionFactory.getClassMetadata(clazz);
+        return (List<T>) HQLQueryDatabase(String.format("FROM %s", classMetadata.getEntityName()));
+    }
+
+    /**
+     * Removes a given object from the database by the parametrized value (case-insensitive).
+     * @return int : 1 if does not exist, 2 if can't be removed (foreign key dependencies),
+     * 0 if existed and was removed successfully
+     * **/
+    private static int RemoveObject(Class clazz ,String queryString) {
+        if(!queryString.contains("FROM")) {
+            queryString = CreateQueryString(clazz, queryString);
+        }
+        if (!CheckObjectExists(clazz,queryString)) {
+            return 1;
+        }
+        try {
+            DatabaseIO.RemoveFromDatabase(GetObject(clazz, queryString));
+            return 0;
+        }
+        catch (Exception e){return 2;}
+    }
+
+    private static String CreateQueryString(Class clazz, String searchTerm) {
+        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+        ClassMetadata classMetadata = sessionFactory.getClassMetadata(clazz);
+        String queryString = "";
+        try {
+            Integer.parseInt(searchTerm);
+            queryString = String.format("FROM %s WHERE %s = %s", classMetadata.getEntityName(),
+                    classMetadata.getIdentifierPropertyName(), searchTerm);
+            return queryString;
+        }
+        catch (Exception e){
+            queryString = String.format("FROM %s WHERE %s = '%s'", classMetadata.getEntityName(),
+                    classMetadata.getIdentifierPropertyName(), searchTerm);
+            return queryString;
+        }
+    }
+    //endregion
+
     //region User
     /**
      * Gets user related to the given username
@@ -156,6 +231,10 @@ public class DatabaseIO {
         return GetObject(TblQuiz.class, quizID);
     }
 
+    public static Boolean CheckQuizExists(String quizID) {
+        return CheckObjectExists(TblQuiz.class, quizID);
+    }
+
     public static Boolean CheckQuizExists(String quizID, String username, String quizName) {
         List<TblQuiz> quizzes = GetAllQuizzes();
         for(TblQuiz q: quizzes) {
@@ -206,79 +285,26 @@ public class DatabaseIO {
     }
     //endregion
 
-
-
-    //region privateDatabaseIO
-    private static <T> T GetObject(Class<T> clazz, String queryString) {
-        if(!queryString.contains("FROM")) {
-            queryString = CreateQueryString(clazz, queryString);
-        }
-        List<T> response = (List<T>) (Object) DatabaseIO.HQLQueryDatabase(queryString);
-        if (response.size() == 0) {
-            return null;
-        }
-        return response.get(0);
+    //region Question Option
+    public static boolean CheckQuestionOptionExists(String questionOptionID) {
+        return CheckObjectExists(QuestionOption.class, questionOptionID);
     }
 
-    private static boolean CheckObjectExists(Class<?> clazz, String queryString) {
-        if(!queryString.contains("FROM")) {
-            queryString = CreateQueryString(clazz, queryString);
-        }
-        Object obj = GetObject(clazz, queryString);
-        return obj != null;
+    public static QuestionOption GetQuestionOption(String questionOptionID) {
+        return GetObject(QuestionOption.class, questionOptionID);
     }
 
-    private static <T> T AddObject(Class<T> clazz, String checkQueryString, Object objectToAdd) {
-        if(!checkQueryString.contains("FROM")) {
-            checkQueryString = CreateQueryString(clazz, checkQueryString);
-        }
-        if(!CheckObjectExists(clazz, checkQueryString)) {
-            DatabaseIO.AddToDatabase(objectToAdd);
-            return (T) objectToAdd;
+    public static int RemoveQuestionOption(String questionOptionID) {
+        return RemoveObject(QuestionOption.class, questionOptionID);
+    }
+
+    public static QuestionOption AddQuestionOption(QuestionOption questionOption) {
+        if(HQLQueryDatabase(String.format("FROM QuestionOption WHERE questionID = %s AND questionOption = '%s'"
+                ,questionOption.getQuestionID().getId(), questionOption.getQuestionOption())).isEmpty()) {
+            AddToDatabase(questionOption);
+            return questionOption;
         }
         return null;
-    }
-
-    private static <T> List<T> GetAllObjects(Class<T> clazz) {
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        ClassMetadata classMetadata = sessionFactory.getClassMetadata(clazz);
-        return (List<T>) HQLQueryDatabase(String.format("FROM %s", classMetadata.getEntityName()));
-    }
-
-    /**
-     * Removes a given object from the database by the parametrized value (case-insensitive).
-     * @return int : 1 if does not exist, 2 if can't be removed (foreign key dependencies),
-     * 0 if existed and was removed successfully
-     * **/
-    private static int RemoveObject(Class clazz ,String queryString) {
-        if(!queryString.contains("FROM")) {
-            queryString = CreateQueryString(clazz, queryString);
-        }
-        if (!CheckObjectExists(clazz,queryString)) {
-            return 1;
-        }
-        try {
-            DatabaseIO.RemoveFromDatabase(GetObject(clazz, queryString));
-            return 0;
-        }
-        catch (Exception e){return 2;}
-    }
-
-    private static String CreateQueryString(Class clazz, String searchTerm) {
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        ClassMetadata classMetadata = sessionFactory.getClassMetadata(clazz);
-        String queryString = "";
-        try {
-            Integer.parseInt(searchTerm);
-            queryString = String.format("FROM %s WHERE %s = %s", classMetadata.getEntityName(),
-                    classMetadata.getIdentifierPropertyName(), searchTerm);
-            return queryString;
-        }
-        catch (Exception e){
-            queryString = String.format("FROM %s WHERE %s = '%s'", classMetadata.getEntityName(),
-                    classMetadata.getIdentifierPropertyName(), searchTerm);
-            return queryString;
-        }
     }
     //endregion
 
