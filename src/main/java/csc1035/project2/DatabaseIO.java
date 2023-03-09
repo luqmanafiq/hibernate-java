@@ -6,11 +6,14 @@ import org.hibernate.SessionFactory;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.query.Query;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseIO {
     private static Session _session = HibernateUtil.getSessionFactory().openSession();
+
+    //region Database Interaction
     public static List<Object> HQLQueryDatabase(String hql) {
         _session.beginTransaction();
         Query query = _session.createQuery(hql);
@@ -38,6 +41,7 @@ public class DatabaseIO {
         _session.delete(o);
         _session.getTransaction().commit();
     }
+    //endregion
 
     //region User
     /**
@@ -118,6 +122,23 @@ public class DatabaseIO {
     //endregion
 
     //region Question
+    public static Question GetQuestion(String questionID) {
+        return GetObject(Question.class, questionID);
+    }
+
+    public static boolean CheckQuestionExists(String questionID) {
+        return CheckObjectExists(Question.class, questionID);
+    }
+
+    public static Question AddQuestion(Question newQuestion) {
+        _session.persist(newQuestion);
+        AddToDatabase(newQuestion);
+        return newQuestion;
+    }
+
+    public static int RemoveQuestion(String questionID) {
+        return RemoveObject(Question.class, questionID);
+    }
     //endregion
 
     //region privateDatabaseIO
