@@ -4,9 +4,8 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "tblQuizQuestion")
-@IdClass(QuizQuestionId.class)
+@IdClass(QuizQuestionPK.class)
 public class QuizQuestion {
-
     @Id
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "QuizID", nullable = false)
@@ -18,14 +17,14 @@ public class QuizQuestion {
     private Question questionID;
 
     @Column(name = "OrderIndex", nullable = false)
-    private Integer orderIndex;
+    private int orderIndex;
 
     public QuizQuestion() {
     }
 
-    public QuizQuestion(TblQuiz quizID, Question questionID, Integer orderIndex) {
-        this.quizID = quizID;
-        this.questionID = questionID;
+    public QuizQuestion(TblQuiz quiz, Question question, Integer orderIndex) {
+        this.quizID = quiz;
+        this.questionID = question;
         this.orderIndex = orderIndex;
     }
 
@@ -45,12 +44,11 @@ public class QuizQuestion {
         this.questionID = questionID;
     }
 
-    public Integer getOrderIndex() {
+    public int getOrderIndex() {
         return orderIndex;
     }
 
-    public void setOrderIndex(Integer orderIndex) {
+    public void setOrderIndex(int orderIndex) {
         this.orderIndex = orderIndex;
     }
-
 }
