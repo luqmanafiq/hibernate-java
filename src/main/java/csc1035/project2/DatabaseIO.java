@@ -308,6 +308,31 @@ public class DatabaseIO {
     }
     //endregion
 
+    //region Quiz Question
+    public static Boolean CheckQuizQuestionExists(int quizID, int questionID) {
+        if(!(CheckQuizExists(String.valueOf(quizID)) && CheckQuestionExists(String.valueOf(questionID)))) {
+            return false;
+        }
+        return CheckObjectExists(QuizQuestion.class, String.format("FROM QuizQuestion WHERE QuizID = %s AND " +
+                "QuestionID = %s", quizID, questionID));
+    }
+
+    public static QuizQuestion GetQuizQuestion(int quizID, int questionID) {
+        return GetObject(QuizQuestion.class, String.format("FROM QuizQuestion WHERE QuizID = %s AND " +
+                "QuestionID = %s", quizID, questionID));
+    }
+
+    public static int RemoveQuizQuestion(int quizID, int questionID) {
+        return RemoveObject(QuizQuestion.class, String.format("FROM QuizQuestion WHERE QuizID = %s AND " +
+                "QuestionID = %s", quizID, questionID));
+    }
+
+    public static QuizQuestion AddQuizQuestion(QuizQuestion quizQuestion) {
+        return AddObject(QuizQuestion.class, String.format("FROM QuizQuestion WHERE QuizID = %s AND " +
+                "QuestionID = %s", quizQuestion.getQuizID().getId(), quizQuestion.getQuestionID().getId()), quizQuestion);
+    }
+    //endregion
+
     public static void main(String[] args) {
     }
 }
