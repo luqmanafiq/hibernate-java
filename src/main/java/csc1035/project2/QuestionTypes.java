@@ -4,49 +4,7 @@ import java.util.ArrayList;
 
 import csc1035.project2.DatabaseTables.Question;
 
-/*
-add constructor
-add method to check if answer is correct
-return marks
 
-public abstract class Question {
-    private int questionID;
-    private int maximumMark;
-    private String questionTopic;
-    private String questionTitle;
-    private String answerString;
-    public int getID() {
-        return questionID;
-    }
-    public void setID(int ID) {
-        this.questionID = ID;
-    }
-    public int getMaximumMark() {
-        return maximumMark;
-    }
-    public void setMaximumMark(int mark) {
-        this.maximumMark = mark;
-    }
-    public String getTopic() {
-        return questionTopic;
-    }
-    public void setTopic(String topic) {
-        this.questionTopic = topic;
-    }
-    public String getTitle() {
-        return questionTitle;
-    }
-    public void setTitle(String title) {
-        this.questionTitle = title;
-    }
-    public String getAnswerString() {
-        return answerString;
-    }
-    public void setAnswerString(String answerString) {
-        this.answerString = answerString;
-    }
-}
-*/
 class MCQ extends Question {
     private ArrayList<String> optionList = new ArrayList<>();
 
