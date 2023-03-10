@@ -1,19 +1,13 @@
 package csc1035.project2;
 
 import csc1035.project2.DatabaseTables.*;
+import csc1035.project2.DatabaseTables.Quiz;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.annotations.Check;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.query.Query;
 
-import javax.persistence.EntityManager;
-import javax.xml.crypto.Data;
-import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
-import java.util.concurrent.RunnableScheduledFuture;
 
 public abstract class DatabaseIO {
     private static Session _session = HibernateUtil.getSessionFactory().openSession();
@@ -230,31 +224,31 @@ public abstract class DatabaseIO {
     //endregion
 
     //region Quiz
-    public static TblQuiz GetQuiz(String quizID) {
-        return GetObject(TblQuiz.class, quizID);
+    public static Quiz GetQuiz(String quizID) {
+        return GetObject(Quiz.class, quizID);
     }
 
     public static Boolean CheckQuizExists(String quizID) {
-        return CheckObjectExists(TblQuiz.class, quizID);
+        return CheckObjectExists(Quiz.class, quizID);
     }
 
     public static Boolean CheckQuizExists(String quizID, String username, String quizName) {
-        List<TblQuiz> quizzes = GetAllQuizzes();
-        for(TblQuiz q: quizzes) {
+        List<Quiz> quizzes = GetAllQuizzes();
+        for(Quiz q: quizzes) {
             if(q.getUsername().getUsername().equalsIgnoreCase(username.toLowerCase()) && q.getQuizName()
                     .equalsIgnoreCase(quizName.toLowerCase())) {
                 return true;
             }
         }
-        if(CheckObjectExists(TblQuiz.class, quizID)) {
+        if(CheckObjectExists(Quiz.class, quizID)) {
             return true;
         }
         return false;
     }
 
     public static Boolean CheckQuizExists(String username, String quizName) {
-        List<TblQuiz> quizzes = GetAllQuizzes();
-        for(TblQuiz q: quizzes) {
+        List<Quiz> quizzes = GetAllQuizzes();
+        for(Quiz q: quizzes) {
             if(q.getUsername().getUsername().equalsIgnoreCase(username.toLowerCase()) && q.getQuizName()
                     .equalsIgnoreCase(quizName.toLowerCase())) {
                 return true;
@@ -263,11 +257,11 @@ public abstract class DatabaseIO {
         return false;
     }
 
-    public static List<TblQuiz> GetAllQuizzes() {
-        return GetAllObjects(TblQuiz.class);
+    public static List<Quiz> GetAllQuizzes() {
+        return GetAllObjects(Quiz.class);
     }
 
-    public static TblQuiz AddQuiz(TblQuiz quiz) {
+    public static Quiz AddQuiz(Quiz quiz) {
         if(CheckQuizExists(quiz.getUsername().getUsername(), quiz.getQuizName())) {
             return null;
         }
@@ -275,7 +269,7 @@ public abstract class DatabaseIO {
         return quiz;
     }
 
-    public static int RemoveQuiz(TblQuiz quiz) {
+    public static int RemoveQuiz(Quiz quiz) {
         if(CheckQuizExists(quiz.getId().toString(), quiz.getUsername().getUsername(), quiz.getQuizName())) {
             RemoveFromDatabase(quiz);
             return 0;
@@ -284,7 +278,7 @@ public abstract class DatabaseIO {
     }
 
     public static int RemoveQuiz(String quizID) {
-        return RemoveObject(TblQuiz.class, quizID);
+        return RemoveObject(Quiz.class, quizID);
     }
     //endregion
 

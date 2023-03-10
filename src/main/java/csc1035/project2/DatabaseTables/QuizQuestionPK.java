@@ -1,8 +1,5 @@
 package csc1035.project2.DatabaseTables;
 
-import csc1035.project2.Quiz;
-
-import javax.persistence.Column;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -13,7 +10,7 @@ public class QuizQuestionPK implements Serializable {
 
     public QuizQuestionPK() {}
 
-    public QuizQuestionPK(Question question, TblQuiz quiz) {
+    public QuizQuestionPK(Question question, Quiz quiz) {
         this.questionID = question.getId();
         this.quizID = quiz.getId();
     }

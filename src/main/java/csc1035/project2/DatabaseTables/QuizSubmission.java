@@ -20,12 +20,12 @@ public class QuizSubmission {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "QuizID", nullable = false)
-    private TblQuiz quizID;
+    private Quiz quizID;
 
     public QuizSubmission() {
     }
 
-    public QuizSubmission(Instant dateOfSubmission, User username, TblQuiz quizID) {
+    public QuizSubmission(Instant dateOfSubmission, User username, Quiz quizID) {
         this.dateOfSubmission = dateOfSubmission;
         this.username = username;
         this.quizID = quizID;
@@ -55,11 +55,11 @@ public class QuizSubmission {
         this.username = username;
     }
 
-    public TblQuiz getQuizID() {
+    public Quiz getQuizID() {
         return quizID;
     }
 
-    public void setQuizID(TblQuiz quizID) {
+    public void setQuizID(Quiz quizID) {
         this.quizID = quizID;
     }
 

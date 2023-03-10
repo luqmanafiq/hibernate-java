@@ -17,7 +17,7 @@
         <mapping class="csc1035.project2.DatabaseTables.User" /> <!--- Add a new mapping class for a new table in the database -->
         <mapping class="csc1035.project2.DatabaseTables.Question" />
         <mapping class="csc1035.project2.DatabaseTables.QuizSubmission" />
-        <mapping class="csc1035.project2.DatabaseTables.TblQuiz" />
+        <mapping class="csc1035.project2.DatabaseTables.Quiz" />
         <mapping class="csc1035.project2.DatabaseTables.Mark" />
         <mapping class="csc1035.project2.DatabaseTables.QuestionOption" />
         <mapping class="csc1035.project2.DatabaseTables.Topic" />

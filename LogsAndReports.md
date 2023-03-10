@@ -1,4 +1,4 @@
-Indiviual report
+Individual report
 ===
 -------------------------
 # First Tuesday session 28/2/23

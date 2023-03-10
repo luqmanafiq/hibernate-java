@@ -9,7 +9,7 @@ public class QuizQuestion {
     @Id
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "QuizID", nullable = false)
-    private TblQuiz quizID;
+    private Quiz quizID;
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -22,17 +22,17 @@ public class QuizQuestion {
     public QuizQuestion() {
     }
 
-    public QuizQuestion(TblQuiz quiz, Question question, Integer orderIndex) {
+    public QuizQuestion(Quiz quiz, Question question, Integer orderIndex) {
         this.quizID = quiz;
         this.questionID = question;
         this.orderIndex = orderIndex;
     }
 
-    public TblQuiz getQuizID() {
+    public Quiz getQuizID() {
         return quizID;
     }
 
-    public void setQuizID(TblQuiz quizID) {
+    public void setQuizID(Quiz quizID) {
         this.quizID = quizID;
     }
 
