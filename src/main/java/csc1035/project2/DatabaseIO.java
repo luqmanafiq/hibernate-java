@@ -12,6 +12,7 @@ import javax.xml.crypto.Data;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.concurrent.RunnableScheduledFuture;
 
 public abstract class DatabaseIO {
@@ -354,6 +355,40 @@ public abstract class DatabaseIO {
 
     public static QuizSubmission GetQuizSubmission(int submissionID) {
         return GetObject(QuizSubmission.class, String.valueOf(submissionID));
+    }
+
+    //endregion
+
+    //region Mark
+    private static String _markQueryString = "FROM Mark WHERE submissionID = %s AND questionID = %s";
+    public static boolean CheckMarkExists(int submissionID, int questionID) {
+        return CheckObjectExists(Mark.class, String.format(_markQueryString, submissionID, questionID));
+    }
+
+    public static Mark GetMark(int submissionID, int questionID) {
+        return GetObject(Mark.class, String.format(_markQueryString, submissionID, questionID));
+    }
+
+    public static int RemoveMark(Mark mark) {
+        return RemoveObject(Mark.class, String.format(_markQueryString, mark.getSubmissionID().getId(),
+                mark.getQuestionID().getId()));
+    }
+
+    public static int RemoveMark(int submissionID, int questionID) {
+        return RemoveObject(Mark.class, String.format(_markQueryString, submissionID, questionID));
+    }
+
+    public static Mark AddMark(Mark mark) {
+        return AddObject(Mark.class, String.format(_markQueryString, mark.getSubmissionID().getId(),
+                mark.getQuestionID().getId()), mark);
+    }
+
+    public static Mark AddMark(int submissionID, int questionID, int score) {
+        if(!(CheckQuizSubmissionExists(submissionID) && CheckQuestionExists(String.valueOf(questionID)))) {
+            return null;
+        }
+        Mark newMark = new Mark(GetQuizSubmission(submissionID), GetQuestion(String.valueOf(questionID)), score);
+        return AddObject(Mark.class, String.format(_markQueryString, submissionID, questionID), newMark);
     }
 
     //endregion
