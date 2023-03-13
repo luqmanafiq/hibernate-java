@@ -8,11 +8,11 @@ public class QuestionOption {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "QuestionOptionID", nullable = false)
-    private Integer id;
+    private int id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "QuestionID", nullable = false)
-    private Question questionID;
+    private int questionID;
 
     @Column(name = "QuestionOption", nullable = false)
     private String questionOption;
@@ -20,24 +20,24 @@ public class QuestionOption {
     public QuestionOption() {
     }
 
-    public QuestionOption(Question questionID, String questionOption) {
+    public QuestionOption(int questionID, String questionOption) {
         this.questionID = questionID;
         this.questionOption = questionOption;
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Question getQuestionID() {
+    public int getQuestionID() {
         return questionID;
     }
 
-    public void setQuestionID(Question questionID) {
+    public void setQuestionID(int questionID) {
         this.questionID = questionID;
     }
 
