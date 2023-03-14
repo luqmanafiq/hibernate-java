@@ -29,7 +29,54 @@ public class UserIO {
         + "7. CRUD a question\n"
         + "8. Randomly generate a quiz\n" //submenu
         + "9. Produce a short report\n"
-        + "10. Review incorrectly answered questions");
+        + "10. Review incorrectly answered questions\n"
+        + "11. Exit\n");
+  
+        switch (menuValidInput(1, 11)) {
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                listQuestions();;
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            case 7:
+                break;
+            case 8:
+                break;
+            case 9:
+                break;
+            case 10:
+                break;
+            case 11:
+                System.exit(0);;
+                break;
+            default:
+                System.out.println("This is not a valid option\n");
+                break;
+        }
+
+    }
+
+    private static void listSubmenu() {
+        System.out.println("List menu\nSelect an option:\n"
+        + "1. List all questions"
+        + "2. List all questions by type"
+        + "3. List all questions by topic");
+        switch(menuValidInput(1, 3)) {
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+        }
     }
 
     private static String stringValidInput() { // prompts for string input, accepts any non-empty string
@@ -45,4 +92,27 @@ public class UserIO {
         }
         return text;
     }
+
+    private static int menuValidInput(int minInput, int maxInput) { // prompts for user input until an integer greater than 0 is entered
+        boolean success = false;
+        int number = 0;
+        while (!success) {
+            try {
+                number = scan.nextInt();
+                if (number >= minInput && number <= maxInput) {
+                    System.out.println("Input accepted");
+                    scan.nextLine();
+                    success = true;
+                } else {
+                    scan.nextLine();
+                    System.out.println("Error - integer must be greater than "+minInput+" and less than "+maxInput+"\nTry again: ");
+                }
+            } catch (Exception e) {
+                scan.nextLine();
+                System.out.println("Error - input was not an integer \nTry again: ");
+            }
+        }
+        return number;
+    }
+
 }
