@@ -95,7 +95,7 @@ public class UserIO {
 
     private static int menuValidInput(int minInput, int maxInput) { // prompts for user input until an integer greater than 0 is entered
         boolean success = false;
-        int number = 0;
+        int number = -1;
         while (!success) {
             try {
                 number = scan.nextInt();
