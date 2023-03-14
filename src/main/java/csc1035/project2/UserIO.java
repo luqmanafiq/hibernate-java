@@ -73,16 +73,45 @@ public class UserIO {
         + "3. List all questions by topic");
         switch(menuValidInput(1, 3)) {
             case 1:
-                List<Question> QuestionList = DatabaseIO.GetAllQuestions();
-                for (Question i : QuestionList) {
-                    
-                }
+                List<Question> QuestionList1 = DatabaseIO.GetAllQuestions();
+                for (Question i : QuestionList1) {
+                    printQuestion(i);
+                }      
                 break;
             case 2:
+                System.out.println("Choose a question type: \nMCQ \nSAQ");
+                String typeInput = scan.nextLine();
+                List<Question> QuestionList2 = DatabaseIO.GetAllQuestions();
+                for (Question i : QuestionList2) {
+                    if (i.getQuestionType().toLowerCase() == typeInput.toLowerCase())
+                    printQuestion(i);
+                }   
                 break;
             case 3:
+                System.out.println("Choose a topic:");
+                List<Topic> TopicList = DatabaseIO.GetAllTopics();
+                for (Topic i : TopicList) {
+                    System.out.println(i.getTopicDescription());
+                }
+                String topicInput = scan.nextLine();
+
+                List<Question> QuestionList3 = DatabaseIO.GetAllQuestions();
+                for (Question i : QuestionList3) {
+                    if (i.getTopicName().getTopicDescription().toLowerCase() == topicInput.toLowerCase()) {
+                        printQuestion(i);
+                    }               
+                }   
                 break;
         }
+    }
+
+    private static void printQuestion(Question qu) {
+        System.out.println("ID: [" +qu.getId()+ "] \n"
+                    + "Question: [" +qu.getQuestion()+ "]\n"
+                    + "Type: [" +qu.getQuestionType()+ "]\n"
+                    + "Topic: [" +qu.getTopicName()+ "]\n"
+                    + "Marks: [" +qu.getMaximumMarks()+ "]\n"
+                    + "Answer: [" +qu.getAnswer()+ "]");
     }
 
     private static String stringValidInput() { // prompts for string input, accepts any non-empty string
