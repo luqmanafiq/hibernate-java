@@ -142,6 +142,10 @@ public abstract class DatabaseIO {
         return CheckObjectExists(User.class, username.toLowerCase());
     }
 
+    public static List<User> GetAllUsers() {
+        return GetAllObjects(User.class);
+    }
+
     /**
      * Checks whether a username (case-insensitive) is unique (valid) then adds the user to the table
      * (username will be lowercase added to the database).
@@ -171,6 +175,10 @@ public abstract class DatabaseIO {
      * **/
     public static Topic GetTopic(String topicName) {
         return GetObject(Topic.class, topicName.toLowerCase());
+    }
+
+    public static List<Topic> GetAllTopics() {
+        return GetAllObjects(Topic.class);
     }
 
     /**
@@ -214,6 +222,10 @@ public abstract class DatabaseIO {
         return GetObject(Question.class, questionID);
     }
 
+    public static List<Question> GetAllQuestions() {
+        return GetAllObjects(Question.class);
+    }
+
     public static boolean CheckQuestionExists(String questionID) {
         return CheckObjectExists(Question.class, questionID);
     }
@@ -252,6 +264,10 @@ public abstract class DatabaseIO {
         return false;
     }
 
+    public static List<Quiz> GetAllQuizzes() {
+        return GetAllObjects(Quiz.class);
+    }
+
     public static Boolean CheckQuizExists(String username, String quizName) {
         List<Quiz> quizzes = GetAllQuizzes();
         for(Quiz q: quizzes) {
@@ -261,10 +277,6 @@ public abstract class DatabaseIO {
             }
         }
         return false;
-    }
-
-    public static List<Quiz> GetAllQuizzes() {
-        return GetAllObjects(Quiz.class);
     }
 
     public static Quiz AddQuiz(Quiz quiz) {
@@ -301,6 +313,10 @@ public abstract class DatabaseIO {
         return RemoveObject(QuestionOption.class, questionOptionID);
     }
 
+    public static List<QuestionOption> GetAllQuestionOptions() {
+        return GetAllObjects(QuestionOption.class);
+    }
+
     public static QuestionOption AddQuestionOption(QuestionOption questionOption) {
         if(HQLQueryDatabase(String.format("FROM QuestionOption WHERE questionID = %s AND questionOption = '%s'"
                 ,questionOption.getQuestionID().getId(), questionOption.getQuestionOption())).isEmpty()) {
@@ -323,6 +339,10 @@ public abstract class DatabaseIO {
     public static QuizQuestion GetQuizQuestion(int quizID, int questionID) {
         return GetObject(QuizQuestion.class, String.format("FROM QuizQuestion WHERE QuizID = %s AND " +
                 "QuestionID = %s", quizID, questionID));
+    }
+
+    public static List<QuizQuestion> GetAllQuizQuestions() {
+        return GetAllObjects(QuizQuestion.class);
     }
 
     public static int RemoveQuizQuestion(int quizID, int questionID) {
@@ -365,6 +385,10 @@ public abstract class DatabaseIO {
         return CheckObjectExists(Mark.class, String.format(_markQueryString, submissionID, questionID));
     }
 
+    public static List<Mark> GetAllMarks() {
+        return GetAllObjects(Mark.class);
+    }
+
     public static Mark GetMark(int submissionID, int questionID) {
         return GetObject(Mark.class, String.format(_markQueryString, submissionID, questionID));
     }
@@ -396,7 +420,8 @@ public abstract class DatabaseIO {
         List<Question> returnList = new ArrayList<>();
         Quiz quiz = GetQuiz(String.valueOf(quizID));
         if(quiz == null) {return returnList;}
-        System.out.println(HQLQueryDatabase("FROM Question"));
+        //Get all questions
+        //check if quiz ID matches
         return returnList;
     }
 
@@ -404,6 +429,8 @@ public abstract class DatabaseIO {
         System.out.println();
         return null;
     }
+
+
 
     public static void main(String[] args) {
         System.out.println(GetQuestionsFromQuiz(3).stream().toArray());
