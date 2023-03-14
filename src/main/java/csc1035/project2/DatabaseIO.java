@@ -430,8 +430,12 @@ public abstract class DatabaseIO {
     }
 
     public static List<Mark> GetMarksFromSubmission(int submissionID) {
-        System.out.println();
-        return null;
+        List<Mark> returnList = new ArrayList<>();
+        if(!CheckQuizSubmissionExists(submissionID)) {return returnList;}
+        QuizSubmission submission = GetQuizSubmission(submissionID);
+        returnList = (List<Mark>)(Object)HQLQueryDatabase(
+                String.format("FROM Mark WHERE submissionID = %s", submission.getId()));
+        return returnList;
     }
 
 
