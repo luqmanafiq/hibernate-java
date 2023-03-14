@@ -420,8 +420,12 @@ public abstract class DatabaseIO {
         List<Question> returnList = new ArrayList<>();
         Quiz quiz = GetQuiz(String.valueOf(quizID));
         if(quiz == null) {return returnList;}
-        //Get all questions
-        //check if quiz ID matches
+        List<QuizQuestion> quizQuestions = (List<QuizQuestion>)(Object)HQLQueryDatabase(
+                String.format("FROM QuizQuestion WHERE quizID=%s", quiz.getId()));
+        for (QuizQuestion quizQuestion:
+             quizQuestions) {
+            returnList.add(GetQuestion(String.valueOf(quizQuestion.getQuestionID().getId())));
+        }
         return returnList;
     }
 
@@ -433,6 +437,5 @@ public abstract class DatabaseIO {
 
 
     public static void main(String[] args) {
-        System.out.println(GetQuestionsFromQuiz(3).stream().toArray());
     }
 }
