@@ -390,10 +390,22 @@ public abstract class DatabaseIO {
         Mark newMark = new Mark(GetQuizSubmission(submissionID), GetQuestion(String.valueOf(questionID)), score);
         return AddObject(Mark.class, String.format(_markQueryString, submissionID, questionID), newMark);
     }
-
     //endregion
 
-    public static void main(String[] args) {
+    public static List<Question> GetQuestionsFromQuiz(int quizID) {
+        List<Question> returnList = new ArrayList<>();
+        Quiz quiz = GetQuiz(String.valueOf(quizID));
+        if(quiz == null) {return returnList;}
+        System.out.println(HQLQueryDatabase("FROM Question"));
+        return returnList;
+    }
 
+    public static List<Mark> GetMarksFromSubmission(int submissionID) {
+        System.out.println();
+        return null;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(GetQuestionsFromQuiz(3).stream().toArray());
     }
 }
