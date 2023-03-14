@@ -29,3 +29,14 @@ Anyone is welcome to add and edit anything they have done to benefit them for th
 # 10/3/23
 - Denis
   - Renamed Question.java to QuestionTypes to remove confusion with the Question.java in DatabaseTables folder
+
+# 14/2/23
+- Denis
+  - UserIO
+    - built menu() method with 11 options
+    - built listSubmenu() method for options for listing questions
+    - built promptUsername() to get the user's username and store it statically for the entire runtime of main()
+    - built helper methods
+      - printQuestion() takes a question input and neatly prints the attributes
+      - stringValidInput() prompts for a string input until one is given by checking if the length is greater than 0
+      - menuValidInput() prompts for an integer until one in the given range of minimum integer to maximum integer is given - this is useful for menus
