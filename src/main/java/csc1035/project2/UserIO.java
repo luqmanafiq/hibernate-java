@@ -1,6 +1,8 @@
 package csc1035.project2;
 
 import java.util.Scanner;
+import csc1035.project2.DatabaseTables.*;
+import java.util.List;
 
 public class UserIO {
     static Scanner scan = new Scanner(System.in);
@@ -38,7 +40,7 @@ public class UserIO {
             case 2:
                 break;
             case 3:
-                listQuestions();;
+                listSubmenu();;
                 break;
             case 4:
                 break;
@@ -71,6 +73,10 @@ public class UserIO {
         + "3. List all questions by topic");
         switch(menuValidInput(1, 3)) {
             case 1:
+                List<Question> QuestionList = DatabaseIO.GetAllQuestions();
+                for (Question i : QuestionList) {
+                    
+                }
                 break;
             case 2:
                 break;
