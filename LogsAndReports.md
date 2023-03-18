@@ -30,7 +30,7 @@ Anyone is welcome to add and edit anything they have done to benefit them for th
 - Denis
   - Renamed Question.java to QuestionTypes to remove confusion with the Question.java in DatabaseTables folder
 
-# 14/2/23
+# 14/3/23
 - Denis
   - UserIO
     - built menu() method with 11 options
@@ -40,3 +40,11 @@ Anyone is welcome to add and edit anything they have done to benefit them for th
       - printQuestion() takes a question input and neatly prints the attributes
       - stringValidInput() prompts for a string input until one is given by checking if the length is greater than 0
       - menuValidInput() prompts for an integer until one in the given range of minimum integer to maximum integer is given - this is useful for menus
+
+# 18/3/23
+- Denis
+  - UserIO
+    - added randomQuizGenSubmenu() for option 8 in main menu
+    - Refactored some of the code in listSubmenu() to chooseTopic() and chooseType() to allow reuse of the code for randomQuizGenSubmenu()
+    - completed randomQuizGenSubmenu() method that asks for each filter for the generated quiz and calls generateQuiz()
+    - started generateQuiz()
