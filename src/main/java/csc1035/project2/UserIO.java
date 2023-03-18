@@ -2,6 +2,8 @@ package csc1035.project2;
 
 import java.util.Scanner;
 import csc1035.project2.DatabaseTables.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserIO {
@@ -40,7 +42,7 @@ public class UserIO {
             case 2:
                 break;
             case 3:
-                listSubmenu();;
+                listSubmenu();
                 break;
             case 4:
                 break;
@@ -51,6 +53,7 @@ public class UserIO {
             case 7:
                 break;
             case 8:
+                randomQuizGenSubmenu();
                 break;
             case 9:
                 break;
@@ -65,9 +68,9 @@ public class UserIO {
         }
 
     }
-
+    
     private static void listSubmenu() {
-        System.out.println("List menu\nSelect an option:\n"
+        System.out.println("[Question Lister submenu]\nSelect an option:\n"
         + "1. List all questions"
         + "2. List all questions by type"
         + "3. List all questions by topic");
@@ -78,9 +81,9 @@ public class UserIO {
                     printQuestion(i);
                 }      
                 break;
-            case 2:
-                System.out.println("Choose a question type: \nMCQ \nSAQ");
-                String typeInput = scan.nextLine();
+            case 2:               
+                String typeInput = chooseType();
+
                 List<Question> QuestionList2 = DatabaseIO.GetAllQuestions();
                 for (Question i : QuestionList2) {
                     if (i.getQuestionType().toLowerCase() == typeInput.toLowerCase())
@@ -88,12 +91,7 @@ public class UserIO {
                 }   
                 break;
             case 3:
-                System.out.println("Choose a topic:");
-                List<Topic> TopicList = DatabaseIO.GetAllTopics();
-                for (Topic i : TopicList) {
-                    System.out.println(i.getTopicDescription());
-                }
-                String topicInput = scan.nextLine();
+                String topicInput = chooseTopic();
 
                 List<Question> QuestionList3 = DatabaseIO.GetAllQuestions();
                 for (Question i : QuestionList3) {
@@ -103,6 +101,67 @@ public class UserIO {
                 }   
                 break;
         }
+    }
+
+    private static void randomQuizGenSubmenu() {
+        System.out.println("[Random Quiz Generator submenu]\n"
+        + "How many questions?:\n"
+        + "1. 5\n"
+        + "2. 10\n"
+        + "3. 15\n"
+        + "4. 20\n");
+        
+        int questionCount = menuValidInput(1, 4) * 5;
+
+        System.out.println("Choose a specific topic?: (Y/N)");
+        String response = scan.nextLine();
+        String topic = "";
+        if (response.toLowerCase().equals("y")) {
+            topic = chooseTopic();
+        }
+
+        System.out.println("Choose a specific question type?: (Y/N)");
+        response = scan.nextLine();
+        String type = "";
+        if (response.toLowerCase().equals("y")) {
+            type = chooseType();
+        }
+
+        System.out.println("Use only questions you have answered incorrectly before? (Y/N)");
+        response = scan.nextLine();
+        boolean wronglyAnsweredQus = false;
+        if (response.toLowerCase().equals("y")) {
+            wronglyAnsweredQus = true;
+        }
+        Quiz generatedQuiz = generateQuiz(questionCount, topic, type, wronglyAnsweredQus);
+        System.out.println("Quiz generated!\n"
+        + "Name: " + generatedQuiz.getQuizName() + "\n"
+        + "Username: " + generatedQuiz.getUsername() + "\n"
+        + "ID: " + generatedQuiz.getId());
+    }
+
+    private static Quiz generateQuiz(int questionCount, String topic, String type, boolean wronglyAnsweredQus) {
+        Quiz generater = new Quiz();
+        ArrayList<Question> validQuestions = new ArrayList<Question>();
+
+
+
+
+        return generater;
+    }
+    
+    private static String chooseTopic() {
+        System.out.println("Choose a topic:");
+        List<Topic> TopicList = DatabaseIO.GetAllTopics();
+        for (Topic i : TopicList) {
+            System.out.println(i.getTopicDescription());
+        }
+        return scan.nextLine();
+    }
+
+    private static String chooseType() {
+        System.out.println("Choose a question type: \nMCQ \nSAQ");
+        return scan.nextLine();
     }
 
     private static void printQuestion(Question qu) {
