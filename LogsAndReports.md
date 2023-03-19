@@ -53,3 +53,8 @@ Anyone is welcome to add and edit anything they have done to benefit them for th
 - Denis
   - UserIO
     - After noticing Oliver's commit that added importing and exporting to CSV functionality, I am now writing the userIO to access those functions (options 4 and 5 in the main menu)
+    - Finished importFromCSV()
+      - I am unsure of what filepath syntax I should be using to work with Oliver's functions, if the functions need to be relative or absolute
+    - Finished exportToCSV()
+      - I may need to enforce directory syntax, will have to talk to Oliver about what filepath syntax his functions expect
+      - Oliver's status codes returned from his ExportQuestionsToCSV() function are very useful and allowed me to create a switch case statement informing the user of how the process went
