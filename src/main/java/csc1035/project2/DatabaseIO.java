@@ -3,17 +3,13 @@ package csc1035.project2;
 import csc1035.project2.DatabaseTables.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.annotations.Check;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.query.Query;
-
-import javax.persistence.EntityManager;
-import javax.xml.crypto.Data;
-import java.time.Instant;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
-import java.util.concurrent.RunnableScheduledFuture;
+import java.util.Scanner;
 
 public abstract class DatabaseIO {
     private static Session _session = HibernateUtil.getSessionFactory().openSession();
@@ -438,7 +434,62 @@ public abstract class DatabaseIO {
         return returnList;
     }
 
+    // returns list of questions if successful, null if unsuccessful
+    public static List<Question> ImportQuestionsFromCSV(String filePath) {
+        List<Question> questions = new ArrayList<>();
+        if(!new File(filePath).isFile()) {
+            return null;
+        }
+        try {
+            Scanner s = new Scanner(new File(filePath));
+            s.useDelimiter("\\n");
+            boolean isFirstValue = true;
+            while(s.hasNext()) {
+                String value = s.next();
+                if(isFirstValue == false) {
+                    String[] question = value.split(",");
+                    Question questionFromCSV = null;
+                    try {
+                        if(CheckTopicExists(question[4])) {
+                            questionFromCSV = new Question(question[0], question[1], Integer.parseInt(question[2]),
+                                    question[3], GetTopic(question[4]));
+                        }
+                    }
+                    catch(Exception e){}
+                    if(questionFromCSV != null) {
+                        questions.add(questionFromCSV);
+                    }
+                }
+                if(isFirstValue == true){isFirstValue = false;}
+            }
+            s.close();
+        }
+        catch (Exception e) {return null;}
+        return questions;
+    }
 
+    //0 success, 1 if directory (folder) does not exist, 2 if failed writing to file
+    public static int ExportQuestionsToCSV(String fileDirectoryPath, String fileName, List<Question> questions) {
+        if(!new File(fileDirectoryPath).isDirectory()) {
+            return 1;
+        }
+        String fileContent = "question,answer,maximumMarks,type,topic\n";
+        for(int i = 0; i < questions.size(); i++) {
+            Question question = questions.get(i);
+            fileContent += String.format("%s,%s,%s,%s,%s",question.getQuestion(), question.getAnswer(),
+                    question.getMaximumMarks(), question.getQuestionType(), question.getTopicName().getId());
+            if(i+1!=questions.size()){fileContent+="\n";}
+        }
+        if(!fileName.contains(".csv")) {fileName += ".csv";}
+        String finalisedPath = fileDirectoryPath + fileName;
+        try {
+            FileWriter fileWriter = new FileWriter(finalisedPath);
+            fileWriter.write(fileContent);
+            fileWriter.close();
+            return 0;
+        }
+        catch (Exception e){return 2;}
+    }
 
     public static void main(String[] args) {
     }
