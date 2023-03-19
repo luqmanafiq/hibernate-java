@@ -2,6 +2,8 @@ package csc1035.project2;
 
 import java.util.Scanner;
 
+import com.mysql.fabric.xmlrpc.base.Data;
+
 import csc1035.project2.DatabaseTables.*;
 
 import java.util.ArrayList;
@@ -49,6 +51,7 @@ public class UserIO {
                 importFromCSV();
                 break;
             case 5:
+            exportToCSV();
                 break;
             case 6:
                 break;
@@ -86,6 +89,37 @@ public class UserIO {
         else {
             System.out.println("File does not exist, or was not read");
         }
+    }
+
+    private static void exportToCSV() {
+        System.out.println("What is the name of the file you want to create? (.csv extension is not necessary):");
+        String fileName = stringValidInput();
+        System.out.println("What directory do you want to store the file in?");
+        String filePath = stringValidInput();
+        System.out.println("Add a question to the file using its ID. You will be repeatedly prompted until you enter nothing");
+        List<Question> questionList = new ArrayList<Question>();
+        while (true) {
+            System.out.println("Enter ID");
+            String input = scan.nextLine();
+            if (input.length() == 0) {
+                break;
+            }
+            questionList.add(DatabaseIO.GetQuestion(input));
+        }
+        System.out.println("Question list has been created");
+        System.out.println("Exporting to CSV");
+        int status = DatabaseIO.ExportQuestionsToCSV(filePath, fileName, questionList);
+        switch (status) {
+            case 0:
+                System.out.println("Success!");
+                break;
+            case 1:
+                System.out.println("Directory does not exist");
+                break;
+            case 2:
+                System.out.println("Writing to file failed");
+                break;
+        }          
     }
     
     private static void listSubmenu() {
