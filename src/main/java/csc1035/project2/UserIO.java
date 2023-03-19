@@ -2,8 +2,6 @@ package csc1035.project2;
 
 import java.util.Scanner;
 
-import com.mysql.fabric.xmlrpc.base.Data;
-
 import csc1035.project2.DatabaseTables.*;
 
 import java.util.ArrayList;
