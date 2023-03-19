@@ -48,3 +48,8 @@ Anyone is welcome to add and edit anything they have done to benefit them for th
     - Refactored some of the code in listSubmenu() to chooseTopic() and chooseType() to allow reuse of the code for randomQuizGenSubmenu()
     - completed randomQuizGenSubmenu() method that asks for each filter for the generated quiz and calls generateQuiz()
     - started generateQuiz()
+
+# 19/3/23
+- Denis
+  - UserIO
+    - After noticing Oliver's commit that added importing and exporting to CSV functionality, I am now writing the userIO to access those functions (options 4 and 5 in the main menu)

@@ -1,6 +1,9 @@
 package csc1035.project2;
 
 import java.util.Scanner;
+
+import com.mysql.fabric.xmlrpc.base.Data;
+
 import csc1035.project2.DatabaseTables.*;
 
 import java.util.ArrayList;
@@ -45,6 +48,7 @@ public class UserIO {
                 listSubmenu();
                 break;
             case 4:
+                importFromCSV();
                 break;
             case 5:
                 break;
@@ -67,6 +71,23 @@ public class UserIO {
                 break;
         }
 
+    }
+
+    private static void importFromCSV() {
+        // unsure of necessary syntax for filepath, if it should be absolute or relative
+        System.out.println("What is the name of the file you want to import?\n"
+        + "It should be a csv file and include the .csv extension. The filename is case-insensitive");
+        String filePath = scan.nextLine();
+        List<Question> questionList = DatabaseIO.ImportQuestionsFromCSV(filePath);
+        if (questionList != null) {
+            for (Question i : questionList) {
+                DatabaseIO.AddQuestion(i);
+            }
+            System.out.println("File read, and the questions were added to the database");
+        }
+        else {
+            System.out.println("File does not exist, or was not read");
+        }
     }
     
     private static void listSubmenu() {
