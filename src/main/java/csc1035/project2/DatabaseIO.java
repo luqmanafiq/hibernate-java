@@ -292,6 +292,25 @@ public abstract class DatabaseIO {
     public static int RemoveQuestion(String questionID) {
         return RemoveObject(Question.class, questionID);
     }
+
+    /**
+     * Updates (replaces) the question by its ID with the object (updatedQuestion) passed.
+     * @param updatedQuestion Question used to replace (update) the question. It's ID should be the same as the
+     *                       question you wish to update.
+     * @return Updated Question (null if there was an error updating the question).
+     */
+    public static Question UpdateQuestion(Question updatedQuestion) {
+        if(!CheckQuestionExists(String.valueOf(updatedQuestion.getId()))) {return null;}
+        try {
+            Transaction transaction = _session.beginTransaction();
+            _session.update(updatedQuestion);
+            transaction.commit();
+            return updatedQuestion;
+        }
+        catch(Exception e) {
+            return null;
+        }
+    }
     //endregion
 
     //region Quiz
@@ -602,6 +621,5 @@ public abstract class DatabaseIO {
     }
 
     public static void main(String[] args) {
-        System.out.println(AddQuizQuestion(new QuizQuestion(GetQuiz("1"), GetQuestion("24"), 1)));
     }
 }
