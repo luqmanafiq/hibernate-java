@@ -19,13 +19,17 @@ public class Mark {
     @Column(name = "Score", nullable = false)
     private Integer score;
 
+    @Column(name = "UserAnswer", nullable = false)
+    private String userAnswer;
+
     public Mark() {
     }
 
-    public Mark(QuizSubmission submission, Question question, int score) {
+    public Mark(QuizSubmission submission, Question question, int score, String userAnswer) {
         this.submissionID = submission;
         this.questionID = question;
         this.score = score;
+        this.userAnswer = userAnswer;
     }
 
     public QuizSubmission getSubmissionID() {
@@ -52,4 +56,11 @@ public class Mark {
         this.score = score;
     }
 
+    public String getUserAnswer() {
+        return userAnswer;
+    }
+
+    public void setUserAnswer(String userAnswer) {
+        this.userAnswer = userAnswer;
+    }
 }

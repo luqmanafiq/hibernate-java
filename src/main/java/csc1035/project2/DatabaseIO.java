@@ -500,11 +500,12 @@ public abstract class DatabaseIO {
                 mark.getQuestionID().getId()), mark);
     }
 
-    public static Mark AddMark(int submissionID, int questionID, int score) {
+    public static Mark AddMark(int submissionID, int questionID, int score, String userAnswer) {
         if(!(CheckQuizSubmissionExists(submissionID) && CheckQuestionExists(String.valueOf(questionID)))) {
             return null;
         }
-        Mark newMark = new Mark(GetQuizSubmission(submissionID), GetQuestion(String.valueOf(questionID)), score);
+        Mark newMark = new Mark(GetQuizSubmission(submissionID), GetQuestion(String.valueOf(questionID)),
+                score, userAnswer);
         return AddObject(Mark.class, String.format(_markQueryString, submissionID, questionID), newMark);
     }
     //endregion
@@ -597,9 +598,9 @@ public abstract class DatabaseIO {
      */
     public static QuestionMarkTuple MarkQuestionAnswer(Question question, String answer) {
         if(question.getAnswer().trim().equalsIgnoreCase(answer.trim())) {
-            return new QuestionMarkTuple(question, question.getMaximumMarks());
+            return new QuestionMarkTuple(question, question.getMaximumMarks(), answer.toLowerCase().trim());
         }
-        return new QuestionMarkTuple(question, 0);
+        return new QuestionMarkTuple(question, 0, answer.toLowerCase().trim());
     }
 
 
@@ -614,7 +615,7 @@ public abstract class DatabaseIO {
         QuizSubmission submission = AddQuizSubmission(new QuizSubmission(Instant.now(), user, quiz));
         if(submission == null) {return null;}
         for (QuestionMarkTuple qm: markedQuestions) {
-            Mark mark = AddMark(new Mark(submission, qm.GetQuestion(), qm.GetMarksReceived()));
+            Mark mark = AddMark(new Mark(submission, qm.GetQuestion(), qm.GetMarksReceived(), qm.get_userAnswer()));
             if(mark == null) {return null;}
         }
         return submission;
