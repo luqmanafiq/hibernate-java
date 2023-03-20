@@ -1,6 +1,12 @@
 package csc1035.project2;
 
+import csc1035.project2.DatabaseTables.Quiz;
 import csc1035.project2.DatabaseTables.Topic;
+import csc1035.project2.DatabaseTables.User;
+import org.hibernate.dialect.Database;
+
+import java.util.List;
+import java.util.Random;
 
 public class Testing {
     public static void AddUsers() {
@@ -19,8 +25,19 @@ public class Testing {
         }
     }
 
+    public static void AddQuizzes() {
+        String[] quizNames = new String[]{"Quiz 1", "Quiz 2", "Quiz 3", "Quiz 3"};
+        List<User> users = DatabaseIO.GetAllUsers();
+        for(String quizName: quizNames) {
+            User u = users.get(new Random().nextInt(users.size()));
+            System.out.println(String.format("Add quiz to database test: adding quiz '%s' for user '%s'. Result: '%s'",
+                    quizName, u, DatabaseIO.AddQuiz(new Quiz(u, quizName))));
+        }
+    }
+
     public static void main(String[] args) {
         AddUsers();
         AddTopics();
+        AddQuizzes();
     }
 }
