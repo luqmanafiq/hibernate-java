@@ -8,6 +8,7 @@ import org.hibernate.query.Query;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -15,6 +16,12 @@ public abstract class DatabaseIO {
     private static Session _session = HibernateUtil.getSessionFactory().openSession();
 
     //region Database Interaction
+
+    /**
+     * Connects and sends HQL query to the database.
+     * @param hql String representing the HQL that should be sent to the database.
+     * @return List of objects representing the response.
+     */
     public static List<Object> HQLQueryDatabase(String hql) {
         _session.beginTransaction();
         Query query = _session.createQuery(hql);
@@ -23,6 +30,11 @@ public abstract class DatabaseIO {
         return results;
     }
 
+    /**
+     * Connects and sends SQL query to the database.
+     * @param sql String representing the SQL that should be sent to the database.
+     * @return List of objects representing the response.
+     */
     public static List<Object[]> SQLQueryDatabase(String sql) {
         _session.beginTransaction();
         Query query = _session.createSQLQuery(sql);
@@ -31,12 +43,20 @@ public abstract class DatabaseIO {
         return results;
     }
 
+    /**
+     * Adds an object of any type to the database.
+     * @param o Object to add to the database.
+     */
     public static void AddToDatabase(Object o) {
         _session.beginTransaction();
         _session.save(o);
         _session.getTransaction().commit();
     }
 
+    /**
+     * Removes an object of any type from the database.
+     * @param o Object to remove from the database.
+     */
     public static void RemoveFromDatabase(Object o) {
         _session.beginTransaction();
         _session.delete(o);
@@ -45,6 +65,14 @@ public abstract class DatabaseIO {
     //endregion
 
     //region privateDatabaseIO
+
+    /**
+     * Gets a record (object) of any type from any entity in the database.
+     * @param clazz Type of class representing the entity the object (record) belongs to.
+     * @param queryString The HQL query string to identify what record to get from the database.
+     * @return The object retrieved from the database (null if no record could be found).
+     * @param <T> Type of object to be returned.
+     */
     private static <T> T GetObject(Class<T> clazz, String queryString) {
         if(!queryString.contains("FROM")) {
             queryString = CreateQueryString(clazz, queryString);
@@ -56,6 +84,12 @@ public abstract class DatabaseIO {
         return response.get(0);
     }
 
+    /**
+     * Checks if an object in the database exists.
+     * @param clazz Type of class representing the entity the object (record) belongs to.
+     * @param queryString The HQL query string to identify what record to check in the database.
+     * @return True if object exists, false if it does not.
+     */
     private static boolean CheckObjectExists(Class<?> clazz, String queryString) {
         if(!queryString.contains("FROM")) {
             queryString = CreateQueryString(clazz, queryString);
@@ -64,6 +98,14 @@ public abstract class DatabaseIO {
         return obj != null;
     }
 
+    /**
+     * Adds an object of any type to the database.
+     * @param clazz Type of class representing the entity the object (record) belongs to.
+     * @param checkQueryString The HQL query string used to check that the object being added to the database does not already exist.
+     * @param objectToAdd Object that should be added to the database (must be of the same type as the clazz param).
+     * @return The object added to the database (null if there was an error).
+     * @param <T> Type of object to be returned.
+     */
     private static <T> T AddObject(Class<T> clazz, String checkQueryString, Object objectToAdd) {
         if(!checkQueryString.contains("FROM")) {
             checkQueryString = CreateQueryString(clazz, checkQueryString);
@@ -76,6 +118,12 @@ public abstract class DatabaseIO {
         return null;
     }
 
+    /**
+     * Gets a list of all objects from a specific database entity.
+     * @param clazz Type of class representing the entity the object (record) belongs to.
+     * @return List of objects from the database.
+     * @param <T>
+     */
     private static <T> List<T> GetAllObjects(Class<T> clazz) {
         SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
         ClassMetadata classMetadata = sessionFactory.getClassMetadata(clazz);
@@ -84,9 +132,10 @@ public abstract class DatabaseIO {
 
     /**
      * Removes a given object from the database by the parametrized value (case-insensitive).
-     * @return int : 1 if does not exist, 2 if can't be removed (foreign key dependencies),
-     * 0 if existed and was removed successfully
-     * **/
+     * @param clazz Type of class representing the entity the object (record) belongs to.
+     * @param queryString HQL query string to find the value that should be removed from the database.
+     * @return 1 if does not exist, 2 if can't be removed (foreign key dependencies), 0 if successful
+     */
     private static int RemoveObject(Class clazz ,String queryString) {
         if(!queryString.contains("FROM")) {
             queryString = CreateQueryString(clazz, queryString);
@@ -101,6 +150,12 @@ public abstract class DatabaseIO {
         catch (Exception e){return 2;}
     }
 
+    /**
+     * Creates a HQL query based on the entity (class type) and primary key value you wish to search for (searchTerm).
+     * @param clazz Class type representing a database entity.
+     * @param searchTerm String representation of the primary key value of the database entity.
+     * @return HQL query string
+     */
     private static String CreateQueryString(Class clazz, String searchTerm) {
         SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
         ClassMetadata classMetadata = sessionFactory.getClassMetadata(clazz);
@@ -489,6 +544,19 @@ public abstract class DatabaseIO {
             return 0;
         }
         catch (Exception e){return 2;}
+    }
+
+    /**
+     * Compares a question's answer to a given answer to see if it is correct.
+     * @param question Question answered by the user.
+     * @param answer User's answer to the question.
+     * @return Amount of marks received from completing the question.
+     */
+    public static int MarkQuestionAnswer(Question question, String answer) {
+        if(question.getAnswer().trim().equalsIgnoreCase(answer.trim())) {
+            return question.getMaximumMarks();
+        }
+        return 0;
     }
 
     public static void main(String[] args) {
