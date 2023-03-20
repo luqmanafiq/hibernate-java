@@ -61,10 +61,37 @@ public class Testing {
         }
     }
 
+    public static void AddMCQWithOptions() {
+        List<Topic> topics = DatabaseIO.GetAllTopics();
+        List<QuestionOption> questionOptions = new ArrayList<>();
+        Question q = DatabaseIO.AddQuestion(new Question("What is the capital of France?", "Paris", 1, "MCQ", topics.get(new Random().nextInt(topics.size()))));
+        if(q != null) {
+            questionOptions.add(DatabaseIO.AddQuestionOption(new QuestionOption(q, "Paris")));
+            questionOptions.add(DatabaseIO.AddQuestionOption(new QuestionOption(q, "London")));
+            questionOptions.add(DatabaseIO.AddQuestionOption(new QuestionOption(q, "Rome")));
+        }
+        q = DatabaseIO.AddQuestion(new Question("What is the largest organ in the human body?", "Skin", 1, "MCQ", topics.get(new Random().nextInt(topics.size()))));
+        if(q != null) {
+            questionOptions.add(DatabaseIO.AddQuestionOption(new QuestionOption(q, "Skin")));
+            questionOptions.add(DatabaseIO.AddQuestionOption(new QuestionOption(q, "Liver")));
+            questionOptions.add(DatabaseIO.AddQuestionOption(new QuestionOption(q, "Brain")));
+            questionOptions.add(DatabaseIO.AddQuestionOption(new QuestionOption(q, "Heart")));
+        }
+
+        q = DatabaseIO.AddQuestion(new Question("Which planet in our solar system is closest to the sun?", "Mercury", 1, "MCQ", topics.get(new Random().nextInt(topics.size()))));
+        if(q != null) {
+            questionOptions.add(DatabaseIO.AddQuestionOption(new QuestionOption(q, "Mars")));
+            questionOptions.add(DatabaseIO.AddQuestionOption(new QuestionOption(q, "Mercury")));
+            questionOptions.add(DatabaseIO.AddQuestionOption(new QuestionOption(q, "Venus")));
+            questionOptions.add(DatabaseIO.AddQuestionOption(new QuestionOption(q, "Jupiter")));
+        }
+    }
+
     public static void main(String[] args) {
-        AddUsers();
-        AddTopics();
-        List<Quiz> addedQuizzes = AddQuizzes();
-        AddSCQ();
+//        AddUsers();
+//        AddTopics();
+//        List<Quiz> addedQuizzes = AddQuizzes();
+//        AddSCQ();
+//        AddMCQWithOptions();
     }
 }
