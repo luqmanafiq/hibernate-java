@@ -546,18 +546,6 @@ public abstract class DatabaseIO {
         catch (Exception e){return 2;}
     }
 
-    /**
-     * Compares a question's answer to a given answer to see if it is correct.
-     * @param question Question answered by the user.
-     * @param answer User's answer to the question.
-     * @return Amount of marks received from completing the question.
-     */
-    public static int MarkQuestionAnswer(Question question, String answer) {
-        if(question.getAnswer().trim().equalsIgnoreCase(answer.trim())) {
-            return question.getMaximumMarks();
-        }
-        return 0;
-    }
 
     public static void main(String[] args) {
     }
