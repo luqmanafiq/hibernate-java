@@ -418,8 +418,24 @@ public abstract class DatabaseIO {
     }
 
     public static int RemoveQuizQuestion(int quizID, int questionID) {
-        return RemoveObject(QuizQuestion.class, String.format("FROM QuizQuestion WHERE QuizID = %s AND " +
+        if(!CheckQuizQuestionExists(quizID, questionID)) {return 1;}
+        QuizQuestion questionToRemove = GetQuizQuestion(quizID, questionID);
+        int statusCode = RemoveObject(QuizQuestion.class, String.format("FROM QuizQuestion WHERE QuizID = %s AND " +
                 "QuestionID = %s", quizID, questionID));
+        if(statusCode == 0) {
+            List<QuizQuestion> quizQuestions = (List<QuizQuestion>)(Object)HQLQueryDatabase(
+                    String.format("FROM QuizQuestion WHERE QuizID=%s", questionToRemove.getQuizID().getId()));
+            for(QuizQuestion qq: quizQuestions) {
+                QuizQuestion questionToUpdate = qq;
+                if(qq.getOrderIndex() > questionToRemove.getOrderIndex()) {
+                    questionToUpdate.setOrderIndex(questionToUpdate.getOrderIndex() - 1);
+                    Transaction transaction = _session.beginTransaction();
+                    _session.update(questionToUpdate);
+                    transaction.commit();
+                }
+            }
+        }
+        return statusCode;
     }
 
     public static QuizQuestion AddQuizQuestion(QuizQuestion quizQuestion) {
