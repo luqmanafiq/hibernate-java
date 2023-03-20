@@ -7,6 +7,7 @@ import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.query.Query;
 import java.io.File;
 import java.io.FileWriter;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -546,7 +547,25 @@ public abstract class DatabaseIO {
         catch (Exception e){return 2;}
     }
 
+    /**
+     * Creates a quiz submission and adds marks to the database.
+     * @param markedQuestions List of QuestionMarkTuples (all marked questions to be submitted).
+     * @param user The user submitting the quiz.
+     * @param quiz The quiz being submitted.
+     * @return QuizSubmission that was submitted. Null if there was an error creating the submission.
+     */
+    public static QuizSubmission SubmitQuizResults(List<QuestionMarkTuple> markedQuestions, User user, Quiz quiz) {
+        QuizSubmission submission = AddQuizSubmission(new QuizSubmission(Instant.now(), user, quiz));
+        if(submission == null) {return null;}
+        for (QuestionMarkTuple qm: markedQuestions) {
+            Mark mark = AddMark(new Mark(submission, qm.GetQuestion(), qm.GetMarksReceived()));
+            if(mark == null) {return null;}
+        }
+        return submission;
+    }
 
     public static void main(String[] args) {
+        // test SubmitQuizResults
+
     }
 }
