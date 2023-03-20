@@ -95,17 +95,4 @@ public class Question {
             return 0;
         }
     }
-
-    /**
-     * Compares a question's answer to a given answer to see if it is correct.
-     * @param question Question answered by the user.
-     * @param answer User's answer to the question (case-insensitive).
-     * @return Question and score received for the question in the form of QuestionMarkTuple.
-     */
-    public static QuestionMarkTuple MarkQuestionAnswer(Question question, String answer) {
-        if(question.getAnswer().trim().equalsIgnoreCase(answer.trim())) {
-            return new QuestionMarkTuple(question, question.getMaximumMarks());
-        }
-        return new QuestionMarkTuple(question, 0);
-    }
 }
