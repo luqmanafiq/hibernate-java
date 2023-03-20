@@ -637,6 +637,26 @@ public abstract class DatabaseIO {
         return submission;
     }
 
+    /**
+     * Checks whether a user has answered a given question incorrectly in the past.
+     * @param user The user to query.
+     * @param question The question to query.
+     * @return True or false depending on if the user has answered the question incorrectly in the past (null if there was an error).
+     */
+    public static Boolean HasUserAnsweredQuestionIncorrectlyPreviously(User user, Question question) {
+        if(!(CheckUserExists(user.getUsername()) || CheckQuestionExists(String.valueOf(question.getId()))))
+        {return null;}
+        List<Mark> queriedMarks = (List<Mark>)(Object)HQLQueryDatabase(String.format("FROM Mark WHERE QuestionID=%s", question.getId()));
+        if(queriedMarks.isEmpty()){return false;}
+        for(Mark qm: queriedMarks) {
+            QuizSubmission sub = GetQuizSubmission(qm.getSubmissionID().getId());
+            if(sub.getUsername() == user) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
     }
 }
