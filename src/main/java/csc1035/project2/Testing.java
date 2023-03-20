@@ -94,17 +94,17 @@ public class Testing {
                 Question randQuestion = questions.get(new Random().nextInt(questions.size()));
                 System.out.println(String.format("Add QuizQuestion to database test: Quiz: '%s', Question: '%s'," +
                                 " Response: '%s'", quiz.getQuizName(), randQuestion.getQuestion(),
-                        DatabaseIO.AddQuizQuestion(new QuizQuestion(quiz, randQuestion, 0))));
+                        DatabaseIO.AddQuizQuestion(new QuizQuestion(quiz, randQuestion, -1))));
             }
         }
     }
 
     public static void main(String[] args) {
-//        AddUsers();
-//        AddTopics();
-//        AddQuizzes();
-//        AddSCQ();
-//        AddMCQWithOptions();
-//        AddQuizQuestions();
+        AddUsers();
+        AddTopics();
+        AddQuizzes();
+        AddSCQ();
+        AddMCQWithOptions();
+        AddQuizQuestions();
     }
 }

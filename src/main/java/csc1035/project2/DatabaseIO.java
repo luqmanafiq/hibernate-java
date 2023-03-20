@@ -3,6 +3,7 @@ package csc1035.project2;
 import csc1035.project2.DatabaseTables.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.query.Query;
 import java.io.File;
@@ -403,8 +404,29 @@ public abstract class DatabaseIO {
     }
 
     public static QuizQuestion AddQuizQuestion(QuizQuestion quizQuestion) {
-        return AddObject(QuizQuestion.class, String.format("FROM QuizQuestion WHERE QuizID = %s AND " +
+        List<QuizQuestion> quizQuestions = (List<QuizQuestion>)(Object)HQLQueryDatabase(String.format(
+                "FROM QuizQuestion WHERE QuizID = %s", quizQuestion.getQuizID().getId()));
+        int amountOfQuestions = quizQuestions.size();
+        if(quizQuestion.getOrderIndex() > amountOfQuestions - 1) {
+            quizQuestion.setOrderIndex(amountOfQuestions - 1);
+        }
+        else if(quizQuestion.getOrderIndex() < 0) {
+            quizQuestion.setOrderIndex(amountOfQuestions);
+        }
+        QuizQuestion addedObject =  AddObject(QuizQuestion.class, String.format("FROM QuizQuestion WHERE QuizID = %s AND " +
                 "QuestionID = %s", quizQuestion.getQuizID().getId(), quizQuestion.getQuestionID().getId()), quizQuestion);
+        if(addedObject != null) {
+            for(QuizQuestion qq: quizQuestions) {
+                QuizQuestion questionToUpdate = qq;
+                if(questionToUpdate.getOrderIndex() >= quizQuestion.getOrderIndex()) {
+                    questionToUpdate.setOrderIndex(questionToUpdate.getOrderIndex() + 1);
+                    Transaction transaction = _session.beginTransaction();
+                    _session.update(questionToUpdate);
+                    transaction.commit();
+                }
+            }
+        }
+        return addedObject;
     }
     //endregion
 
@@ -548,7 +570,8 @@ public abstract class DatabaseIO {
     }
 
     /**
-     * Compares a question's answer to a given answer to see if it is correct.
+     * Compares a question's answer to a given answer to see if it is correct (for MCQ the answer should be the answer
+     * in the records answer field).
      * @param question Question answered by the user.
      * @param answer User's answer to the question (case-insensitive).
      * @return Question and score received for the question in the form of QuestionMarkTuple.
@@ -559,6 +582,7 @@ public abstract class DatabaseIO {
         }
         return new QuestionMarkTuple(question, 0);
     }
+
 
     /**
      * Creates a quiz submission and adds marks to the database.
@@ -578,5 +602,6 @@ public abstract class DatabaseIO {
     }
 
     public static void main(String[] args) {
+        System.out.println(AddQuizQuestion(new QuizQuestion(GetQuiz("1"), GetQuestion("24"), 1)));
     }
 }
