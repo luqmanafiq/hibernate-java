@@ -646,7 +646,8 @@ public abstract class DatabaseIO {
     public static Boolean HasUserAnsweredQuestionIncorrectlyPreviously(User user, Question question) {
         if(!(CheckUserExists(user.getUsername()) || CheckQuestionExists(String.valueOf(question.getId()))))
         {return null;}
-        List<Mark> queriedMarks = (List<Mark>)(Object)HQLQueryDatabase(String.format("FROM Mark WHERE QuestionID=%s", question.getId()));
+        List<Mark> queriedMarks = (List<Mark>)(Object)HQLQueryDatabase(String.format("FROM Mark WHERE QuestionID=%s",
+                question.getId()));
         if(queriedMarks.isEmpty()){return false;}
         for(Mark qm: queriedMarks) {
             QuizSubmission sub = GetQuizSubmission(qm.getSubmissionID().getId());
@@ -655,6 +656,22 @@ public abstract class DatabaseIO {
             }
         }
         return false;
+    }
+
+    /**
+     * Gets all questions that a user has ever incorrectly answered as a list.
+     * @param user User object of the user to query.
+     * @return List of questions that the user has incorrectly answered in the past.
+     */
+    public static List<Question> GetAllQuestionsUserIncorrectlyAnsweredEver(User user) {
+        List<Question> questions = new ArrayList<>();
+        List<Question> allQuestions = GetAllQuestions();
+        for(Question q: allQuestions) {
+            if(HasUserAnsweredQuestionIncorrectlyPreviously(user, q)) {
+                questions.add(q);
+            }
+        }
+        return questions;
     }
 
     public static void main(String[] args) {
