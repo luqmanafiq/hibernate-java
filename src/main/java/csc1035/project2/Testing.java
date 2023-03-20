@@ -3,6 +3,7 @@ package csc1035.project2;
 import csc1035.project2.DatabaseTables.*;
 import org.hibernate.dialect.Database;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -99,12 +100,35 @@ public class Testing {
         }
     }
 
-    public static void main(String[] args) {
+    public static void AddQuizSubmissions() {
+        List<Quiz> allQuizzes = DatabaseIO.GetAllQuizzes();
+        List<User> allUsers = DatabaseIO.GetAllUsers();
+        Random rand = new Random();
+        for(Quiz q: allQuizzes) {
+            List<Question> questions = DatabaseIO.GetQuestionsFromQuiz(q.getId());
+            for(User u: allUsers) {
+                List<QuestionMarkTuple> marksForQuiz = new ArrayList<>();
+                for(Question qu: questions) {
+                    String answer = "INCORRECT ANSWER SAMPLE";
+                    if(rand.nextBoolean()) {answer = qu.getAnswer();}
+                    marksForQuiz.add(DatabaseIO.MarkQuestionAnswer(qu, answer));
+                }
+                DatabaseIO.SubmitQuizResults(marksForQuiz, u, q);
+            }
+        }
+    }
+
+    public static void PopulateDatabase() {
         AddUsers();
         AddTopics();
         AddQuizzes();
         AddSCQ();
         AddMCQWithOptions();
         AddQuizQuestions();
+        AddQuizSubmissions();
+    }
+
+    public static void main(String[] args) {
+        PopulateDatabase();
     }
 }
