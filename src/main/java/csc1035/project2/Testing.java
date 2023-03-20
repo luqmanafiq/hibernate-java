@@ -24,7 +24,7 @@ public class Testing {
         }
     }
 
-    public static List<Quiz> AddQuizzes() {
+    public static void AddQuizzes() {
         String[] quizNames = new String[]{"Quiz 1", "Quiz 2", "Quiz 3", "Quiz 3"};
         List<User> users = DatabaseIO.GetAllUsers();
         List<Quiz> addedQuizzes = new ArrayList<>();
@@ -37,7 +37,6 @@ public class Testing {
                 addedQuizzes.add(addedQuiz);
             }
         }
-        return addedQuizzes;
     }
 
     public static void AddSCQ() {
@@ -87,11 +86,25 @@ public class Testing {
         }
     }
 
+    public static void AddQuizQuestions() {
+        List<Quiz> quizzes = DatabaseIO.GetAllQuizzes();
+        List<Question> questions = DatabaseIO.GetAllQuestions();
+        for(Quiz quiz: quizzes) {
+            for(int i = 0; i < 3; i++) {
+                Question randQuestion = questions.get(new Random().nextInt(questions.size()));
+                System.out.println(String.format("Add QuizQuestion to database test: Quiz: '%s', Question: '%s'," +
+                                " Response: '%s'", quiz.getQuizName(), randQuestion.getQuestion(),
+                        DatabaseIO.AddQuizQuestion(new QuizQuestion(quiz, randQuestion, 0))));
+            }
+        }
+    }
+
     public static void main(String[] args) {
 //        AddUsers();
 //        AddTopics();
-//        List<Quiz> addedQuizzes = AddQuizzes();
+//        AddQuizzes();
 //        AddSCQ();
 //        AddMCQWithOptions();
+//        AddQuizQuestions();
     }
 }
