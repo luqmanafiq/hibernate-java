@@ -1,12 +1,8 @@
 package csc1035.project2;
 
-import java.util.Scanner;
-import java.util.Random;
+import java.util.*;
 
 import csc1035.project2.DatabaseTables.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class UserIO {
     static Scanner scan = new Scanner(System.in);
@@ -22,6 +18,10 @@ public class UserIO {
         User userToReturn = null;
         System.out.println("What is your username:");
         String username = stringValidInput();
+        if(username.equalsIgnoreCase("sys")) {
+            System.out.println("This user is reserved and can only be accessed by the system. Please choose another username.");
+            return promptUsername();
+        }
         if(DatabaseIO.CheckUserExists(username.trim())) {
             return DatabaseIO.GetUser(username.trim());
         }
@@ -39,11 +39,11 @@ public class UserIO {
                     }
                     else {
                         System.out.println("Error adding user to the database, try again.");
-                        promptUsername();
+                        return promptUsername();
                     }
                 }
                 else if(userAnswer.equalsIgnoreCase("N")) {
-                    promptUsername();
+                    return promptUsername();
                 }
                 else {
                     System.out.println("invalid option choice!");
@@ -74,6 +74,7 @@ public class UserIO {
                 PlayQuiz();
                 break;
             case 2:
+                PlayTopicQuiz();
                 break;
             case 3:
                 listSubmenu();
@@ -130,6 +131,33 @@ public class UserIO {
             }
         }
         return userChoiceToReturn;
+    }
+
+    private static boolean PlayTopicQuiz() {
+        List<Topic> topics = DatabaseIO.GetAllTopics();
+        if(!DatabaseIO.CheckUserExists("sys")) {
+            DatabaseIO.AddUser("sys");
+        }
+        if(topics.isEmpty()) {
+            System.out.println("There does not seem to be any topics in the database. " +
+                    "Please add questions with a topic.");
+            return true;
+        }
+        String[] topicChoice = new String[topics.size()];
+        Integer[] amountOfQuestionsForTopic = new Integer[topics.size()];
+        Arrays.fill(amountOfQuestionsForTopic, 0);
+        List<Question> allQuestions = DatabaseIO.GetAllQuestions();
+        for(Question question: allQuestions) {
+            int index = topics.indexOf(question.getTopicName());
+            amountOfQuestionsForTopic[index] += 1;
+        }
+        for(int i = 0; i < topics.size(); i++) {
+            topicChoice[i] = String.format("'%s' - %s question(s)", topics.get(i).getId(), amountOfQuestionsForTopic[i]);
+        }
+        int userTopicChoice = GetUserOption(topicChoice, "Select a topic:");
+        Topic chosenTopic = topics.get(userTopicChoice);
+        System.out.println(chosenTopic.getId());
+        return true;
     }
 
     private static void PlayQuiz() {
