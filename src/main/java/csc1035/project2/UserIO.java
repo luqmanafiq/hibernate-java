@@ -469,6 +469,46 @@ public class UserIO {
                 printQuestion(DatabaseIO.getQuestion(String.valueOf(positiveIntegerValidInput())));
                 break;
             case 3:
+                System.out.println("Enter a question ID:");
+                int ID = positiveIntegerValidInput();
+                Question tempQU = DatabaseIO.getQuestion(String.valueOf(ID));
+                System.out.println("Update which field of question [" + ID + "]?"
+                + "1. Question string\n"
+                + "2. Answer string\n"
+                + "3. Score\n"
+                + "4. Question type\n"
+                + "5. Question topic");
+                switch (menuValidInput(1, 5)) {
+                    case 1:
+                        System.out.println("Enter new question string");
+                        tempQU.setQuestion(stringValidInput());
+                        break;
+                    case 2:
+                        System.out.println("Enter new answer string");
+                        tempQU.setAnswer(stringValidInput());
+                        break;
+                    case 3:
+                        System.out.println("Enter new score");
+                        tempQU.setMaximumMarks(positiveIntegerValidInput());
+                        break;
+                    case 4:
+                        System.out.println("Enter new question type");
+                        tempQU.setQuestionType(chooseType());
+                        break;
+                    case 5:
+                        System.out.println("Use an existing topic? (Y/N)");
+                        if (scan.nextLine().toLowerCase().equals("y")) {
+                            tempQU.setTopicName(DatabaseIO.getTopic(chooseTopic()));
+                        }
+                        else {
+                            System.out.println("Enter a new topic name:");
+                            tempQU.setTopicName(DatabaseIO.getTopic(stringValidInput()));
+                            System.out.println("Enter a description for the new topic");
+                            DatabaseIO.addTopic(tempQU.getTopicName().getId(), scan.nextLine());
+                        }
+                        break;
+                }
+                DatabaseIO.updateQuestion(tempQU);
                 break;
             case 4:
                 System.out.println("Enter a question ID:");
