@@ -134,8 +134,45 @@ public class UserIO {
         return userChoiceToReturn;
     }
 
-    private static void reviewIncorrectlyAnsweredQuestions() {
+    private static Quiz makeQuizForIncorrectQuestions(boolean forUser) {
+        return null;
+    }
 
+    private static void showIncorrectlyAnsweredQuizStatistics(boolean forUser) {
+
+    }
+
+    private static void reviewIncorrectlyAnsweredQuestions() {
+        int userChoice = getUserOption(new String[]{
+                String.format("Take a quiz on all questions you ('%s') have incorrectly answered in the past.", user.getUsername()),
+                String.format("See a list of all questions you ('%s') have incorrectly answered.", user.getUsername()),
+                String.format("See statistics on how many times you ('%s') got a question right in comparison to getting them wrong.", user.getUsername()),
+                "See statistics on how many times a question was answered correctly in comparison to being answered wrong.",
+                String.format("Take a quiz on all questions incorrectly answered by all users in the past.")
+        }, "What would you like to do about the questions answered incorrectly in the past? ");
+        Quiz quiz;
+        switch (userChoice){
+            case(0):
+                quiz = makeQuizForIncorrectQuestions(true);
+                playAndSubmitQuiz(quiz);
+                break;
+            case(1):
+                    List<Question> incorrectlyAnsweredQuestions = DatabaseIO.getAllQuestionsUserIncorrectlyAnsweredEver(user);
+                    for(Question question: incorrectlyAnsweredQuestions) {
+                        printQuestion(question);
+                    }
+                break;
+            case(2):
+                showIncorrectlyAnsweredQuizStatistics(true);
+                break;
+            case(3):
+                showIncorrectlyAnsweredQuizStatistics(false);
+                break;
+            case(4):
+                quiz = makeQuizForIncorrectQuestions(false);
+                playAndSubmitQuiz(quiz);
+                break;
+        }
     }
 
     private static Quiz generateTopicQuiz(Topic topic) {
@@ -559,7 +596,7 @@ public class UserIO {
                     + "Type: [" +qu.getQuestionType()+ "]\n"
                     + "Topic: [" +qu.getTopicName()+ "]\n"
                     + "Marks: [" +qu.getMaximumMarks()+ "]\n"
-                    + "Answer: [" +qu.getAnswer()+ "]");
+                    + "Answer: [" +qu.getAnswer()+ "]\n");
     }
 
     private static String stringValidInput() { // prompts for string input, accepts any non-empty string
