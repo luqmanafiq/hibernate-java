@@ -532,10 +532,12 @@ public abstract class DatabaseIO {
         if(quiz == null) {return returnList;}
         List<QuizQuestion> quizQuestions = (List<QuizQuestion>)(Object)HQLQueryDatabase(
                 String.format("FROM QuizQuestion WHERE quizID=%s", quiz.getId()));
+        Question[] orderedQuestions = new Question[quizQuestions.size()];
         for (QuizQuestion quizQuestion:
              quizQuestions) {
-            returnList.add(GetQuestion(String.valueOf(quizQuestion.getQuestionID().getId())));
+            orderedQuestions[quizQuestion.getOrderIndex()] = GetQuestion(String.valueOf(quizQuestion.getQuestionID().getId()));
         }
+        returnList = Arrays.asList(orderedQuestions);
         return returnList;
     }
 
