@@ -2,6 +2,9 @@ package csc1035.project2.DatabaseTables;
 
 import javax.persistence.*;
 
+/**
+ * QuestionOption representing an option for a question if it is multiple choice.
+ */
 @Entity
 @Table(name = "tblQuestionOption")
 public class QuestionOption {

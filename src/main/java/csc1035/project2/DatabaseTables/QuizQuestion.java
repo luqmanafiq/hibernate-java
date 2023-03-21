@@ -2,6 +2,9 @@ package csc1035.project2.DatabaseTables;
 
 import javax.persistence.*;
 
+/**
+ * QuizQuestion links a question to a specific quiz and places it in a specific order.
+ */
 @Entity
 @Table(name = "tblQuizQuestion")
 @IdClass(QuizQuestionPK.class)

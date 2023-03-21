@@ -6,6 +6,9 @@ import javax.persistence.Column;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * MarkPK creates the composite key for the Mark class (table entity) between the submissionID and questionID.
+ */
 public class MarkPK implements Serializable {
     private Integer submissionID;
     private Integer questionID;

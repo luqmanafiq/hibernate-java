@@ -5,6 +5,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * Identifies a topic linked to a question.
+ */
 @Entity
 @Table(name = "tblTopic")
 public class Topic {

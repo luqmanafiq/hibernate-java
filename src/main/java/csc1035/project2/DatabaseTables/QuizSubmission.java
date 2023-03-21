@@ -3,6 +3,9 @@ package csc1035.project2.DatabaseTables;
 import javax.persistence.*;
 import java.time.Instant;
 
+/**
+ * QuizSubmission identifies a submission of a quiz.
+ */
 @Entity
 @Table(name = "tblQuizSubmission")
 public class QuizSubmission {

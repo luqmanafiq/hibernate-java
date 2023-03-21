@@ -2,6 +2,9 @@ package csc1035.project2.DatabaseTables;
 
 import javax.persistence.*;
 
+/**
+ * Quiz represents a quiz a user creates.
+ */
 @Entity
 @Table(name = "tblQuiz")
 public class Quiz {

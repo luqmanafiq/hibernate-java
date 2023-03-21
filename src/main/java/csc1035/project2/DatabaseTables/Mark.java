@@ -2,6 +2,9 @@ package csc1035.project2.DatabaseTables;
 
 import javax.persistence.*;
 
+/**
+ * Marks class used to store a mark for questions in a specific quiz submission.
+ */
 @Entity
 @Table(name = "tblMark")
 @IdClass(MarkPK.class)

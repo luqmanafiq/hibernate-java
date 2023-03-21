@@ -3,6 +3,9 @@ package csc1035.project2.DatabaseTables;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * Composite primary key for the QuizQuestion class; responsible for correctly hashing the primary key values.
+ */
 public class QuizQuestionPK implements Serializable {
 
     private int questionID;

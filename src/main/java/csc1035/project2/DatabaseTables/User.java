@@ -8,6 +8,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.List;
 
+/**
+ * Stores a user 'account' so multiple users can access and use the database.
+ */
 @Entity
 @Table(name = "tblUser")
 public class User {

@@ -4,6 +4,9 @@ import csc1035.project2.QuestionMarkTuple;
 
 import javax.persistence.*;
 
+/**
+ * Question class used to respresent a question in the database. Can be used in quizzes.
+ */
 @Entity
 @Table(name = "tblQuestion")
 public class Question {

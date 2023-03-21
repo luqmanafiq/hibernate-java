@@ -8,8 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Class for testing the database (subsequently DatabaseIO class) and adding sample data to the database.
+ */
 public class Testing {
-    public static void AddUsers() {
+    private static void AddUsers() {
         String[] users = new String[]{"pam","jim","michael","dwight","angela","creed","kevin","kelly","oscar", "oScAr"};
         for(String username: users){
             System.out.println(String.format("Add user to database test: adding user '%s'. Result: '%s'",
@@ -17,7 +20,7 @@ public class Testing {
         }
     }
 
-    public static void AddTopics() {
+    private static void AddTopics() {
         String[] topics = new String[]{"Biology", "Computer Science", "History", "Math", "English", "EnGliSh"};
         for(String topic: topics) {
             System.out.println(String.format("Add topic to database test: adding topic '%s'. Result: '%s'",
@@ -25,7 +28,7 @@ public class Testing {
         }
     }
 
-    public static void AddQuizzes() {
+    private static void AddQuizzes() {
         String[] quizNames = new String[]{"Quiz 1", "Quiz 2", "Quiz 3", "Quiz 3"};
         List<User> users = DatabaseIO.GetAllUsers();
         List<Quiz> addedQuizzes = new ArrayList<>();
@@ -40,7 +43,7 @@ public class Testing {
         }
     }
 
-    public static void AddSCQ() {
+    private static void AddSCQ() {
         List<Question> questions = new ArrayList<>();
         List<Topic> topics = DatabaseIO.GetAllTopics();
         questions.add(new Question("What is the capital of France?", "Paris", 1, "SAQ", topics.get(new Random().nextInt(topics.size()))));
@@ -61,7 +64,7 @@ public class Testing {
         }
     }
 
-    public static void AddMCQWithOptions() {
+    private static void AddMCQWithOptions() {
         List<Topic> topics = DatabaseIO.GetAllTopics();
         List<QuestionOption> questionOptions = new ArrayList<>();
         Question q = DatabaseIO.AddQuestion(new Question("What is the capital of France?", "Paris", 1, "MCQ", topics.get(new Random().nextInt(topics.size()))));
@@ -87,7 +90,7 @@ public class Testing {
         }
     }
 
-    public static void AddQuizQuestions() {
+    private static void AddQuizQuestions() {
         List<Quiz> quizzes = DatabaseIO.GetAllQuizzes();
         List<Question> questions = DatabaseIO.GetAllQuestions();
         for(Quiz quiz: quizzes) {
@@ -100,7 +103,7 @@ public class Testing {
         }
     }
 
-    public static void AddQuizSubmissions() {
+    private static void AddQuizSubmissions() {
         List<Quiz> allQuizzes = DatabaseIO.GetAllQuizzes();
         List<User> allUsers = DatabaseIO.GetAllUsers();
         Random rand = new Random();
@@ -118,6 +121,9 @@ public class Testing {
         }
     }
 
+    /**
+     * Populates the database with sample values.
+     */
     public static void PopulateDatabase() {
         AddUsers();
         AddTopics();
