@@ -9,18 +9,48 @@ import java.util.List;
 
 public class UserIO {
     static Scanner scan = new Scanner(System.in);
-    static String userName;
+    static User user;
     public static void main(String[] args) {
-        userName = promptUsername();
+        user = promptUsername();
         while (true) {
             menu();
         }
     }
     
-    private static String promptUsername() {
+    private static User promptUsername() {
+        User userToReturn = null;
         System.out.println("What is your username:");
         String username = stringValidInput();
-        return username;
+        if(DatabaseIO.CheckUserExists(username.trim())) {
+            return DatabaseIO.GetUser(username.trim());
+        }
+        else {
+            System.out.println("This user does not currently exist, would you like to create a new user with this name (Y)es or (N)o?");
+            Boolean validAnswer = false;
+            while (!validAnswer) {
+                String userAnswer = scan.nextLine();
+                if(userAnswer.equalsIgnoreCase("Y")) {
+                    User addedUser = DatabaseIO.AddUser(username.trim());
+                    if(addedUser != null) {
+                        System.out.println("Added user to the database!");
+                        validAnswer = true;
+                        userToReturn = addedUser;
+                    }
+                    else {
+                        System.out.println("Error adding user to the database, try again.");
+                        promptUsername();
+                    }
+                }
+                else if(userAnswer.equalsIgnoreCase("N")) {
+                    promptUsername();
+                }
+                else {
+                    System.out.println("invalid option choice!");
+                    System.out.println("Would you like to create a new user with this name (Y)es or (N)o?");
+                }
+            }
+            return userToReturn;
+        }
     }
 
     private static void menu() {
@@ -39,6 +69,8 @@ public class UserIO {
   
         switch (menuValidInput(1, 11)) {
             case 1:
+                //Search for a quiz to play
+                PlayQuiz();
                 break;
             case 2:
                 break;
@@ -69,6 +101,10 @@ public class UserIO {
                 System.out.println("This is not a valid option\n");
                 break;
         }
+
+    }
+
+    private static void PlayQuiz() {
 
     }
 
