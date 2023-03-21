@@ -58,3 +58,8 @@ Anyone is welcome to add and edit anything they have done to benefit them for th
     - Finished exportToCSV()
       - I may need to enforce directory syntax, will have to talk to Oliver about what filepath syntax his functions expect
       - Oliver's status codes returned from his ExportQuestionsToCSV() function are very useful and allowed me to create a switch case statement informing the user of how the process went
+
+# 21/3/23
+- Denis
+  - UserIO
+    - Finished generateQuiz() function

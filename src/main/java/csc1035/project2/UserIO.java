@@ -82,11 +82,13 @@ public class UserIO {
                 importFromCSV();
                 break;
             case 5:
-            exportToCSV();
+                exportToCSV();
                 break;
             case 6:
+                crudQuizSubmenu();
                 break;
             case 7:
+                crudQuestionSubmenu();
                 break;
             case 8:
                 randomQuizGenSubmenu();
@@ -102,7 +104,6 @@ public class UserIO {
                 System.out.println("This is not a valid option\n");
                 break;
         }
-
     }
 
     private static int GetUserOption(String[] userOptions, String question) {
@@ -209,6 +210,14 @@ public class UserIO {
                 break;
         }          
     }
+
+    private static void crudQuestionSubmenu() {
+
+    }
+    
+    private static void crudQuizSubmenu() {
+        
+    }
     
     private static void listSubmenu() {
         System.out.println("[Question Lister submenu]\nSelect an option:\n"
@@ -282,7 +291,7 @@ public class UserIO {
     }
 
     private static Quiz generateQuiz(int questionCount, String topic, String type, boolean wronglyAnsweredQus) {
-        Quiz generator = new Quiz();
+        Quiz generator = DatabaseIO.AddQuiz(new Quiz(user, "RNG:"+user+"|QUcount:"+questionCount+"|Topic:"+topic+"|Type:"+type+"|HistoricalBadAnswer:"+wronglyAnsweredQus));
         ArrayList<Question> validQuestions = new ArrayList<Question>();
         List<Question> possibleQuestions;
         
@@ -303,7 +312,7 @@ public class UserIO {
         for (int i = 0; i < questionCount; i++)
         {
             int random = rng.nextInt(validQuestions.size());
-            validQuestions.get(random);
+            DatabaseIO.AddQuizQuestion(new QuizQuestion(generator, validQuestions.get(random), i));          
             validQuestions.remove(random);
         }
 
