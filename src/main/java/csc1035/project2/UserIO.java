@@ -133,6 +133,40 @@ public class UserIO {
         return userChoiceToReturn;
     }
 
+    private static Quiz GenerateTopicQuiz(Topic topic) {
+        Quiz quiz = DatabaseIO.AddQuiz(new Quiz(DatabaseIO.GetUser("sys"), topic.getId()));
+        return UpdateTopicQuiz(quiz, topic);
+    }
+
+    private static Quiz UpdateTopicQuiz(Quiz quiz, Topic topic) {
+        List<Question> topicQuestions = DatabaseIO.GetQuestionsBasedOnTopic(topic);
+        List<Question> quizQuestions = DatabaseIO.GetQuestionsFromQuiz(quiz.getId());
+        for(Question tq: topicQuestions) {
+            if(!quizQuestions.contains(tq)) {
+                DatabaseIO.AddQuizQuestion(new QuizQuestion(quiz, tq, -1));
+            }
+        }
+        return quiz;
+    }
+
+    private static Quiz SelectTopicQuiz(Topic topic) {
+        List<Quiz> topicQuizzes = DatabaseIO.GetQuizzesBasedOnUser(DatabaseIO.GetUser("sys"));
+        //go through questions and go through topic quiz
+        //if a question is not in the topic then add it to the quiz
+        Quiz selectedQuiz = null;
+        for(Quiz quiz: topicQuizzes) {
+            if(quiz.getQuizName().equalsIgnoreCase(topic.getId())) {
+                selectedQuiz = quiz;
+            }
+        }
+        if(selectedQuiz != null) {
+            return UpdateTopicQuiz(selectedQuiz, topic);
+        }
+        else {
+            return GenerateTopicQuiz(topic);
+        }
+    }
+
     private static boolean PlayTopicQuiz() {
         List<Topic> topics = DatabaseIO.GetAllTopics();
         if(!DatabaseIO.CheckUserExists("sys")) {
@@ -156,7 +190,8 @@ public class UserIO {
         }
         int userTopicChoice = GetUserOption(topicChoice, "Select a topic:");
         Topic chosenTopic = topics.get(userTopicChoice);
-        System.out.println(chosenTopic.getId());
+        Quiz selectedQuiz = SelectTopicQuiz(chosenTopic);
+        PlayAndSubmitQuiz(selectedQuiz);
         return true;
     }
 
