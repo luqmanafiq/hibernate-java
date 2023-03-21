@@ -752,6 +752,13 @@ public abstract class DatabaseIO {
         return quizzes;
     }
 
+    public static List<Question> GetQuestionsBasedOnTopic(Topic topic) {
+        if(!CheckTopicExists(topic.getId())){return null;}
+        List<Question> questions = (List<Question>)(Object)HQLQueryDatabase(
+                String.format("FROM Question WHERE topicName='%s'", topic.getId()));
+        return questions;
+    }
+
     public static void main(String[] args) {
     }
 }
