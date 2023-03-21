@@ -255,7 +255,7 @@ public class UserIO {
     }
 
     private static Quiz generateQuiz(int questionCount, String topic, String type, boolean wronglyAnsweredQus) {
-        Quiz generator = new Quiz();
+        Quiz generator = DatabaseIO.AddQuiz(new Quiz(user, "RNG:"+user+"|QUcount:"+questionCount+"|Topic:"+topic+"|Type:"+type+"|HistoricalBadAnswer:"+wronglyAnsweredQus));
         ArrayList<Question> validQuestions = new ArrayList<Question>();
         List<Question> possibleQuestions;
         
@@ -276,7 +276,7 @@ public class UserIO {
         for (int i = 0; i < questionCount; i++)
         {
             int random = rng.nextInt(validQuestions.size());
-            validQuestions.get(random);
+            DatabaseIO.AddQuizQuestion(new QuizQuestion(generator, validQuestions.get(random), i));          
             validQuestions.remove(random);
         }
 
