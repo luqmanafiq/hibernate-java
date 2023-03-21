@@ -318,6 +318,20 @@ public abstract class DatabaseIO {
         return GetObject(Quiz.class, quizID);
     }
 
+    public static Quiz OverrideQuiz(Quiz updatedQuiz) {
+        if(!CheckQuizExists(String.valueOf(updatedQuiz.getId()), updatedQuiz.getUsername().getUsername(),
+                updatedQuiz.getQuizName())) {return null;}
+        try {
+            Transaction transaction = _session.beginTransaction();
+            _session.update(updatedQuiz);
+            transaction.commit();
+            return updatedQuiz;
+        }
+        catch(Exception e) {
+            return null;
+        }
+    }
+
     public static Boolean CheckQuizExists(String quizID) {
         return CheckObjectExists(Quiz.class, quizID);
     }
