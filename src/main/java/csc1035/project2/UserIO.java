@@ -104,6 +104,32 @@ public class UserIO {
 
     }
 
+    private static int GetUserOption(String[] userOptions, String question) {
+        Boolean isValidChoice = false;
+        int userChoiceToReturn = 0;
+        while(!isValidChoice) {
+            System.out.println(question);
+            for (int i = 0; i < userOptions.length; i++) {
+                System.out.println(String.format("%s - %s", i, userOptions));
+            }
+            String userInput = scan.nextLine();
+            try {
+                int userMenuChoice = Integer.parseInt(userInput);
+                if(userMenuChoice >= 0 && userMenuChoice < userOptions.length) {
+                    userChoiceToReturn = userMenuChoice;
+                    isValidChoice = true;
+                }
+                else {
+                    System.out.println("That menu choice is invalid! Please try again.");
+                }
+            }
+            catch(Exception e) {
+                System.out.println("That menu choice is invalid! Please try again.");
+            }
+        }
+        return userChoiceToReturn;
+    }
+
     private static void PlayQuiz() {
 
     }
