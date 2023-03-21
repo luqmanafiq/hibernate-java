@@ -534,7 +534,7 @@ public abstract class DatabaseIO {
                 String.format("FROM QuizQuestion WHERE quizID=%s", quiz.getId()));
         Question[] orderedQuestions = new Question[quizQuestions.size()];
         for (QuizQuestion quizQuestion:
-             quizQuestions) {
+                quizQuestions) {
             orderedQuestions[quizQuestion.getOrderIndex()] = GetQuestion(String.valueOf(quizQuestion.getQuestionID().getId()));
         }
         returnList = Arrays.asList(orderedQuestions);
@@ -660,8 +660,8 @@ public abstract class DatabaseIO {
         return false;
     }
 
-    public static Boolean PurgeQuestionFromDatabase(int ID) {
-
+    public static Boolean PurgeQuestionFromDatabase(int questionID) {
+        return null;
     }
 
     /**
@@ -678,6 +678,16 @@ public abstract class DatabaseIO {
             }
         }
         return questions;
+    }
+
+    public static List<QuestionOption> GetQuestionOptionsForQuestion(Question question) {
+        if(!question.getQuestionType().equalsIgnoreCase("MCQ")) {
+            return null;
+        }
+        List<QuestionOption> questionOptions = new ArrayList<>();
+        questionOptions = (List<QuestionOption>)(Object)HQLQueryDatabase(
+                String.format("FROM QuestionOption WHERE questionID=%s", question.getId()));
+        return questionOptions;
     }
 
     public static void main(String[] args) {
