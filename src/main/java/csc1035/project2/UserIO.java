@@ -135,11 +135,65 @@ public class UserIO {
     }
 
     private static Quiz makeQuizForIncorrectQuestions(boolean forUser) {
-        return null;
+        List<Question> questions = new ArrayList<>();
+        if(forUser){questions = DatabaseIO.getAllQuestionsUserIncorrectlyAnsweredEver(user);}
+        else {
+            for(User u: DatabaseIO.getAllUsers()) {
+                List<Question> tempQuestions = DatabaseIO.getAllQuestionsUserIncorrectlyAnsweredEver(u);
+                for(Question q: tempQuestions) {
+                    if(!questions.contains(q)) {
+                        questions.add(q);
+                    }
+                }
+            }
+        }
+        return null;////
     }
 
     private static void showIncorrectlyAnsweredQuizStatistics(boolean forUser) {
-
+        List<Mark> marks = new ArrayList<>();
+        List<Question> questions = new ArrayList<>();
+        if(!forUser){
+            marks = DatabaseIO.getAllMarks();
+            for(Mark mark: marks) {
+                if(!questions.contains(mark.getQuestionID())) {
+                    questions.add(mark.getQuestionID());
+                }
+            }
+        }
+        else {
+            List<Mark> allMarks = DatabaseIO.getAllMarks();
+            for(Mark mark: allMarks) {
+                if(DatabaseIO.checkQuizSubmissionExists(mark.getSubmissionID().getId())) {
+                    if(mark.getSubmissionID().getUsername().equals(user)) {
+                        marks.add(mark);
+                        if(!questions.contains(mark.getQuestionID())) {
+                            questions.add(mark.getQuestionID());
+                        }
+                    }
+                }
+            }
+        }
+        for(Question question: questions) {
+            int answeredCorrectly = 0;
+            int answeredIncorrectly = 0;
+            int totalAmount = 0;
+            double percentageCorrectlyAnswered = 0.0;
+            for(Mark mark: marks) {
+                if(mark.getQuestionID().equals(question)) {
+                    if(mark.getScore() > 0) {answeredCorrectly++;}
+                    else{answeredIncorrectly++;}
+                    totalAmount++;
+                }
+            }
+            percentageCorrectlyAnswered = (Double.valueOf(answeredCorrectly)/totalAmount)*100;
+            System.out.println(String.format("\nQuestion (id: %s) - '%s'\n " +
+                            "- times answered: %s\n " +
+                            "- times answered correctly: %s\n " +
+                            "- times answered incorrectly: %s\n " +
+                            "- percentage answered correctly: %s", question.getId(), question.getQuestion(),
+                    totalAmount ,answeredCorrectly, answeredIncorrectly, percentageCorrectlyAnswered));
+        }
     }
 
     private static void reviewIncorrectlyAnsweredQuestions() {
