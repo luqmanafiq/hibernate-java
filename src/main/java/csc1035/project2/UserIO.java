@@ -22,8 +22,8 @@ public class UserIO {
             System.out.println("This user is reserved and can only be accessed by the system. Please choose another username.");
             return promptUsername();
         }
-        if(DatabaseIO.CheckUserExists(username.trim())) {
-            return DatabaseIO.GetUser(username.trim());
+        if(DatabaseIO.checkUserExists(username.trim())) {
+            return DatabaseIO.getUser(username.trim());
         }
         else {
             System.out.println("This user does not currently exist, would you like to create a new user with this name (Y)es or (N)o?");
@@ -31,7 +31,7 @@ public class UserIO {
             while (!validAnswer) {
                 String userAnswer = scan.nextLine();
                 if(userAnswer.equalsIgnoreCase("Y")) {
-                    User addedUser = DatabaseIO.AddUser(username.trim());
+                    User addedUser = DatabaseIO.addUser(username.trim());
                     if(addedUser != null) {
                         System.out.println("Added user to the database!");
                         validAnswer = true;
@@ -71,10 +71,10 @@ public class UserIO {
         switch (menuValidInput(1, 11)) {
             case 1:
                 //Search for a quiz to play
-                PlayQuiz();
+                playQuiz();
                 break;
             case 2:
-                PlayTopicQuiz();
+                playTopicQuiz();
                 break;
             case 3:
                 listSubmenu();
@@ -97,6 +97,7 @@ public class UserIO {
             case 9:
                 break;
             case 10:
+                reviewIncorrectlyAnsweredQuestions();
                 break;
             case 11:
                 System.exit(0);;
@@ -107,7 +108,7 @@ public class UserIO {
         }
     }
 
-    private static int GetUserOption(String[] userOptions, String question) {
+    private static int getUserOption(String[] userOptions, String question) {
         Boolean isValidChoice = false;
         int userChoiceToReturn = 0;
         while(!isValidChoice) {
@@ -133,24 +134,28 @@ public class UserIO {
         return userChoiceToReturn;
     }
 
-    private static Quiz GenerateTopicQuiz(Topic topic) {
-        Quiz quiz = DatabaseIO.AddQuiz(new Quiz(DatabaseIO.GetUser("sys"), topic.getId()));
-        return UpdateTopicQuiz(quiz, topic);
+    private static void reviewIncorrectlyAnsweredQuestions() {
+
     }
 
-    private static Quiz UpdateTopicQuiz(Quiz quiz, Topic topic) {
-        List<Question> topicQuestions = DatabaseIO.GetQuestionsBasedOnTopic(topic);
-        List<Question> quizQuestions = DatabaseIO.GetQuestionsFromQuiz(quiz.getId());
+    private static Quiz generateTopicQuiz(Topic topic) {
+        Quiz quiz = DatabaseIO.addQuiz(new Quiz(DatabaseIO.getUser("sys"), topic.getId()));
+        return updateTopicQuiz(quiz, topic);
+    }
+
+    private static Quiz updateTopicQuiz(Quiz quiz, Topic topic) {
+        List<Question> topicQuestions = DatabaseIO.getQuestionsBasedOnTopic(topic);
+        List<Question> quizQuestions = DatabaseIO.getQuestionsFromQuiz(quiz.getId());
         for(Question tq: topicQuestions) {
             if(!quizQuestions.contains(tq)) {
-                DatabaseIO.AddQuizQuestion(new QuizQuestion(quiz, tq, -1));
+                DatabaseIO.addQuizQuestion(new QuizQuestion(quiz, tq, -1));
             }
         }
         return quiz;
     }
 
-    private static Quiz SelectTopicQuiz(Topic topic) {
-        List<Quiz> topicQuizzes = DatabaseIO.GetQuizzesBasedOnUser(DatabaseIO.GetUser("sys"));
+    private static Quiz selectTopicQuiz(Topic topic) {
+        List<Quiz> topicQuizzes = DatabaseIO.getQuizzesBasedOnUser(DatabaseIO.getUser("sys"));
         //go through questions and go through topic quiz
         //if a question is not in the topic then add it to the quiz
         Quiz selectedQuiz = null;
@@ -160,17 +165,17 @@ public class UserIO {
             }
         }
         if(selectedQuiz != null) {
-            return UpdateTopicQuiz(selectedQuiz, topic);
+            return updateTopicQuiz(selectedQuiz, topic);
         }
         else {
-            return GenerateTopicQuiz(topic);
+            return generateTopicQuiz(topic);
         }
     }
 
-    private static boolean PlayTopicQuiz() {
-        List<Topic> topics = DatabaseIO.GetAllTopics();
-        if(!DatabaseIO.CheckUserExists("sys")) {
-            DatabaseIO.AddUser("sys");
+    private static boolean playTopicQuiz() {
+        List<Topic> topics = DatabaseIO.getAllTopics();
+        if(!DatabaseIO.checkUserExists("sys")) {
+            DatabaseIO.addUser("sys");
         }
         if(topics.isEmpty()) {
             System.out.println("There does not seem to be any topics in the database. " +
@@ -180,7 +185,7 @@ public class UserIO {
         String[] topicChoice = new String[topics.size()];
         Integer[] amountOfQuestionsForTopic = new Integer[topics.size()];
         Arrays.fill(amountOfQuestionsForTopic, 0);
-        List<Question> allQuestions = DatabaseIO.GetAllQuestions();
+        List<Question> allQuestions = DatabaseIO.getAllQuestions();
         for(Question question: allQuestions) {
             int index = topics.indexOf(question.getTopicName());
             amountOfQuestionsForTopic[index] += 1;
@@ -188,22 +193,22 @@ public class UserIO {
         for(int i = 0; i < topics.size(); i++) {
             topicChoice[i] = String.format("'%s' - %s question(s)", topics.get(i).getId(), amountOfQuestionsForTopic[i]);
         }
-        int userTopicChoice = GetUserOption(topicChoice, "Select a topic:");
+        int userTopicChoice = getUserOption(topicChoice, "Select a topic:");
         Topic chosenTopic = topics.get(userTopicChoice);
-        Quiz selectedQuiz = SelectTopicQuiz(chosenTopic);
-        PlayAndSubmitQuiz(selectedQuiz);
+        Quiz selectedQuiz = selectTopicQuiz(chosenTopic);
+        playAndSubmitQuiz(selectedQuiz);
         return true;
     }
 
-    private static void PlayQuiz() {
-        int userQuizOption = GetUserOption(new String[]{"quizzes created by you.", "quizzes created by everyone."},
+    private static void playQuiz() {
+        int userQuizOption = getUserOption(new String[]{"quizzes created by you.", "quizzes created by everyone."},
                 String.format("Would you like to select quizzes created by you ('%s') or from all quizzes " +
                         "in the database?", user.getUsername()));
         List<Quiz> quizSelection = new ArrayList<>();
         switch(userQuizOption) {
             case(0):
                 //list only users quizzes
-                List<Quiz> allQuizzes = DatabaseIO.GetAllQuizzes();
+                List<Quiz> allQuizzes = DatabaseIO.getAllQuizzes();
                 for(var quiz: allQuizzes) {
                     if(quiz.getUsername().equals(user)) {
                         quizSelection.add(quiz);
@@ -212,7 +217,7 @@ public class UserIO {
                 break;
             case(1):
                 //list all quizzes
-                quizSelection = DatabaseIO.GetAllQuizzes();
+                quizSelection = DatabaseIO.getAllQuizzes();
                 break;
         }
         String[] quizOptions = new String[quizSelection.size()];
@@ -224,43 +229,43 @@ public class UserIO {
             System.out.println("No quizzes could be found!");
         }
         else {
-            int quizChoice = GetUserOption(quizOptions, "Please select a quiz to play:");
+            int quizChoice = getUserOption(quizOptions, "Please select a quiz to play:");
             Quiz quizToPlay = quizSelection.get(quizChoice);
-            PlayAndSubmitQuiz(quizToPlay);
+            playAndSubmitQuiz(quizToPlay);
         }
     }
 
-    private static List<QuestionMarkTuple> QuestionAnswerLoop(List<Question> questionsToAnswer) {
+    private static List<QuestionMarkTuple> questionAnswerLoop(List<Question> questionsToAnswer) {
         List<QuestionMarkTuple> questionMarkTuples = new ArrayList<>();
         for(Question question: questionsToAnswer) {
             if(question.getQuestionType().equalsIgnoreCase("SAQ")) {
                 System.out.println(String.format("%s", question.getQuestion()));
                 String userAnswer = scan.nextLine();
-                questionMarkTuples.add(DatabaseIO.MarkQuestionAnswer(question, userAnswer));
+                questionMarkTuples.add(DatabaseIO.markQuestionAnswer(question, userAnswer));
             }
             else if(question.getQuestionType().equalsIgnoreCase("MCQ")) {
-                List<QuestionOption> optionsForQuestion = DatabaseIO.GetQuestionOptionsForQuestion(question);
+                List<QuestionOption> optionsForQuestion = DatabaseIO.getQuestionOptionsForQuestion(question);
                 String[] questionOptions = new String[optionsForQuestion.size()];
                 for(int i = 0; i < optionsForQuestion.size(); i++) {
                     questionOptions[i] = optionsForQuestion.get(i).getQuestionOption();
                 }
-                int userOption = GetUserOption(questionOptions,question.getQuestion());
+                int userOption = getUserOption(questionOptions,question.getQuestion());
                 String userAnswer = questionOptions[userOption];
-                questionMarkTuples.add(DatabaseIO.MarkQuestionAnswer(question, userAnswer));
+                questionMarkTuples.add(DatabaseIO.markQuestionAnswer(question, userAnswer));
             }
         }
         return questionMarkTuples;
     }
 
-    private static void DisplayMarks(List<QuestionMarkTuple> marks, List<Question> questions) {
+    private static void displayMarks(List<QuestionMarkTuple> marks, List<Question> questions) {
         int totalScore = 0;
         int totalPossibleMarks = 0;
         for(int i = 0; i < marks.size(); i++) {
             System.out.println(String.format("Question %s - '%s'\nYour answer: '%s'\nCorrect answer: " +
                             "'%s'\nScore: %s/%s", i, questions.get(i).getQuestion(), marks.get(i).get_userAnswer(),
-                    questions.get(i).getAnswer(), marks.get(i).GetMarksReceived(), questions.get(i).getMaximumMarks()));
+                    questions.get(i).getAnswer(), marks.get(i).getMarksReceived(), questions.get(i).getMaximumMarks()));
             totalPossibleMarks += questions.get(i).getMaximumMarks();
-            totalScore += marks.get(i).GetMarksReceived();
+            totalScore += marks.get(i).getMarksReceived();
         }
         System.out.println(String.format("Your final score for that quiz was %s/%s",
                 totalScore, totalPossibleMarks));
@@ -272,23 +277,23 @@ public class UserIO {
      * @param quizToPlay
      * @return null if no questions in a quiz or a quiz does not exist.
      */
-    private static QuizSubmission PlayAndSubmitQuiz(Quiz quizToPlay) {
+    private static QuizSubmission playAndSubmitQuiz(Quiz quizToPlay) {
         List<QuestionMarkTuple> questionsAndMarks = new ArrayList<>();
         System.out.println(String.format("You are now playing '%s' created by '%s'.",
                 quizToPlay.getQuizName(), quizToPlay.getUsername().getUsername()));
-        if(!DatabaseIO.CheckQuizExists(String.valueOf(quizToPlay.getId()))) {
+        if(!DatabaseIO.checkQuizExists(String.valueOf(quizToPlay.getId()))) {
             System.out.println("Error! it seems the chosen quiz does not exist.");
             return null;
         }
-        List<Question> questionsToAnswer = DatabaseIO.GetQuestionsFromQuiz(quizToPlay.getId());
+        List<Question> questionsToAnswer = DatabaseIO.getQuestionsFromQuiz(quizToPlay.getId());
         if(questionsToAnswer.isEmpty()) {
             System.out.println("This quiz is empty.");
             return null;
         }
-        questionsAndMarks = QuestionAnswerLoop(questionsToAnswer);
-        QuizSubmission submission = DatabaseIO.SubmitQuizResults(questionsAndMarks, user, quizToPlay);
+        questionsAndMarks = questionAnswerLoop(questionsToAnswer);
+        QuizSubmission submission = DatabaseIO.submitQuizResults(questionsAndMarks, user, quizToPlay);
         System.out.println("Quiz complete and submitted!");
-        DisplayMarks(questionsAndMarks, questionsToAnswer);
+        displayMarks(questionsAndMarks, questionsToAnswer);
         //TEST THIS
         return submission;
     }
@@ -298,10 +303,10 @@ public class UserIO {
         System.out.println("What is the name of the file you want to import?\n"
         + "It should be a csv file and include the .csv extension. The filename is case-insensitive");
         String filePath = scan.nextLine();
-        List<Question> questionList = DatabaseIO.ImportQuestionsFromCSV(filePath);
+        List<Question> questionList = DatabaseIO.importQuestionsFromCSV(filePath);
         if (questionList != null) {
             for (Question i : questionList) {
-                DatabaseIO.AddQuestion(i);
+                DatabaseIO.addQuestion(i);
             }
             System.out.println("File read, and the questions were added to the database");
         }
@@ -323,11 +328,11 @@ public class UserIO {
             if (input.length() == 0) {
                 break;
             }
-            questionList.add(DatabaseIO.GetQuestion(input));
+            questionList.add(DatabaseIO.getQuestion(input));
         }
         System.out.println("Question list has been created");
         System.out.println("Exporting to CSV");
-        int status = DatabaseIO.ExportQuestionsToCSV(filePath, fileName, questionList);
+        int status = DatabaseIO.exportQuestionsToCSV(filePath, fileName, questionList);
         switch (status) {
             case 0:
                 System.out.println("Success!");
@@ -354,13 +359,13 @@ public class UserIO {
                 break;
             case 2:
                 System.out.println("Enter a question ID:");
-                printQuestion(DatabaseIO.GetQuestion(String.valueOf(positiveIntegerValidInput())));
+                printQuestion(DatabaseIO.getQuestion(String.valueOf(positiveIntegerValidInput())));
                 break;
             case 3:
                 break;
             case 4:
                 System.out.println("Enter a question ID:");
-                DatabaseIO.PurgeQuestionFromDatabase(positiveIntegerValidInput());
+                DatabaseIO.purgeQuestionFromDatabase(positiveIntegerValidInput());
                 System.out.println("Question has been deleted");
                 break;
         }
@@ -379,7 +384,7 @@ public class UserIO {
         System.out.println("Enter a new topic name:");
         quTopic = stringValidInput();
         System.out.println("Enter a description for the new topic");
-        Topic topic = DatabaseIO.AddTopic(quTopic, scan.nextLine());
+        Topic topic = DatabaseIO.addTopic(quTopic, scan.nextLine());
 
         System.out.println("Score:");
         int quScore = positiveIntegerValidInput();
@@ -387,14 +392,14 @@ public class UserIO {
         System.out.println("Answer string:");
         String quAnswer = stringValidInput();
         Question question = new Question(quString, quAnswer, quScore, quType, topic);
-        Question dbQuestion = DatabaseIO.AddQuestion(question);
+        Question dbQuestion = DatabaseIO.addQuestion(question);
 
         if (quType.equals("MCQ")) {
-            DatabaseIO.AddQuestionOption(new QuestionOption(dbQuestion, quAnswer));
+            DatabaseIO.addQuestionOption(new QuestionOption(dbQuestion, quAnswer));
             System.out.println("How many extra options do you want to add?");
             for (int i = 0; i < positiveIntegerValidInput(); i++) {
                 System.out.println("Enter option string:");
-                DatabaseIO.AddQuestionOption(new QuestionOption(dbQuestion, stringValidInput()));
+                DatabaseIO.addQuestionOption(new QuestionOption(dbQuestion, stringValidInput()));
                 System.out.println("Option added to database");
             }
         }
@@ -441,7 +446,7 @@ public class UserIO {
         + "3. List all questions by topic");
         switch(menuValidInput(1, 3)) {
             case 1:
-                List<Question> QuestionList1 = DatabaseIO.GetAllQuestions();
+                List<Question> QuestionList1 = DatabaseIO.getAllQuestions();
                 for (Question i : QuestionList1) {
                     printQuestion(i);
                 }      
@@ -449,7 +454,7 @@ public class UserIO {
             case 2:               
                 String typeInput = chooseType();
 
-                List<Question> QuestionList2 = DatabaseIO.GetAllQuestions();
+                List<Question> QuestionList2 = DatabaseIO.getAllQuestions();
                 for (Question i : QuestionList2) {
                     if (i.getQuestionType().toLowerCase() == typeInput.toLowerCase())
                     printQuestion(i);
@@ -458,7 +463,7 @@ public class UserIO {
             case 3:
                 String topicInput = chooseTopic();
 
-                List<Question> QuestionList3 = DatabaseIO.GetAllQuestions();
+                List<Question> QuestionList3 = DatabaseIO.getAllQuestions();
                 for (Question i : QuestionList3) {
                     if (i.getTopicName().getId().toLowerCase() == topicInput.toLowerCase()) {
                         printQuestion(i);
@@ -506,15 +511,15 @@ public class UserIO {
     }
 
     private static Quiz generateQuiz(int questionCount, String topic, String type, boolean wronglyAnsweredQus) {
-        Quiz generator = DatabaseIO.AddQuiz(new Quiz(user, "RNG:"+user+"|QUcount:"+questionCount+"|Topic:"+topic+"|Type:"+type+"|HistoricalBadAnswer:"+wronglyAnsweredQus));
+        Quiz generator = DatabaseIO.addQuiz(new Quiz(user, "RNG:"+user+"|QUcount:"+questionCount+"|Topic:"+topic+"|Type:"+type+"|HistoricalBadAnswer:"+wronglyAnsweredQus));
         ArrayList<Question> validQuestions = new ArrayList<Question>();
         List<Question> possibleQuestions;
         
         if (wronglyAnsweredQus) {
-            possibleQuestions = DatabaseIO.GetAllQuestionsUserIncorrectlyAnsweredEver(user);
+            possibleQuestions = DatabaseIO.getAllQuestionsUserIncorrectlyAnsweredEver(user);
         }
         else {
-            possibleQuestions = DatabaseIO.GetAllQuestions();
+            possibleQuestions = DatabaseIO.getAllQuestions();
         }
 
         for (Question i : possibleQuestions) {
@@ -527,7 +532,7 @@ public class UserIO {
         for (int i = 0; i < questionCount; i++)
         {
             int random = rng.nextInt(validQuestions.size());
-            DatabaseIO.AddQuizQuestion(new QuizQuestion(generator, validQuestions.get(random), i));          
+            DatabaseIO.addQuizQuestion(new QuizQuestion(generator, validQuestions.get(random), i));
             validQuestions.remove(random);
         }
 
@@ -536,7 +541,7 @@ public class UserIO {
     
     private static String chooseTopic() {
         System.out.println("Choose a topic:");
-        List<Topic> TopicList = DatabaseIO.GetAllTopics();
+        List<Topic> TopicList = DatabaseIO.getAllTopics();
         for (Topic i : TopicList) {
             System.out.println(i.getId());
         }

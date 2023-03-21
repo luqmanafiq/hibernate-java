@@ -23,19 +23,19 @@ public class QuestionMarkTuple {
         this._userAnswer = userAnswer;
     }
 
-    public Question GetQuestion() {
+    public Question getQuestion() {
         return _question;
     }
 
-    public void SetQuestion(Question _question) {
+    public void setQuestion(Question _question) {
         this._question = _question;
     }
 
-    public int GetMarksReceived() {
+    public int getMarksReceived() {
         return _marksReceived;
     }
 
-    public void SetMarksReceived(int _marksReceived) {
+    public void setMarksReceived(int _marksReceived) {
         this._marksReceived = _marksReceived;
     }
 

@@ -24,7 +24,7 @@ public abstract class DatabaseIO {
      * @param hql String representing the HQL that should be sent to the database.
      * @return List of objects representing the response.
      */
-    public static List<Object> HQLQueryDatabase(String hql) {
+    public static List<Object> hqlquerydatabase(String hql) {
         _session.beginTransaction();
         Query query = _session.createQuery(hql);
         List<Object> results = query.list();
@@ -37,7 +37,7 @@ public abstract class DatabaseIO {
      * @param sql String representing the SQL that should be sent to the database.
      * @return List of objects representing the response.
      */
-    public static List<Object[]> SQLQueryDatabase(String sql) {
+    public static List<Object[]> sqlquerydatabase(String sql) {
         _session.beginTransaction();
         Query query = _session.createSQLQuery(sql);
         List<Object[]> results = query.list();
@@ -49,7 +49,7 @@ public abstract class DatabaseIO {
      * Adds an object of any type to the database.
      * @param o Object to add to the database.
      */
-    public static void AddToDatabase(Object o) {
+    public static void addToDatabase(Object o) {
         _session.beginTransaction();
         _session.save(o);
         _session.getTransaction().commit();
@@ -59,7 +59,7 @@ public abstract class DatabaseIO {
      * Removes an object of any type from the database.
      * @param o Object to remove from the database.
      */
-    public static void RemoveFromDatabase(Object o) {
+    public static void removeFromDatabase(Object o) {
         _session.beginTransaction();
         _session.delete(o);
         _session.getTransaction().commit();
@@ -75,11 +75,11 @@ public abstract class DatabaseIO {
      * @return The object retrieved from the database (null if no record could be found).
      * @param <T> Type of object to be returned.
      */
-    private static <T> T GetObject(Class<T> clazz, String queryString) {
+    private static <T> T getObject(Class<T> clazz, String queryString) {
         if(!queryString.contains("FROM")) {
-            queryString = CreateQueryString(clazz, queryString);
+            queryString = createQueryString(clazz, queryString);
         }
-        List<T> response = (List<T>) (Object) DatabaseIO.HQLQueryDatabase(queryString);
+        List<T> response = (List<T>) (Object) DatabaseIO.hqlquerydatabase(queryString);
         if (response.size() == 0) {
             return null;
         }
@@ -92,11 +92,11 @@ public abstract class DatabaseIO {
      * @param queryString The HQL query string to identify what record to check in the database.
      * @return True if object exists, false if it does not.
      */
-    private static boolean CheckObjectExists(Class<?> clazz, String queryString) {
+    private static boolean checkObjectExists(Class<?> clazz, String queryString) {
         if(!queryString.contains("FROM")) {
-            queryString = CreateQueryString(clazz, queryString);
+            queryString = createQueryString(clazz, queryString);
         }
-        Object obj = GetObject(clazz, queryString);
+        Object obj = getObject(clazz, queryString);
         return obj != null;
     }
 
@@ -108,13 +108,13 @@ public abstract class DatabaseIO {
      * @return The object added to the database (null if there was an error).
      * @param <T> Type of object to be returned.
      */
-    private static <T> T AddObject(Class<T> clazz, String checkQueryString, Object objectToAdd) {
+    private static <T> T addObject(Class<T> clazz, String checkQueryString, Object objectToAdd) {
         if(!checkQueryString.contains("FROM")) {
-            checkQueryString = CreateQueryString(clazz, checkQueryString);
+            checkQueryString = createQueryString(clazz, checkQueryString);
         }
 
-        if(!CheckObjectExists(clazz, checkQueryString)) {
-            DatabaseIO.AddToDatabase(objectToAdd);
+        if(!checkObjectExists(clazz, checkQueryString)) {
+            DatabaseIO.addToDatabase(objectToAdd);
             return (T) objectToAdd;
         }
         return null;
@@ -126,10 +126,10 @@ public abstract class DatabaseIO {
      * @return List of objects from the database.
      * @param <T>
      */
-    private static <T> List<T> GetAllObjects(Class<T> clazz) {
+    private static <T> List<T> getAllObjects(Class<T> clazz) {
         SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
         ClassMetadata classMetadata = sessionFactory.getClassMetadata(clazz);
-        return (List<T>) HQLQueryDatabase(String.format("FROM %s", classMetadata.getEntityName()));
+        return (List<T>) hqlquerydatabase(String.format("FROM %s", classMetadata.getEntityName()));
     }
 
     /**
@@ -138,15 +138,15 @@ public abstract class DatabaseIO {
      * @param queryString HQL query string to find the value that should be removed from the database.
      * @return 1 if does not exist, 2 if can't be removed (foreign key dependencies), 0 if successful
      */
-    private static int RemoveObject(Class clazz ,String queryString) {
+    private static int removeObject(Class clazz , String queryString) {
         if(!queryString.contains("FROM")) {
-            queryString = CreateQueryString(clazz, queryString);
+            queryString = createQueryString(clazz, queryString);
         }
-        if (!CheckObjectExists(clazz,queryString)) {
+        if (!checkObjectExists(clazz,queryString)) {
             return 1;
         }
         try {
-            DatabaseIO.RemoveFromDatabase(GetObject(clazz, queryString));
+            DatabaseIO.removeFromDatabase(getObject(clazz, queryString));
             return 0;
         }
         catch (Exception e){return 2;}
@@ -158,7 +158,7 @@ public abstract class DatabaseIO {
      * @param searchTerm String representation of the primary key value of the database entity.
      * @return HQL query string
      */
-    private static String CreateQueryString(Class clazz, String searchTerm) {
+    private static String createQueryString(Class clazz, String searchTerm) {
         SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
         ClassMetadata classMetadata = sessionFactory.getClassMetadata(clazz);
         String queryString = "";
@@ -182,8 +182,8 @@ public abstract class DatabaseIO {
      * @param username : String of the username of the user (case-insensitive)
      * @return User : User object representing the user. Null if not user associated with the username
      * **/
-    public static User GetUser(String username) {
-        return GetObject(User.class, username.toLowerCase());
+    public static User getUser(String username) {
+        return getObject(User.class, username.toLowerCase());
     }
 
     /**
@@ -191,12 +191,12 @@ public abstract class DatabaseIO {
      * @param username : String (case-insensitive)
      * @return Boolean: True if user exists, false if not
      * **/
-    public static Boolean CheckUserExists(String username) {
-        return CheckObjectExists(User.class, username.toLowerCase());
+    public static Boolean checkUserExists(String username) {
+        return checkObjectExists(User.class, username.toLowerCase());
     }
 
-    public static List<User> GetAllUsers() {
-        return GetAllObjects(User.class);
+    public static List<User> getAllUsers() {
+        return getAllObjects(User.class);
     }
 
     /**
@@ -206,17 +206,17 @@ public abstract class DatabaseIO {
      * @param username : String representation of the username (case-insensitive)
      * @return : User object representing added user
      * **/
-    public static User AddUser(String username) {
-        return AddObject(User.class, username.toLowerCase(),
+    public static User addUser(String username) {
+        return addObject(User.class, username.toLowerCase(),
                 new User(username.toLowerCase()));
     }
 
-    public static User AddUser(User user) {
-        return AddObject(User.class, user.getUsername(), user);
+    public static User addUser(User user) {
+        return addObject(User.class, user.getUsername(), user);
     }
 
-    public static int RemoveUser(String username) {
-        return RemoveObject(User.class, username.toLowerCase());
+    public static int removeUser(String username) {
+        return removeObject(User.class, username.toLowerCase());
     }
     //endregion
 
@@ -226,12 +226,12 @@ public abstract class DatabaseIO {
      * @param topicName : String of the topic's name (case-insensitive)
      * @return User : Topic object representing the topic. Null if no topic associated with the topicName
      * **/
-    public static Topic GetTopic(String topicName) {
-        return GetObject(Topic.class, topicName.toLowerCase());
+    public static Topic getTopic(String topicName) {
+        return getObject(Topic.class, topicName.toLowerCase());
     }
 
-    public static List<Topic> GetAllTopics() {
-        return GetAllObjects(Topic.class);
+    public static List<Topic> getAllTopics() {
+        return getAllObjects(Topic.class);
     }
 
     /**
@@ -239,8 +239,8 @@ public abstract class DatabaseIO {
      * @param topicName : String (case-insensitive)
      * @return Boolean: True if topic exists, false if not
      * **/
-    public static Boolean CheckTopicExists(String topicName) {
-        return CheckObjectExists(Topic.class, topicName.toLowerCase());
+    public static Boolean checkTopicExists(String topicName) {
+        return checkObjectExists(Topic.class, topicName.toLowerCase());
     }
 
     /**
@@ -251,12 +251,12 @@ public abstract class DatabaseIO {
      * @param topicDescription : String topic description (case-sensitive)
      * @return : Topic object added to database or null if operation was unsuccessful
      * **/
-    public static Topic AddTopic(String topicName, String topicDescription) {
-        return AddObject(Topic.class, topicName.toLowerCase(), new Topic(topicName.toLowerCase(), topicDescription));
+    public static Topic addTopic(String topicName, String topicDescription) {
+        return addObject(Topic.class, topicName.toLowerCase(), new Topic(topicName.toLowerCase(), topicDescription));
     }
 
-    public static Topic AddTopic(Topic topic) {
-        return AddObject(Topic.class, topic.getId(), topic);
+    public static Topic addTopic(Topic topic) {
+        return addObject(Topic.class, topic.getId(), topic);
     }
 
     /**
@@ -265,32 +265,32 @@ public abstract class DatabaseIO {
      * @return int : 1 if topic does not exist, 2 if topic can't be removed (foreign key dependencies),
      * 0 if topic existed and was removed successfully
      * **/
-    public static int RemoveTopic(String topicName) {
-        return RemoveObject(Topic.class, topicName.toLowerCase());
+    public static int removeTopic(String topicName) {
+        return removeObject(Topic.class, topicName.toLowerCase());
     }
     //endregion
 
     //region Question
-    public static Question GetQuestion(String questionID) {
-        return GetObject(Question.class, questionID);
+    public static Question getQuestion(String questionID) {
+        return getObject(Question.class, questionID);
     }
 
-    public static List<Question> GetAllQuestions() {
-        return GetAllObjects(Question.class);
+    public static List<Question> getAllQuestions() {
+        return getAllObjects(Question.class);
     }
 
-    public static boolean CheckQuestionExists(String questionID) {
-        return CheckObjectExists(Question.class, questionID);
+    public static boolean checkQuestionExists(String questionID) {
+        return checkObjectExists(Question.class, questionID);
     }
 
-    public static Question AddQuestion(Question newQuestion) {
+    public static Question addQuestion(Question newQuestion) {
         _session.persist(newQuestion);
-        AddToDatabase(newQuestion);
+        addToDatabase(newQuestion);
         return newQuestion;
     }
 
-    public static int RemoveQuestion(String questionID) {
-        return RemoveObject(Question.class, questionID);
+    public static int removeQuestion(String questionID) {
+        return removeObject(Question.class, questionID);
     }
 
     /**
@@ -299,8 +299,8 @@ public abstract class DatabaseIO {
      *                       question you wish to update.
      * @return Updated Question (null if there was an error updating the question).
      */
-    public static Question UpdateQuestion(Question updatedQuestion) {
-        if(!CheckQuestionExists(String.valueOf(updatedQuestion.getId()))) {return null;}
+    public static Question updateQuestion(Question updatedQuestion) {
+        if(!checkQuestionExists(String.valueOf(updatedQuestion.getId()))) {return null;}
         try {
             Transaction transaction = _session.beginTransaction();
             _session.update(updatedQuestion);
@@ -314,12 +314,12 @@ public abstract class DatabaseIO {
     //endregion
 
     //region Quiz
-    public static Quiz GetQuiz(String quizID) {
-        return GetObject(Quiz.class, quizID);
+    public static Quiz getQuiz(String quizID) {
+        return getObject(Quiz.class, quizID);
     }
 
-    public static Quiz OverrideQuiz(Quiz updatedQuiz) {
-        if(!CheckQuizExists(String.valueOf(updatedQuiz.getId()), updatedQuiz.getUsername().getUsername(),
+    public static Quiz overrideQuiz(Quiz updatedQuiz) {
+        if(!checkQuizExists(String.valueOf(updatedQuiz.getId()), updatedQuiz.getUsername().getUsername(),
                 updatedQuiz.getQuizName())) {return null;}
         try {
             Transaction transaction = _session.beginTransaction();
@@ -332,30 +332,30 @@ public abstract class DatabaseIO {
         }
     }
 
-    public static Boolean CheckQuizExists(String quizID) {
-        return CheckObjectExists(Quiz.class, quizID);
+    public static Boolean checkQuizExists(String quizID) {
+        return checkObjectExists(Quiz.class, quizID);
     }
 
-    public static Boolean CheckQuizExists(String quizID, String username, String quizName) {
-        List<Quiz> quizzes = GetAllQuizzes();
+    public static Boolean checkQuizExists(String quizID, String username, String quizName) {
+        List<Quiz> quizzes = getAllQuizzes();
         for(Quiz q: quizzes) {
             if(q.getUsername().getUsername().equalsIgnoreCase(username.toLowerCase()) && q.getQuizName()
                     .equalsIgnoreCase(quizName.toLowerCase())) {
                 return true;
             }
         }
-        if(CheckObjectExists(Quiz.class, quizID)) {
+        if(checkObjectExists(Quiz.class, quizID)) {
             return true;
         }
         return false;
     }
 
-    public static List<Quiz> GetAllQuizzes() {
-        return GetAllObjects(Quiz.class);
+    public static List<Quiz> getAllQuizzes() {
+        return getAllObjects(Quiz.class);
     }
 
-    public static Boolean CheckQuizExists(String username, String quizName) {
-        List<Quiz> quizzes = GetAllQuizzes();
+    public static Boolean checkQuizExists(String username, String quizName) {
+        List<Quiz> quizzes = getAllQuizzes();
         for(Quiz q: quizzes) {
             if(q.getUsername().getUsername().equalsIgnoreCase(username.toLowerCase()) && q.getQuizName()
                     .equalsIgnoreCase(quizName.toLowerCase())) {
@@ -365,48 +365,48 @@ public abstract class DatabaseIO {
         return false;
     }
 
-    public static Quiz AddQuiz(Quiz quiz) {
-        if(CheckQuizExists(quiz.getUsername().getUsername(), quiz.getQuizName())) {
+    public static Quiz addQuiz(Quiz quiz) {
+        if(checkQuizExists(quiz.getUsername().getUsername(), quiz.getQuizName())) {
             return null;
         }
-        AddToDatabase(quiz);
+        addToDatabase(quiz);
         return quiz;
     }
 
-    public static int RemoveQuiz(Quiz quiz) {
-        if(CheckQuizExists(quiz.getId().toString(), quiz.getUsername().getUsername(), quiz.getQuizName())) {
-            RemoveFromDatabase(quiz);
+    public static int removeQuiz(Quiz quiz) {
+        if(checkQuizExists(quiz.getId().toString(), quiz.getUsername().getUsername(), quiz.getQuizName())) {
+            removeFromDatabase(quiz);
             return 0;
         }
         return 1;
     }
 
-    public static int RemoveQuiz(String quizID) {
-        return RemoveObject(Quiz.class, quizID);
+    public static int removeQuiz(String quizID) {
+        return removeObject(Quiz.class, quizID);
     }
     //endregion
 
     //region Question Option
-    public static boolean CheckQuestionOptionExists(String questionOptionID) {
-        return CheckObjectExists(QuestionOption.class, questionOptionID);
+    public static boolean checkQuestionOptionExists(String questionOptionID) {
+        return checkObjectExists(QuestionOption.class, questionOptionID);
     }
 
-    public static QuestionOption GetQuestionOption(String questionOptionID) {
-        return GetObject(QuestionOption.class, questionOptionID);
+    public static QuestionOption getQuestionOption(String questionOptionID) {
+        return getObject(QuestionOption.class, questionOptionID);
     }
 
-    public static int RemoveQuestionOption(String questionOptionID) {
-        return RemoveObject(QuestionOption.class, questionOptionID);
+    public static int removeQuestionOption(String questionOptionID) {
+        return removeObject(QuestionOption.class, questionOptionID);
     }
 
-    public static List<QuestionOption> GetAllQuestionOptions() {
-        return GetAllObjects(QuestionOption.class);
+    public static List<QuestionOption> getAllQuestionOptions() {
+        return getAllObjects(QuestionOption.class);
     }
 
-    public static QuestionOption AddQuestionOption(QuestionOption questionOption) {
-        if(HQLQueryDatabase(String.format("FROM QuestionOption WHERE questionID = %s AND questionOption = '%s'"
+    public static QuestionOption addQuestionOption(QuestionOption questionOption) {
+        if(hqlquerydatabase(String.format("FROM QuestionOption WHERE questionID = %s AND questionOption = '%s'"
                 ,questionOption.getQuestionID().getId(), questionOption.getQuestionOption())).isEmpty()) {
-            AddToDatabase(questionOption);
+            addToDatabase(questionOption);
             return questionOption;
         }
         return null;
@@ -414,30 +414,30 @@ public abstract class DatabaseIO {
     //endregion
 
     //region Quiz Question
-    public static Boolean CheckQuizQuestionExists(int quizID, int questionID) {
-        if(!(CheckQuizExists(String.valueOf(quizID)) && CheckQuestionExists(String.valueOf(questionID)))) {
+    public static Boolean checkQuizQuestionExists(int quizID, int questionID) {
+        if(!(checkQuizExists(String.valueOf(quizID)) && checkQuestionExists(String.valueOf(questionID)))) {
             return false;
         }
-        return CheckObjectExists(QuizQuestion.class, String.format("FROM QuizQuestion WHERE QuizID = %s AND " +
+        return checkObjectExists(QuizQuestion.class, String.format("FROM QuizQuestion WHERE QuizID = %s AND " +
                 "QuestionID = %s", quizID, questionID));
     }
 
-    public static QuizQuestion GetQuizQuestion(int quizID, int questionID) {
-        return GetObject(QuizQuestion.class, String.format("FROM QuizQuestion WHERE QuizID = %s AND " +
+    public static QuizQuestion getQuizQuestion(int quizID, int questionID) {
+        return getObject(QuizQuestion.class, String.format("FROM QuizQuestion WHERE QuizID = %s AND " +
                 "QuestionID = %s", quizID, questionID));
     }
 
-    public static List<QuizQuestion> GetAllQuizQuestions() {
-        return GetAllObjects(QuizQuestion.class);
+    public static List<QuizQuestion> getAllQuizQuestions() {
+        return getAllObjects(QuizQuestion.class);
     }
 
-    public static int RemoveQuizQuestion(int quizID, int questionID) {
-        if(!CheckQuizQuestionExists(quizID, questionID)) {return 1;}
-        QuizQuestion questionToRemove = GetQuizQuestion(quizID, questionID);
-        int statusCode = RemoveObject(QuizQuestion.class, String.format("FROM QuizQuestion WHERE QuizID = %s AND " +
+    public static int removeQuizQuestion(int quizID, int questionID) {
+        if(!checkQuizQuestionExists(quizID, questionID)) {return 1;}
+        QuizQuestion questionToRemove = getQuizQuestion(quizID, questionID);
+        int statusCode = removeObject(QuizQuestion.class, String.format("FROM QuizQuestion WHERE QuizID = %s AND " +
                 "QuestionID = %s", quizID, questionID));
         if(statusCode == 0) {
-            List<QuizQuestion> quizQuestions = (List<QuizQuestion>)(Object)HQLQueryDatabase(
+            List<QuizQuestion> quizQuestions = (List<QuizQuestion>)(Object) hqlquerydatabase(
                     String.format("FROM QuizQuestion WHERE QuizID=%s", questionToRemove.getQuizID().getId()));
             for(QuizQuestion qq: quizQuestions) {
                 QuizQuestion questionToUpdate = qq;
@@ -452,8 +452,8 @@ public abstract class DatabaseIO {
         return statusCode;
     }
 
-    public static QuizQuestion AddQuizQuestion(QuizQuestion quizQuestion) {
-        List<QuizQuestion> quizQuestions = (List<QuizQuestion>)(Object)HQLQueryDatabase(String.format(
+    public static QuizQuestion addQuizQuestion(QuizQuestion quizQuestion) {
+        List<QuizQuestion> quizQuestions = (List<QuizQuestion>)(Object) hqlquerydatabase(String.format(
                 "FROM QuizQuestion WHERE QuizID = %s", quizQuestion.getQuizID().getId()));
         int amountOfQuestions = quizQuestions.size();
         if(quizQuestion.getOrderIndex() > amountOfQuestions - 1) {
@@ -462,7 +462,7 @@ public abstract class DatabaseIO {
         else if(quizQuestion.getOrderIndex() < 0) {
             quizQuestion.setOrderIndex(amountOfQuestions);
         }
-        QuizQuestion addedObject =  AddObject(QuizQuestion.class, String.format("FROM QuizQuestion WHERE QuizID = %s AND " +
+        QuizQuestion addedObject =  addObject(QuizQuestion.class, String.format("FROM QuizQuestion WHERE QuizID = %s AND " +
                 "QuestionID = %s", quizQuestion.getQuizID().getId(), quizQuestion.getQuestionID().getId()), quizQuestion);
         if(addedObject != null) {
             for(QuizQuestion qq: quizQuestions) {
@@ -480,92 +480,92 @@ public abstract class DatabaseIO {
     //endregion
 
     //region Quiz Submission
-    public static Boolean CheckQuizSubmissionExists(int submissionID) {
-        return CheckObjectExists(QuizSubmission.class, String.valueOf(submissionID));
+    public static Boolean checkQuizSubmissionExists(int submissionID) {
+        return checkObjectExists(QuizSubmission.class, String.valueOf(submissionID));
     }
 
-    public static QuizSubmission AddQuizSubmission(QuizSubmission quizSubmission) {
-        return AddObject(QuizSubmission.class,String.valueOf(quizSubmission.getId()),quizSubmission);
+    public static QuizSubmission addQuizSubmission(QuizSubmission quizSubmission) {
+        return addObject(QuizSubmission.class,String.valueOf(quizSubmission.getId()),quizSubmission);
     }
 
-    public static int RemoveQuizSubmission(QuizSubmission quizSubmission) {
-        return RemoveObject(QuizSubmission.class, String.valueOf(quizSubmission.getId()));
+    public static int removeQuizSubmission(QuizSubmission quizSubmission) {
+        return removeObject(QuizSubmission.class, String.valueOf(quizSubmission.getId()));
     }
 
-    public static int RemoveQuizSubmission(int submissionID) {
-        return RemoveObject(QuizSubmission.class, String.valueOf(submissionID));
+    public static int removeQuizSubmission(int submissionID) {
+        return removeObject(QuizSubmission.class, String.valueOf(submissionID));
     }
 
-    public static QuizSubmission GetQuizSubmission(int submissionID) {
-        return GetObject(QuizSubmission.class, String.valueOf(submissionID));
+    public static QuizSubmission getQuizSubmission(int submissionID) {
+        return getObject(QuizSubmission.class, String.valueOf(submissionID));
     }
 
     //endregion
 
     //region Mark
     private static String _markQueryString = "FROM Mark WHERE submissionID = %s AND questionID = %s";
-    public static boolean CheckMarkExists(int submissionID, int questionID) {
-        return CheckObjectExists(Mark.class, String.format(_markQueryString, submissionID, questionID));
+    public static boolean checkMarkExists(int submissionID, int questionID) {
+        return checkObjectExists(Mark.class, String.format(_markQueryString, submissionID, questionID));
     }
 
-    public static List<Mark> GetAllMarks() {
-        return GetAllObjects(Mark.class);
+    public static List<Mark> getAllMarks() {
+        return getAllObjects(Mark.class);
     }
 
-    public static Mark GetMark(int submissionID, int questionID) {
-        return GetObject(Mark.class, String.format(_markQueryString, submissionID, questionID));
+    public static Mark getMark(int submissionID, int questionID) {
+        return getObject(Mark.class, String.format(_markQueryString, submissionID, questionID));
     }
 
-    public static int RemoveMark(Mark mark) {
-        return RemoveObject(Mark.class, String.format(_markQueryString, mark.getSubmissionID().getId(),
+    public static int removeMark(Mark mark) {
+        return removeObject(Mark.class, String.format(_markQueryString, mark.getSubmissionID().getId(),
                 mark.getQuestionID().getId()));
     }
 
-    public static int RemoveMark(int submissionID, int questionID) {
-        return RemoveObject(Mark.class, String.format(_markQueryString, submissionID, questionID));
+    public static int removeMark(int submissionID, int questionID) {
+        return removeObject(Mark.class, String.format(_markQueryString, submissionID, questionID));
     }
 
-    public static Mark AddMark(Mark mark) {
-        return AddObject(Mark.class, String.format(_markQueryString, mark.getSubmissionID().getId(),
+    public static Mark addMark(Mark mark) {
+        return addObject(Mark.class, String.format(_markQueryString, mark.getSubmissionID().getId(),
                 mark.getQuestionID().getId()), mark);
     }
 
-    public static Mark AddMark(int submissionID, int questionID, int score, String userAnswer) {
-        if(!(CheckQuizSubmissionExists(submissionID) && CheckQuestionExists(String.valueOf(questionID)))) {
+    public static Mark addMark(int submissionID, int questionID, int score, String userAnswer) {
+        if(!(checkQuizSubmissionExists(submissionID) && checkQuestionExists(String.valueOf(questionID)))) {
             return null;
         }
-        Mark newMark = new Mark(GetQuizSubmission(submissionID), GetQuestion(String.valueOf(questionID)),
+        Mark newMark = new Mark(getQuizSubmission(submissionID), getQuestion(String.valueOf(questionID)),
                 score, userAnswer);
-        return AddObject(Mark.class, String.format(_markQueryString, submissionID, questionID), newMark);
+        return addObject(Mark.class, String.format(_markQueryString, submissionID, questionID), newMark);
     }
     //endregion
 
-    public static List<Question> GetQuestionsFromQuiz(int quizID) {
+    public static List<Question> getQuestionsFromQuiz(int quizID) {
         List<Question> returnList = new ArrayList<>();
-        Quiz quiz = GetQuiz(String.valueOf(quizID));
+        Quiz quiz = getQuiz(String.valueOf(quizID));
         if(quiz == null) {return returnList;}
-        List<QuizQuestion> quizQuestions = (List<QuizQuestion>)(Object)HQLQueryDatabase(
+        List<QuizQuestion> quizQuestions = (List<QuizQuestion>)(Object) hqlquerydatabase(
                 String.format("FROM QuizQuestion WHERE quizID=%s", quiz.getId()));
         Question[] orderedQuestions = new Question[quizQuestions.size()];
         for (QuizQuestion quizQuestion:
              quizQuestions) {
-            orderedQuestions[quizQuestion.getOrderIndex()] = GetQuestion(String.valueOf(quizQuestion.getQuestionID().getId()));
+            orderedQuestions[quizQuestion.getOrderIndex()] = getQuestion(String.valueOf(quizQuestion.getQuestionID().getId()));
         }
         returnList = Arrays.asList(orderedQuestions);
         return returnList;
     }
 
-    public static List<Mark> GetMarksFromSubmission(int submissionID) {
+    public static List<Mark> getMarksFromSubmission(int submissionID) {
         List<Mark> returnList = new ArrayList<>();
-        if(!CheckQuizSubmissionExists(submissionID)) {return returnList;}
-        QuizSubmission submission = GetQuizSubmission(submissionID);
-        returnList = (List<Mark>)(Object)HQLQueryDatabase(
+        if(!checkQuizSubmissionExists(submissionID)) {return returnList;}
+        QuizSubmission submission = getQuizSubmission(submissionID);
+        returnList = (List<Mark>)(Object) hqlquerydatabase(
                 String.format("FROM Mark WHERE submissionID = %s", submission.getId()));
         return returnList;
     }
 
     // returns list of questions if successful, null if unsuccessful
-    public static List<Question> ImportQuestionsFromCSV(String filePath) {
+    public static List<Question> importQuestionsFromCSV(String filePath) {
         List<Question> questions = new ArrayList<>();
         if(!new File(filePath).isFile()) {
             return null;
@@ -580,9 +580,9 @@ public abstract class DatabaseIO {
                     String[] question = value.split(",");
                     Question questionFromCSV = null;
                     try {
-                        if(CheckTopicExists(question[4])) {
+                        if(checkTopicExists(question[4])) {
                             questionFromCSV = new Question(question[0], question[1], Integer.parseInt(question[2]),
-                                    question[3], GetTopic(question[4]));
+                                    question[3], getTopic(question[4]));
                         }
                     }
                     catch(Exception e){}
@@ -599,7 +599,7 @@ public abstract class DatabaseIO {
     }
 
     //0 success, 1 if directory (folder) does not exist, 2 if failed writing to file
-    public static int ExportQuestionsToCSV(String fileDirectoryPath, String fileName, List<Question> questions) {
+    public static int exportQuestionsToCSV(String fileDirectoryPath, String fileName, List<Question> questions) {
         if(!new File(fileDirectoryPath).isDirectory()) {
             return 1;
         }
@@ -628,7 +628,7 @@ public abstract class DatabaseIO {
      * @param answer User's answer to the question (case-insensitive).
      * @return Question and score received for the question in the form of QuestionMarkTuple.
      */
-    public static QuestionMarkTuple MarkQuestionAnswer(Question question, String answer) {
+    public static QuestionMarkTuple markQuestionAnswer(Question question, String answer) {
         if(question.getAnswer().trim().equalsIgnoreCase(answer.trim())) {
             return new QuestionMarkTuple(question, question.getMaximumMarks(), answer.toLowerCase().trim());
         }
@@ -643,11 +643,11 @@ public abstract class DatabaseIO {
      * @param quiz The quiz being submitted.
      * @return QuizSubmission that was submitted. Null if there was an error creating the submission.
      */
-    public static QuizSubmission SubmitQuizResults(List<QuestionMarkTuple> markedQuestions, User user, Quiz quiz) {
-        QuizSubmission submission = AddQuizSubmission(new QuizSubmission(Instant.now(), user, quiz));
+    public static QuizSubmission submitQuizResults(List<QuestionMarkTuple> markedQuestions, User user, Quiz quiz) {
+        QuizSubmission submission = addQuizSubmission(new QuizSubmission(Instant.now(), user, quiz));
         if(submission == null) {return null;}
         for (QuestionMarkTuple qm: markedQuestions) {
-            Mark mark = AddMark(new Mark(submission, qm.GetQuestion(), qm.GetMarksReceived(), qm.get_userAnswer()));
+            Mark mark = addMark(new Mark(submission, qm.getQuestion(), qm.getMarksReceived(), qm.get_userAnswer()));
             if(mark == null) {return null;}
         }
         return submission;
@@ -659,14 +659,14 @@ public abstract class DatabaseIO {
      * @param question The question to query.
      * @return True or false depending on if the user has answered the question incorrectly in the past (null if there was an error).
      */
-    public static Boolean HasUserAnsweredQuestionIncorrectlyPreviously(User user, Question question) {
-        if(!(CheckUserExists(user.getUsername()) || CheckQuestionExists(String.valueOf(question.getId()))))
+    public static Boolean hasUserAnsweredQuestionIncorrectlyPreviously(User user, Question question) {
+        if(!(checkUserExists(user.getUsername()) || checkQuestionExists(String.valueOf(question.getId()))))
         {return null;}
-        List<Mark> queriedMarks = (List<Mark>)(Object)HQLQueryDatabase(String.format("FROM Mark WHERE QuestionID=%s",
+        List<Mark> queriedMarks = (List<Mark>)(Object) hqlquerydatabase(String.format("FROM Mark WHERE QuestionID=%s",
                 question.getId()));
         if(queriedMarks.isEmpty()){return false;}
         for(Mark qm: queriedMarks) {
-            QuizSubmission sub = GetQuizSubmission(qm.getSubmissionID().getId());
+            QuizSubmission sub = getQuizSubmission(qm.getSubmissionID().getId());
             if(sub.getUsername() == user) {
                 return true;
             }
@@ -679,34 +679,34 @@ public abstract class DatabaseIO {
      * @param questionID The question that should be removed from the database.
      * @return A boolean value depending on if the element was successfully removed from the database.
      */
-    public static Boolean PurgeQuestionFromDatabase(int questionID) {
-        if(!CheckQuestionExists(String.valueOf(questionID))) {
+    public static Boolean purgeQuestionFromDatabase(int questionID) {
+        if(!checkQuestionExists(String.valueOf(questionID))) {
             return false;
         }
-        int removalStatus = RemoveQuestion(String.valueOf(questionID));
+        int removalStatus = removeQuestion(String.valueOf(questionID));
         if(removalStatus == 2) {
             //foreign key error
-            if(GetQuestion(String.valueOf(questionID)).getQuestionType().equalsIgnoreCase("MCQ")) {
+            if(getQuestion(String.valueOf(questionID)).getQuestionType().equalsIgnoreCase("MCQ")) {
                 List<QuestionOption> questionOptions =
-                        (List<QuestionOption>)(Object)HQLQueryDatabase(
+                        (List<QuestionOption>)(Object) hqlquerydatabase(
                                 String.format("FROM QuestionOption WHERE questionID=%s", questionID));
                 for(QuestionOption option: questionOptions) {
-                    RemoveFromDatabase(option);
+                    removeFromDatabase(option);
                 }
             }
             List<QuizQuestion> quizQuestions =
-                    (List<QuizQuestion>)(Object)HQLQueryDatabase(
+                    (List<QuizQuestion>)(Object) hqlquerydatabase(
                             String.format("FROM QuizQuestion WHERE questionID=%s", questionID));
             for(QuizQuestion question: quizQuestions) {
-                RemoveFromDatabase(question);
+                removeFromDatabase(question);
             }
             List<Mark> marks =
-                    (List<Mark>)(Object)HQLQueryDatabase(
+                    (List<Mark>)(Object) hqlquerydatabase(
                             String.format("FROM Mark WHERE questionID=%s", questionID));
             for(Mark mark: marks) {
-                RemoveFromDatabase(mark);
+                removeFromDatabase(mark);
             }
-            RemoveFromDatabase(GetQuestion(String.valueOf(questionID)));
+            removeFromDatabase(getQuestion(String.valueOf(questionID)));
             return true;
         }
         else if(removalStatus == 1) {return false;}
@@ -719,23 +719,23 @@ public abstract class DatabaseIO {
      * @param user User object of the user to query.
      * @return List of questions that the user has incorrectly answered in the past.
      */
-    public static List<Question> GetAllQuestionsUserIncorrectlyAnsweredEver(User user) {
+    public static List<Question> getAllQuestionsUserIncorrectlyAnsweredEver(User user) {
         List<Question> questions = new ArrayList<>();
-        List<Question> allQuestions = GetAllQuestions();
+        List<Question> allQuestions = getAllQuestions();
         for(Question q: allQuestions) {
-            if(HasUserAnsweredQuestionIncorrectlyPreviously(user, q)) {
+            if(hasUserAnsweredQuestionIncorrectlyPreviously(user, q)) {
                 questions.add(q);
             }
         }
         return questions;
     }
 
-    public static List<QuestionOption> GetQuestionOptionsForQuestion(Question question) {
+    public static List<QuestionOption> getQuestionOptionsForQuestion(Question question) {
         if(!question.getQuestionType().equalsIgnoreCase("MCQ")) {
             return null;
         }
         List<QuestionOption> questionOptions = new ArrayList<>();
-        questionOptions = (List<QuestionOption>)(Object)HQLQueryDatabase(
+        questionOptions = (List<QuestionOption>)(Object) hqlquerydatabase(
                 String.format("FROM QuestionOption WHERE questionID=%s", question.getId()));
         return questionOptions;
     }
@@ -745,16 +745,16 @@ public abstract class DatabaseIO {
      * @param user The user to query.
      * @return A list of quizzes. Null if the given user is invalid.
      */
-    public static List<Quiz> GetQuizzesBasedOnUser(User user) {
-        if(!CheckUserExists(user.getUsername())){return null;}
-        List<Quiz> quizzes = (List<Quiz>)(Object)HQLQueryDatabase(
+    public static List<Quiz> getQuizzesBasedOnUser(User user) {
+        if(!checkUserExists(user.getUsername())){return null;}
+        List<Quiz> quizzes = (List<Quiz>)(Object) hqlquerydatabase(
                 String.format("FROM Quiz WHERE username='%s'", user.getUsername()));
         return quizzes;
     }
 
-    public static List<Question> GetQuestionsBasedOnTopic(Topic topic) {
-        if(!CheckTopicExists(topic.getId())){return null;}
-        List<Question> questions = (List<Question>)(Object)HQLQueryDatabase(
+    public static List<Question> getQuestionsBasedOnTopic(Topic topic) {
+        if(!checkTopicExists(topic.getId())){return null;}
+        List<Question> questions = (List<Question>)(Object) hqlquerydatabase(
                 String.format("FROM Question WHERE topicName='%s'", topic.getId()));
         return questions;
     }
