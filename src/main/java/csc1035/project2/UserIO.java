@@ -584,6 +584,28 @@ public class UserIO {
         + "3. Update a quiz"
         + "4. Delete a quiz");
 
+        switch (menuValidInput(1, 4)) {
+            case 1:
+                break;
+            case 2:
+                System.out.println("Enter a quiz ID: ");
+                Quiz temp = DatabaseIO.getQuiz(String.valueOf(positiveIntegerValidInput()));
+                System.out.println("ID: " + temp.getId()
+                + "\nName: " + temp.getQuizName()
+                + "\nUsername: " + temp.getUsername()
+                + "\nQuestions:");
+                for (Question i : DatabaseIO.getQuestionsFromQuiz(temp.getId())) {
+                    printQuestion(i);
+                }
+                break;
+            case 3:
+                break;
+            case 4:
+                System.out.println("Enter quiz ID: ");
+                DatabaseIO.removeQuiz(String.valueOf(positiveIntegerValidInput()));
+                System.out.println("Quiz removed");
+                break;
+        }
     }
     
     private static void listSubmenu() {
