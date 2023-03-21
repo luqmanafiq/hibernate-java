@@ -1,6 +1,7 @@
 package csc1035.project2;
 
 import java.util.Scanner;
+import java.util.Random;
 
 import csc1035.project2.DatabaseTables.*;
 
@@ -228,14 +229,14 @@ public class UserIO {
 
         System.out.println("Choose a specific topic?: (Y/N)");
         String response = scan.nextLine();
-        String topic = "";
+        String topic = "ALL";
         if (response.toLowerCase().equals("y")) {
             topic = chooseTopic();
         }
 
         System.out.println("Choose a specific question type?: (Y/N)");
         response = scan.nextLine();
-        String type = "";
+        String type = "ALL";
         if (response.toLowerCase().equals("y")) {
             type = chooseType();
         }
@@ -254,13 +255,32 @@ public class UserIO {
     }
 
     private static Quiz generateQuiz(int questionCount, String topic, String type, boolean wronglyAnsweredQus) {
-        Quiz generater = new Quiz();
+        Quiz generator = new Quiz();
         ArrayList<Question> validQuestions = new ArrayList<Question>();
+        List<Question> possibleQuestions;
+        
+        if (wronglyAnsweredQus) {
+            possibleQuestions = DatabaseIO.GetAllQuestionsUserIncorrectlyAnsweredEver(user);
+        }
+        else {
+            possibleQuestions = DatabaseIO.GetAllQuestions();
+        }
 
+        for (Question i : possibleQuestions) {
+            if ( (i.getTopicName().getTopicDescription() == topic || topic == "ALL") && (i.getQuestionType() == type || type == "ALL") ) {
+                validQuestions.add(i);
+            }
+        }
 
+        Random rng = new Random();
+        for (int i = 0; i < questionCount; i++)
+        {
+            int random = rng.nextInt(validQuestions.size());
+            validQuestions.get(random);
+            validQuestions.remove(random);
+        }
 
-
-        return generater;
+        return generator;
     }
     
     private static String chooseTopic() {
