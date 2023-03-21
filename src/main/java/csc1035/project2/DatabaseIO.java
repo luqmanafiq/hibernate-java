@@ -534,7 +534,7 @@ public abstract class DatabaseIO {
                 String.format("FROM QuizQuestion WHERE quizID=%s", quiz.getId()));
         Question[] orderedQuestions = new Question[quizQuestions.size()];
         for (QuizQuestion quizQuestion:
-                quizQuestions) {
+             quizQuestions) {
             orderedQuestions[quizQuestion.getOrderIndex()] = GetQuestion(String.valueOf(quizQuestion.getQuestionID().getId()));
         }
         returnList = Arrays.asList(orderedQuestions);
