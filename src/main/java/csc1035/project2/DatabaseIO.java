@@ -661,7 +661,7 @@ public abstract class DatabaseIO {
     }
 
     private static Boolean PurgeQuestionFromDatabase() {
-
+        return null;
     }
 
     /**
@@ -678,6 +678,16 @@ public abstract class DatabaseIO {
             }
         }
         return questions;
+    }
+
+    public static List<QuestionOption> GetQuestionOptionsForQuestion(Question question) {
+        if(!question.getQuestionType().equalsIgnoreCase("MCQ")) {
+            return null;
+        }
+        List<QuestionOption> questionOptions = new ArrayList<>();
+        questionOptions = (List<QuestionOption>)(Object)HQLQueryDatabase(
+                String.format("FROM QuestionOption WHERE questionID=%s", question.getId()));
+        return questionOptions;
     }
 
     public static void main(String[] args) {
