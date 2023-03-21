@@ -220,39 +220,7 @@ public class UserIO {
 
         switch(menuValidInput(1, 4)) {
             case 1:
-                System.out.println("[Creating a question]");
-                System.out.println("Question string:");
-                String quString = stringValidInput();
-                String quType = chooseType();
-                String quTopic;
-                System.out.println("Use an existing topic? (Y/N)");
-                if (scan.nextLine().toLowerCase().equals("y")) {
-                     quTopic = chooseTopic();
-                }
-                System.out.println("Enter a new topic name:");
-                quTopic = stringValidInput();
-                System.out.println("Enter a description for the new topic");
-                Topic topic = DatabaseIO.AddTopic(quTopic, scan.nextLine());
-                
-                System.out.println("Score:");
-                int quScore = positiveIntegerValidInput();
-
-                System.out.println("Answer string:");
-                String quAnswer = stringValidInput();
-                Question question = new Question(quString, quAnswer, quScore, quType, topic);
-                Question dbQuestion = DatabaseIO.AddQuestion(question);
-
-                if (quType.equals("MCQ")) {
-                    DatabaseIO.AddQuestionOption(new QuestionOption(dbQuestion, quAnswer));
-                    System.out.println("How many extra options do you want to add?");
-                    for (int i = 0; i < positiveIntegerValidInput(); i++) {
-                        System.out.println("Enter option string:");
-                        DatabaseIO.AddQuestionOption(new QuestionOption(dbQuestion, stringValidInput()));
-                        System.out.println("Option added to database");
-                    }
-                }
-
-                System.out.println("To add this question to a quiz, use the CRUD quiz menu option");
+                createQuestion();
                 break;
             case 2:
                 System.out.println("Enter a question ID:");
@@ -266,6 +234,43 @@ public class UserIO {
                 System.out.println("Question has been deleted");
                 break;
         }
+    }
+
+    private static void createQuestion() {
+        System.out.println("[Creating a question]");
+        System.out.println("Question string:");
+        String quString = stringValidInput();
+        String quType = chooseType();
+        String quTopic;
+        System.out.println("Use an existing topic? (Y/N)");
+        if (scan.nextLine().toLowerCase().equals("y")) {
+            quTopic = chooseTopic();
+        }
+        System.out.println("Enter a new topic name:");
+        quTopic = stringValidInput();
+        System.out.println("Enter a description for the new topic");
+        Topic topic = DatabaseIO.AddTopic(quTopic, scan.nextLine());
+
+        System.out.println("Score:");
+        int quScore = positiveIntegerValidInput();
+
+        System.out.println("Answer string:");
+        String quAnswer = stringValidInput();
+        Question question = new Question(quString, quAnswer, quScore, quType, topic);
+        Question dbQuestion = DatabaseIO.AddQuestion(question);
+
+        if (quType.equals("MCQ")) {
+            DatabaseIO.AddQuestionOption(new QuestionOption(dbQuestion, quAnswer));
+            System.out.println("How many extra options do you want to add?");
+            for (int i = 0; i < positiveIntegerValidInput(); i++) {
+                System.out.println("Enter option string:");
+                DatabaseIO.AddQuestionOption(new QuestionOption(dbQuestion, stringValidInput()));
+                System.out.println("Option added to database");
+            }
+        }
+
+        System.out.println("To add this question to a quiz, use the CRUD quiz menu option");
+                
     }
 
     private static int positiveIntegerValidInput() { // prompts for user input until an integer greater than 0 is entered
