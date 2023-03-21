@@ -658,6 +658,10 @@ public abstract class DatabaseIO {
         return false;
     }
 
+    private static Boolean PurgeQuestionFromDatabase() {
+
+    }
+
     /**
      * Gets all questions that a user has ever incorrectly answered as a list.
      * @param user User object of the user to query.
