@@ -111,7 +111,7 @@ public class UserIO {
         while(!isValidChoice) {
             System.out.println(question);
             for (int i = 0; i < userOptions.length; i++) {
-                System.out.println(String.format("%s - %s", i, userOptions));
+                System.out.println(String.format("%s - %s", i, userOptions[i]));
             }
             String userInput = scan.nextLine();
             try {
@@ -132,8 +132,35 @@ public class UserIO {
     }
 
     private static void PlayQuiz() {
-
-    }
+        int userQuizOption = GetUserOption(new String[]{"quizzes created by you.", "quizzes created by everyone."},
+                String.format("Would you like to select quizzes created by you ('%s') or from all quizzes " +
+                        "in the database?", user.getUsername()));
+        List<Quiz> quizSelection = new ArrayList<>();
+        switch(userQuizOption) {
+            case(0):
+                //list only users quizzes
+                List<Quiz> allQuizzes = DatabaseIO.GetAllQuizzes();
+                for(var quiz: allQuizzes) {
+                    if(quiz.getUsername().equals(user)) {
+                        quizSelection.add(quiz);
+                    }
+                }
+                break;
+            case(1):
+                //list all quizzes
+                quizSelection = DatabaseIO.GetAllQuizzes();
+                break;
+        }
+        String[] quizOptions = new String[quizSelection.size()];
+        for(int i = 0; i < quizSelection.size(); i++) {
+            quizOptions[i] = String.format("'%s' - '%s'", quizSelection.get(i).getUsername().getUsername(),
+                    quizSelection.get(i).getQuizName());
+        }
+        int quizChoice = GetUserOption(quizOptions, "Please select a quiz to play:");
+        Quiz quizToPlay = quizSelection.get(quizChoice);
+        System.out.println(quizToPlay.getQuizName());
+        System.out.println(quizToPlay.getUsername().getUsername());
+     }
 
     private static void importFromCSV() {
         // unsure of necessary syntax for filepath, if it should be absolute or relative
