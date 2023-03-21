@@ -82,7 +82,7 @@ public class UserIO {
                 importFromCSV();
                 break;
             case 5:
-            exportToCSV();
+                exportToCSV();
                 break;
             case 6:
                 break;
