@@ -63,3 +63,5 @@ Anyone is welcome to add and edit anything they have done to benefit them for th
 - Denis
   - UserIO
     - Finished generateQuiz() function
+  - Personal report
+    - Could add a little thing about how we could have used a question type table
