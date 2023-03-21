@@ -212,11 +212,89 @@ public class UserIO {
     }
 
     private static void crudQuestionSubmenu() {
+        System.out.println("[Question CRUD submenu]\nSelect an option:\n"
+        + "1. Create a question"
+        + "2. Read a question"
+        + "3. Update a question"
+        + "4. Delete a question");
 
+        switch(menuValidInput(1, 4)) {
+            case 1:
+                System.out.println("[Creating a question]");
+                System.out.println("Question string:");
+                String quString = stringValidInput();
+                String quType = chooseType();
+                String quTopic;
+                System.out.println("Use an existing topic? (Y/N)");
+                if (scan.nextLine().toLowerCase().equals("y")) {
+                     quTopic = chooseTopic();
+                }
+                System.out.println("Enter a new topic name:");
+                quTopic = stringValidInput();
+                System.out.println("Enter a description for the new topic");
+                Topic topic = DatabaseIO.AddTopic(quTopic, scan.nextLine());
+                
+                System.out.println("Score:");
+                int quScore = positiveIntegerValidInput();
+
+                System.out.println("Answer string:");
+                String quAnswer = stringValidInput();
+                Question question = new Question(quString, quAnswer, quScore, quType, topic);
+                Question dbQuestion = DatabaseIO.AddQuestion(question);
+
+                QuestionOption answerOption = new QuestionOption(dbQuestion, quAnswer);
+
+                if (quType.equals("MCQ")) {
+                    DatabaseIO.AddQuestionOption(null)
+                }
+
+                
+
+                System.out.println("To add this question to a quiz, use the CRUD quiz menu option");
+                break;
+            case 2:
+                System.out.println("Enter a question ID:");
+                printQuestion(DatabaseIO.GetQuestion(String.valueOf(positiveIntegerValidInput())));
+                break;
+            case 3:
+                break;
+            case 4:
+                System.out.println("Enter a question ID:");
+                DatabaseIO.PurgeQuestionFromDatabase(positiveIntegerValidInput());
+                System.out.println("Question has been deleted");
+                break;
+        }
+    }
+
+    private static int positiveIntegerValidInput() { // prompts for user input until an integer greater than 0 is entered
+        boolean success = false;
+        int number = 0;
+        while (!success) {
+            try {
+                number = scan.nextInt();
+                if (number > 0) {
+                    System.out.println("Input accepted");
+                    scan.nextLine();
+                    success = true;
+                } else {
+                    scan.nextLine();
+                    System.out.println("Error - integer must be greater than 0 \nTry again: ");
+                }
+            } catch (Exception e) {
+                scan.nextLine();
+                System.out.println("Error - input was not an integer \nTry again: ");
+            }
+        }
+        return number;
     }
     
     private static void crudQuizSubmenu() {
-        
+        System.out.println("[Quiz CRUD submenu]\nSelect an option:\n"
+        + "1. Create a quiz"
+        + "2. Read a quiz"
+        + "3. Update a quiz"
+        + "4. Delete a quiz");
+
     }
     
     private static void listSubmenu() {
@@ -245,7 +323,7 @@ public class UserIO {
 
                 List<Question> QuestionList3 = DatabaseIO.GetAllQuestions();
                 for (Question i : QuestionList3) {
-                    if (i.getTopicName().getTopicDescription().toLowerCase() == topicInput.toLowerCase()) {
+                    if (i.getTopicName().getId().toLowerCase() == topicInput.toLowerCase()) {
                         printQuestion(i);
                     }               
                 }   
@@ -303,7 +381,7 @@ public class UserIO {
         }
 
         for (Question i : possibleQuestions) {
-            if ( (i.getTopicName().getTopicDescription() == topic || topic == "ALL") && (i.getQuestionType() == type || type == "ALL") ) {
+            if ( (i.getTopicName().getId() == topic || topic == "ALL") && (i.getQuestionType() == type || type == "ALL") ) {
                 validQuestions.add(i);
             }
         }
@@ -323,7 +401,7 @@ public class UserIO {
         System.out.println("Choose a topic:");
         List<Topic> TopicList = DatabaseIO.GetAllTopics();
         for (Topic i : TopicList) {
-            System.out.println(i.getTopicDescription());
+            System.out.println(i.getId());
         }
         return scan.nextLine();
     }
