@@ -660,8 +660,44 @@ public abstract class DatabaseIO {
         return false;
     }
 
+    /**
+     * Removes a question from the database even if it is being used in a quiz.
+     * @param questionID The question that should be removed from the database.
+     * @return A boolean value depending on if the element was successfully removed from the database.
+     */
     public static Boolean PurgeQuestionFromDatabase(int questionID) {
-        return null;
+        if(!CheckQuestionExists(String.valueOf(questionID))) {
+            return false;
+        }
+        int removalStatus = RemoveQuestion(String.valueOf(questionID));
+        if(removalStatus == 2) {
+            //foreign key error
+            if(GetQuestion(String.valueOf(questionID)).getQuestionType().equalsIgnoreCase("MCQ")) {
+                List<QuestionOption> questionOptions =
+                        (List<QuestionOption>)(Object)HQLQueryDatabase(
+                                String.format("FROM QuestionOption WHERE questionID=%s", questionID));
+                for(QuestionOption option: questionOptions) {
+                    RemoveFromDatabase(option);
+                }
+            }
+            List<QuizQuestion> quizQuestions =
+                    (List<QuizQuestion>)(Object)HQLQueryDatabase(
+                            String.format("FROM QuizQuestion WHERE questionID=%s", questionID));
+            for(QuizQuestion question: quizQuestions) {
+                RemoveFromDatabase(question);
+            }
+            List<Mark> marks =
+                    (List<Mark>)(Object)HQLQueryDatabase(
+                            String.format("FROM Mark WHERE questionID=%s", questionID));
+            for(Mark mark: marks) {
+                RemoveFromDatabase(mark);
+            }
+            RemoveFromDatabase(GetQuestion(String.valueOf(questionID)));
+            return true;
+        }
+        else if(removalStatus == 1) {return false;}
+        else if(removalStatus == 0) {return true;}
+        return false;
     }
 
     /**
