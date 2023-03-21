@@ -658,7 +658,7 @@ public abstract class DatabaseIO {
         return false;
     }
 
-    private static Boolean PurgeQuestionFromDatabase() {
+    public static Boolean PurgeQuestionFromDatabase(int ID) {
 
     }
 
