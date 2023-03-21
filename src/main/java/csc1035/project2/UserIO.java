@@ -1,8 +1,11 @@
 package csc1035.project2;
 
+import java.time.Instant;
 import java.util.*;
 
 import csc1035.project2.DatabaseTables.*;
+
+import javax.xml.crypto.Data;
 
 public class UserIO {
     static Scanner scan = new Scanner(System.in);
@@ -147,7 +150,12 @@ public class UserIO {
                 }
             }
         }
-        return null;////
+        Quiz quiz = new Quiz(user, String.format("%s-incorrectQuiz", Instant.now()));
+        DatabaseIO.addQuiz(quiz);
+        for(Question q: questions) {
+            DatabaseIO.addQuizQuestion(new QuizQuestion(quiz, q, -1));
+        }
+        return quiz;
     }
 
     private static void showIncorrectlyAnsweredQuizStatistics(boolean forUser) {
