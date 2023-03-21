@@ -24,7 +24,7 @@ public abstract class DatabaseIO {
      * @param hql String representing the HQL that should be sent to the database.
      * @return List of objects representing the response.
      */
-    public static List<Object> hqlquerydatabase(String hql) {
+    public static List<Object> hqlQueryDatabase(String hql) {
         _session.beginTransaction();
         Query query = _session.createQuery(hql);
         List<Object> results = query.list();
@@ -37,7 +37,7 @@ public abstract class DatabaseIO {
      * @param sql String representing the SQL that should be sent to the database.
      * @return List of objects representing the response.
      */
-    public static List<Object[]> sqlquerydatabase(String sql) {
+    public static List<Object[]> sqlQueryDatabase(String sql) {
         _session.beginTransaction();
         Query query = _session.createSQLQuery(sql);
         List<Object[]> results = query.list();
@@ -79,7 +79,7 @@ public abstract class DatabaseIO {
         if(!queryString.contains("FROM")) {
             queryString = createQueryString(clazz, queryString);
         }
-        List<T> response = (List<T>) (Object) DatabaseIO.hqlquerydatabase(queryString);
+        List<T> response = (List<T>) (Object) DatabaseIO.hqlQueryDatabase(queryString);
         if (response.size() == 0) {
             return null;
         }
@@ -129,7 +129,7 @@ public abstract class DatabaseIO {
     private static <T> List<T> getAllObjects(Class<T> clazz) {
         SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
         ClassMetadata classMetadata = sessionFactory.getClassMetadata(clazz);
-        return (List<T>) hqlquerydatabase(String.format("FROM %s", classMetadata.getEntityName()));
+        return (List<T>) hqlQueryDatabase(String.format("FROM %s", classMetadata.getEntityName()));
     }
 
     /**
@@ -195,6 +195,10 @@ public abstract class DatabaseIO {
         return checkObjectExists(User.class, username.toLowerCase());
     }
 
+    /**
+     * Gets a list of all users in the database.
+     * @return All users retreived from the database.
+     */
     public static List<User> getAllUsers() {
         return getAllObjects(User.class);
     }
@@ -211,10 +215,20 @@ public abstract class DatabaseIO {
                 new User(username.toLowerCase()));
     }
 
+    /**
+     * Adds a user to the database.
+     * @param user user object you wish to add to the database.
+     * @return The object added to the database (null if there was an error).
+     */
     public static User addUser(User user) {
         return addObject(User.class, user.getUsername(), user);
     }
 
+    /**
+     * Removes a given user from the database by the parametrized value (case-insensitive).
+     * @param username The primary key of the user to remove.
+     * @return 1 if does not exist, 2 if can't be removed (foreign key dependencies), 0 if successful
+     */
     public static int removeUser(String username) {
         return removeObject(User.class, username.toLowerCase());
     }
@@ -222,14 +236,18 @@ public abstract class DatabaseIO {
 
     //region Topic
     /**
-     * Gets topic related to the given topicName
-     * @param topicName : String of the topic's name (case-insensitive)
-     * @return User : Topic object representing the topic. Null if no topic associated with the topicName
-     * **/
+     * Gets a topic from the table in the database.
+     * @param topicName primary key of the record you want to get from the database.
+     * @return The object retrieved from the database (null if no record could be found).
+     */
     public static Topic getTopic(String topicName) {
         return getObject(Topic.class, topicName.toLowerCase());
     }
 
+    /**
+     * Gets a list of all topics in the database.
+     * @return All topics retrieved from the database.
+     */
     public static List<Topic> getAllTopics() {
         return getAllObjects(Topic.class);
     }
@@ -255,6 +273,11 @@ public abstract class DatabaseIO {
         return addObject(Topic.class, topicName.toLowerCase(), new Topic(topicName.toLowerCase(), topicDescription));
     }
 
+    /**
+     * Adds a topic object to the database.
+     * @param topic topic object you wish to add to the database.
+     * @return The object added to the database (null if there was an error).
+     */
     public static Topic addTopic(Topic topic) {
         return addObject(Topic.class, topic.getId(), topic);
     }
@@ -271,24 +294,48 @@ public abstract class DatabaseIO {
     //endregion
 
     //region Question
+    /**
+     * Gets a question from the table in the database.
+     * @param questionID primary key of the record you want to get from the database.
+     * @return The object retrieved from the database (null if no record could be found).
+     */
     public static Question getQuestion(String questionID) {
         return getObject(Question.class, questionID);
     }
 
+    /**
+     * Gets a list of all questions in the database.
+     * @return All questions retrieved from the database.
+     */
     public static List<Question> getAllQuestions() {
         return getAllObjects(Question.class);
     }
 
+    /**
+     * Checks if a question in the database exists.
+     * @param questionID primary key value of the records to check if it exists.
+     * @return True if record exists, false if it does not.
+     */
     public static boolean checkQuestionExists(String questionID) {
         return checkObjectExists(Question.class, questionID);
     }
 
+    /**
+     * Adds a question object to the database.
+     * @param newQuestion question object you wish to add to the database.
+     * @return The object added to the database (null if there was an error).
+     */
     public static Question addQuestion(Question newQuestion) {
         _session.persist(newQuestion);
         addToDatabase(newQuestion);
         return newQuestion;
     }
 
+    /**
+     * Removes a given question from the database by the parametrized value (case-insensitive).
+     * @param questionID The primary key of the question to remove.
+     * @return 1 if does not exist, 2 if can't be removed (foreign key dependencies), 0 if successful
+     */
     public static int removeQuestion(String questionID) {
         return removeObject(Question.class, questionID);
     }
@@ -314,10 +361,21 @@ public abstract class DatabaseIO {
     //endregion
 
     //region Quiz
+    /**
+     * Gets a quiz from the table in the database.
+     * @param quizID primary key of the record you want to get from the database.
+     * @return The object retrieved from the database (null if no record could be found).
+     */
     public static Quiz getQuiz(String quizID) {
         return getObject(Quiz.class, quizID);
     }
 
+    /**
+     * Used to save a given quiz object over the top of a quiz object with the same ID in the database.
+     * @param updatedQuiz Quiz object to override an object in the database (must have the same ID as the object
+     *                    you wish to override).
+     * @return The overridden object (null if there was an error).
+     */
     public static Quiz overrideQuiz(Quiz updatedQuiz) {
         if(!checkQuizExists(String.valueOf(updatedQuiz.getId()), updatedQuiz.getUsername().getUsername(),
                 updatedQuiz.getQuizName())) {return null;}
@@ -332,10 +390,22 @@ public abstract class DatabaseIO {
         }
     }
 
+    /**
+     * Checks if a quiz in the database exists.
+     * @param quizID primary key value of the records to check if it exists.
+     * @return True if record exists, false if it does not.
+     */
     public static Boolean checkQuizExists(String quizID) {
         return checkObjectExists(Quiz.class, quizID);
     }
 
+    /**
+     * Checks if a quiz in the database exists.
+     * @param quizID primary key value of the records to check if it exists.
+     * @param username username used to identify the quiz.
+     * @param quizName name of quiz used to identify the quiz.
+     * @return True if record exists, false if it does not.
+     */
     public static Boolean checkQuizExists(String quizID, String username, String quizName) {
         List<Quiz> quizzes = getAllQuizzes();
         for(Quiz q: quizzes) {
@@ -350,10 +420,20 @@ public abstract class DatabaseIO {
         return false;
     }
 
+    /**
+     * Gets a list of all quizzes in the database.
+     * @return All quizzes retrieved from the database.
+     */
     public static List<Quiz> getAllQuizzes() {
         return getAllObjects(Quiz.class);
     }
 
+    /**
+     * Checks if a quiz in the database exists.
+     * @param username username of the user the quiz belongs to.
+     * @param quizName name of the quiz you wish to check exists.
+     * @return True if record exists, false if it does not.
+     */
     public static Boolean checkQuizExists(String username, String quizName) {
         List<Quiz> quizzes = getAllQuizzes();
         for(Quiz q: quizzes) {
@@ -365,6 +445,11 @@ public abstract class DatabaseIO {
         return false;
     }
 
+    /**
+     * Adds a quiz object to the database.
+     * @param quiz quiz object you wish to add to the database.
+     * @return The object added to the database (null if there was an error).
+     */
     public static Quiz addQuiz(Quiz quiz) {
         if(checkQuizExists(quiz.getUsername().getUsername(), quiz.getQuizName())) {
             return null;
@@ -373,6 +458,11 @@ public abstract class DatabaseIO {
         return quiz;
     }
 
+    /**
+     * Removes a given quiz from the database by the parametrized value (case-insensitive).
+     * @param quiz The quiz object to remove from the database.
+     * @return 1 if does not exist, 0 if successful
+     */
     public static int removeQuiz(Quiz quiz) {
         if(checkQuizExists(quiz.getId().toString(), quiz.getUsername().getUsername(), quiz.getQuizName())) {
             removeFromDatabase(quiz);
@@ -381,30 +471,60 @@ public abstract class DatabaseIO {
         return 1;
     }
 
+    /**
+     * Removes a given quiz from the database by the parametrized value (case-insensitive).
+     * @param quizID The primary key of the quiz to remove.
+     * @return 1 if does not exist, 2 if can't be removed (foreign key dependencies), 0 if successful
+     */
     public static int removeQuiz(String quizID) {
         return removeObject(Quiz.class, quizID);
     }
     //endregion
 
     //region Question Option
+
+    /**
+     * Checks if a question option in the database exists.
+     * @param questionOptionID primary key value of the records to check if it exists.
+     * @return True if record exists, false if it does not.
+     */
     public static boolean checkQuestionOptionExists(String questionOptionID) {
         return checkObjectExists(QuestionOption.class, questionOptionID);
     }
 
+    /**
+     * Gets a question option from the table in the database.
+     * @param questionOptionID primary key of the record you want to get from the database.
+     * @return The object retrieved from the database (null if no record could be found).
+     */
     public static QuestionOption getQuestionOption(String questionOptionID) {
         return getObject(QuestionOption.class, questionOptionID);
     }
 
+    /**
+     * Removes a given question option from the database by the parametrized value (case-insensitive).
+     * @param questionOptionID The primary key of the user to remove.
+     * @return 1 if does not exist, 2 if can't be removed (foreign key dependencies), 0 if successful
+     */
     public static int removeQuestionOption(String questionOptionID) {
         return removeObject(QuestionOption.class, questionOptionID);
     }
 
+    /**
+     * Gets a list of all question options in the database.
+     * @return All question options retrieved from the database.
+     */
     public static List<QuestionOption> getAllQuestionOptions() {
         return getAllObjects(QuestionOption.class);
     }
 
+    /**
+     * Adds a question option object to the database.
+     * @param questionOption question option object you wish to add to the database.
+     * @return The object added to the database (null if there was an error).
+     */
     public static QuestionOption addQuestionOption(QuestionOption questionOption) {
-        if(hqlquerydatabase(String.format("FROM QuestionOption WHERE questionID = %s AND questionOption = '%s'"
+        if(hqlQueryDatabase(String.format("FROM QuestionOption WHERE questionID = %s AND questionOption = '%s'"
                 ,questionOption.getQuestionID().getId(), questionOption.getQuestionOption())).isEmpty()) {
             addToDatabase(questionOption);
             return questionOption;
@@ -414,6 +534,13 @@ public abstract class DatabaseIO {
     //endregion
 
     //region Quiz Question
+
+    /**
+     * Checks if a quiz question in the database exists.
+     * @param questionID primary key value of the records to check if it exists.
+     * @param quizID primary key value of the record to check if it exists.
+     * @return True if record exists, false if it does not.
+     */
     public static Boolean checkQuizQuestionExists(int quizID, int questionID) {
         if(!(checkQuizExists(String.valueOf(quizID)) && checkQuestionExists(String.valueOf(questionID)))) {
             return false;
@@ -422,22 +549,38 @@ public abstract class DatabaseIO {
                 "QuestionID = %s", quizID, questionID));
     }
 
+    /**
+     * Gets a quiz question from the table in the database.
+     * @param quizID composite key of the record you want to get from the database.
+     * @param questionID composite key of the record you want to get from the database.
+     * @return The object retrieved from the database (null if no record could be found).
+     */
     public static QuizQuestion getQuizQuestion(int quizID, int questionID) {
         return getObject(QuizQuestion.class, String.format("FROM QuizQuestion WHERE QuizID = %s AND " +
                 "QuestionID = %s", quizID, questionID));
     }
 
+    /**
+     * Gets a list of all quiz questions in the database.
+     * @return All quiz questions retrieved from the database.
+     */
     public static List<QuizQuestion> getAllQuizQuestions() {
         return getAllObjects(QuizQuestion.class);
     }
 
+    /**
+     * Removes a given quiz question from the database by the parametrized value (case-insensitive).
+     * @param quizID The quiz id belonging to the quiz the question belongs to.
+     * @param questionID The question ID for the question assosiated with the quiz question.
+     * @return 1 if does not exist, 2 if can't be removed (foreign key dependencies), 0 if successful
+     */
     public static int removeQuizQuestion(int quizID, int questionID) {
         if(!checkQuizQuestionExists(quizID, questionID)) {return 1;}
         QuizQuestion questionToRemove = getQuizQuestion(quizID, questionID);
         int statusCode = removeObject(QuizQuestion.class, String.format("FROM QuizQuestion WHERE QuizID = %s AND " +
                 "QuestionID = %s", quizID, questionID));
         if(statusCode == 0) {
-            List<QuizQuestion> quizQuestions = (List<QuizQuestion>)(Object) hqlquerydatabase(
+            List<QuizQuestion> quizQuestions = (List<QuizQuestion>)(Object) hqlQueryDatabase(
                     String.format("FROM QuizQuestion WHERE QuizID=%s", questionToRemove.getQuizID().getId()));
             for(QuizQuestion qq: quizQuestions) {
                 QuizQuestion questionToUpdate = qq;
@@ -452,8 +595,13 @@ public abstract class DatabaseIO {
         return statusCode;
     }
 
+    /**
+     * Adds a quiz question object to the database.
+     * @param quizQuestion quiz question object you wish to add to the database.
+     * @return The object added to the database (null if there was an error).
+     */
     public static QuizQuestion addQuizQuestion(QuizQuestion quizQuestion) {
-        List<QuizQuestion> quizQuestions = (List<QuizQuestion>)(Object) hqlquerydatabase(String.format(
+        List<QuizQuestion> quizQuestions = (List<QuizQuestion>)(Object) hqlQueryDatabase(String.format(
                 "FROM QuizQuestion WHERE QuizID = %s", quizQuestion.getQuizID().getId()));
         int amountOfQuestions = quizQuestions.size();
         if(quizQuestion.getOrderIndex() > amountOfQuestions - 1) {
@@ -480,22 +628,48 @@ public abstract class DatabaseIO {
     //endregion
 
     //region Quiz Submission
+
+    /**
+     * Checks if a quiz submission in the database exists.
+     * @param submissionID primary key value of the records to check if it exists.
+     * @return True if record exists, false if it does not.
+     */
     public static Boolean checkQuizSubmissionExists(int submissionID) {
         return checkObjectExists(QuizSubmission.class, String.valueOf(submissionID));
     }
 
+    /**
+     * Adds a quiz submission object to the database.
+     * @param quizSubmission quiz submission object you wish to add to the database.
+     * @return The object added to the database (null if there was an error).
+     */
     public static QuizSubmission addQuizSubmission(QuizSubmission quizSubmission) {
         return addObject(QuizSubmission.class,String.valueOf(quizSubmission.getId()),quizSubmission);
     }
 
+    /**
+     * Removes a given quiz submission from the database by the parametrized value (case-insensitive).
+     * @param quizSubmission The quiz submission object you wish to remove from the database.
+     * @return 1 if does not exist, 2 if can't be removed (foreign key dependencies), 0 if successful
+     */
     public static int removeQuizSubmission(QuizSubmission quizSubmission) {
         return removeObject(QuizSubmission.class, String.valueOf(quizSubmission.getId()));
     }
 
+    /**
+     * Removes a given quiz submission from the database by the parametrized value (case-insensitive).
+     * @param submissionID The primary key of the submission to remove.
+     * @return 1 if does not exist, 2 if can't be removed (foreign key dependencies), 0 if successful
+     */
     public static int removeQuizSubmission(int submissionID) {
         return removeObject(QuizSubmission.class, String.valueOf(submissionID));
     }
 
+    /**
+     * Gets a quiz submission from the table in the database.
+     * @param submissionID primary key of the record you want to get from the database.
+     * @return The object retrieved from the database (null if no record could be found).
+     */
     public static QuizSubmission getQuizSubmission(int submissionID) {
         return getObject(QuizSubmission.class, String.valueOf(submissionID));
     }
@@ -504,32 +678,73 @@ public abstract class DatabaseIO {
 
     //region Mark
     private static String _markQueryString = "FROM Mark WHERE submissionID = %s AND questionID = %s";
+
+    /**
+     * Checks if a mark in the database exists.
+     * @param questionID primary key value of the records to check if it exists.
+     * @param submissionID primary key value of the records to check if it exists.
+     * @return True if record exists, false if it does not.
+     */
     public static boolean checkMarkExists(int submissionID, int questionID) {
         return checkObjectExists(Mark.class, String.format(_markQueryString, submissionID, questionID));
     }
 
+    /**
+     * Gets a list of all marks in the database.
+     * @return All marks retrieved from the database.
+     */
     public static List<Mark> getAllMarks() {
         return getAllObjects(Mark.class);
     }
 
+    /**
+     * Gets a mark from the table in the database.
+     * @param submissionID composite key part of the record you want to get from the database.
+     * @param questionID composite key part of the record you want to get from the database.
+     * @return The object retrieved from the database (null if no record could be found).
+     */
     public static Mark getMark(int submissionID, int questionID) {
         return getObject(Mark.class, String.format(_markQueryString, submissionID, questionID));
     }
 
+    /**
+     * Removes a given mark from the database by the parametrized value (case-insensitive).
+     * @param mark The mark object you wish to remove from the database.
+     * @return 1 if does not exist, 2 if can't be removed (foreign key dependencies), 0 if successful
+     */
     public static int removeMark(Mark mark) {
         return removeObject(Mark.class, String.format(_markQueryString, mark.getSubmissionID().getId(),
                 mark.getQuestionID().getId()));
     }
 
+    /**
+     * Removes a given mark from the database by the parametrized value (case-insensitive).
+     * @param submissionID The primary key of the mark to remove.
+     * @param questionID The primary key of the mark to remove.
+     * @return 1 if does not exist, 2 if can't be removed (foreign key dependencies), 0 if successful
+     */
     public static int removeMark(int submissionID, int questionID) {
         return removeObject(Mark.class, String.format(_markQueryString, submissionID, questionID));
     }
 
+    /**
+     * Adds a mark object to the database.
+     * @param mark mark object you wish to add to the database.
+     * @return The object added to the database (null if there was an error).
+     */
     public static Mark addMark(Mark mark) {
         return addObject(Mark.class, String.format(_markQueryString, mark.getSubmissionID().getId(),
                 mark.getQuestionID().getId()), mark);
     }
 
+    /**
+     * Adds a mark object to the database.
+     * @param questionID The question ID for the question marked.
+     * @param submissionID The submission ID for the submission this mark belongs to.
+     * @param score The score the received for this question.
+     * @param userAnswer The answer the user gave for this question.
+     * @return The object added to the database (null if there was an error).
+     */
     public static Mark addMark(int submissionID, int questionID, int score, String userAnswer) {
         if(!(checkQuizSubmissionExists(submissionID) && checkQuestionExists(String.valueOf(questionID)))) {
             return null;
@@ -540,11 +755,16 @@ public abstract class DatabaseIO {
     }
     //endregion
 
+    /**
+     * Gets all questions that belong to a specific quiz in the database.
+     * @param quizID The id of the quiz.
+     * @return A list of question objects belonging to the specified quiz (null if no quiz was found in the database).
+     */
     public static List<Question> getQuestionsFromQuiz(int quizID) {
         List<Question> returnList = new ArrayList<>();
         Quiz quiz = getQuiz(String.valueOf(quizID));
         if(quiz == null) {return returnList;}
-        List<QuizQuestion> quizQuestions = (List<QuizQuestion>)(Object) hqlquerydatabase(
+        List<QuizQuestion> quizQuestions = (List<QuizQuestion>)(Object) hqlQueryDatabase(
                 String.format("FROM QuizQuestion WHERE quizID=%s", quiz.getId()));
         Question[] orderedQuestions = new Question[quizQuestions.size()];
         for (QuizQuestion quizQuestion:
@@ -555,16 +775,27 @@ public abstract class DatabaseIO {
         return returnList;
     }
 
+    /**
+     * Gets a list of marks linked to a specified quiz submission.
+     * @param submissionID The ID of the quiz submission you wish to query.
+     * @return A list of marks belonging to the specified submission.
+     */
     public static List<Mark> getMarksFromSubmission(int submissionID) {
         List<Mark> returnList = new ArrayList<>();
         if(!checkQuizSubmissionExists(submissionID)) {return returnList;}
         QuizSubmission submission = getQuizSubmission(submissionID);
-        returnList = (List<Mark>)(Object) hqlquerydatabase(
+        returnList = (List<Mark>)(Object) hqlQueryDatabase(
                 String.format("FROM Mark WHERE submissionID = %s", submission.getId()));
         return returnList;
     }
 
     // returns list of questions if successful, null if unsuccessful
+
+    /**
+     * Converts questions from a valid csv file to a list of question objects.
+     * @param filePath The absolute file path where the csv file is located.
+     * @return List of question objects found in the CSV (null if the file could not be found or is corrupt).
+     */
     public static List<Question> importQuestionsFromCSV(String filePath) {
         List<Question> questions = new ArrayList<>();
         if(!new File(filePath).isFile()) {
@@ -598,7 +829,13 @@ public abstract class DatabaseIO {
         return questions;
     }
 
-    //0 success, 1 if directory (folder) does not exist, 2 if failed writing to file
+    /**
+     * Converts a list of question objects to a csv file in a given directory.
+     * @param fileDirectoryPath The directory of where this file should be created.
+     * @param fileName The name of the csv file that should be created (either with or without the .csv suffix).
+     * @param questions List of question objects that should be exported to the csv file.
+     * @return integer status code 0 success, 1 if directory (folder) does not exist, 2 if failed writing to file.
+     */
     public static int exportQuestionsToCSV(String fileDirectoryPath, String fileName, List<Question> questions) {
         if(!new File(fileDirectoryPath).isDirectory()) {
             return 1;
@@ -662,7 +899,7 @@ public abstract class DatabaseIO {
     public static Boolean hasUserAnsweredQuestionIncorrectlyPreviously(User user, Question question) {
         if(!(checkUserExists(user.getUsername()) || checkQuestionExists(String.valueOf(question.getId()))))
         {return null;}
-        List<Mark> queriedMarks = (List<Mark>)(Object) hqlquerydatabase(String.format("FROM Mark WHERE QuestionID=%s",
+        List<Mark> queriedMarks = (List<Mark>)(Object) hqlQueryDatabase(String.format("FROM Mark WHERE QuestionID=%s",
                 question.getId()));
         if(queriedMarks.isEmpty()){return false;}
         for(Mark qm: queriedMarks) {
@@ -688,20 +925,20 @@ public abstract class DatabaseIO {
             //foreign key error
             if(getQuestion(String.valueOf(questionID)).getQuestionType().equalsIgnoreCase("MCQ")) {
                 List<QuestionOption> questionOptions =
-                        (List<QuestionOption>)(Object) hqlquerydatabase(
+                        (List<QuestionOption>)(Object) hqlQueryDatabase(
                                 String.format("FROM QuestionOption WHERE questionID=%s", questionID));
                 for(QuestionOption option: questionOptions) {
                     removeFromDatabase(option);
                 }
             }
             List<QuizQuestion> quizQuestions =
-                    (List<QuizQuestion>)(Object) hqlquerydatabase(
+                    (List<QuizQuestion>)(Object) hqlQueryDatabase(
                             String.format("FROM QuizQuestion WHERE questionID=%s", questionID));
             for(QuizQuestion question: quizQuestions) {
                 removeFromDatabase(question);
             }
             List<Mark> marks =
-                    (List<Mark>)(Object) hqlquerydatabase(
+                    (List<Mark>)(Object) hqlQueryDatabase(
                             String.format("FROM Mark WHERE questionID=%s", questionID));
             for(Mark mark: marks) {
                 removeFromDatabase(mark);
@@ -730,12 +967,18 @@ public abstract class DatabaseIO {
         return questions;
     }
 
+    /**
+     * Gets a list of all question options that belong to a 'MCQ' question type.
+     * @param question The question object to be queried.
+     * @return A list of question option objects that belong to the MCQ question. If the question is not of type 'MCQ'
+     * null will be returned.
+     */
     public static List<QuestionOption> getQuestionOptionsForQuestion(Question question) {
         if(!question.getQuestionType().equalsIgnoreCase("MCQ")) {
             return null;
         }
         List<QuestionOption> questionOptions = new ArrayList<>();
-        questionOptions = (List<QuestionOption>)(Object) hqlquerydatabase(
+        questionOptions = (List<QuestionOption>)(Object) hqlQueryDatabase(
                 String.format("FROM QuestionOption WHERE questionID=%s", question.getId()));
         return questionOptions;
     }
@@ -747,14 +990,19 @@ public abstract class DatabaseIO {
      */
     public static List<Quiz> getQuizzesBasedOnUser(User user) {
         if(!checkUserExists(user.getUsername())){return null;}
-        List<Quiz> quizzes = (List<Quiz>)(Object) hqlquerydatabase(
+        List<Quiz> quizzes = (List<Quiz>)(Object) hqlQueryDatabase(
                 String.format("FROM Quiz WHERE username='%s'", user.getUsername()));
         return quizzes;
     }
 
+    /**
+     * Gets a list of questions with the same topic type as specified in the parameter.
+     * @param topic The topic of which the list of questions should be the type of.
+     * @return A list of questions with the same topic type as the value specified (null of the topic does not exist).
+     */
     public static List<Question> getQuestionsBasedOnTopic(Topic topic) {
         if(!checkTopicExists(topic.getId())){return null;}
-        List<Question> questions = (List<Question>)(Object) hqlquerydatabase(
+        List<Question> questions = (List<Question>)(Object) hqlQueryDatabase(
                 String.format("FROM Question WHERE topicName='%s'", topic.getId()));
         return questions;
     }
