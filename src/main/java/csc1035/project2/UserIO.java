@@ -98,6 +98,7 @@ public class UserIO {
                 randomQuizGenSubmenu();
                 break;
             case 9:
+                produceReportOnQuizzes();
                 break;
             case 10:
                 reviewIncorrectlyAnsweredQuestions();
@@ -156,6 +157,13 @@ public class UserIO {
             DatabaseIO.addQuizQuestion(new QuizQuestion(quiz, q, -1));
         }
         return quiz;
+    }
+
+    private static void produceReportOnQuizzes() {
+        System.out.println(String.format("\nStatistics for you ('%s')", user.getUsername()));
+        showIncorrectlyAnsweredQuizStatistics(true);
+        System.out.println("\nStatistics for all users");
+        showIncorrectlyAnsweredQuizStatistics(false);
     }
 
     private static void showIncorrectlyAnsweredQuizStatistics(boolean forUser) {
