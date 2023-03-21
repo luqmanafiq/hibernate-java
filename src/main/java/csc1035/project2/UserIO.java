@@ -4,7 +4,9 @@ import java.util.Scanner;
 import java.util.Random;
 
 import csc1035.project2.DatabaseTables.*;
+import org.hibernate.dialect.Database;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -157,11 +159,78 @@ public class UserIO {
             quizOptions[i] = String.format("'%s' - '%s'", quizSelection.get(i).getUsername().getUsername(),
                     quizSelection.get(i).getQuizName());
         }
-        int quizChoice = GetUserOption(quizOptions, "Please select a quiz to play:");
-        Quiz quizToPlay = quizSelection.get(quizChoice);
-        System.out.println(quizToPlay.getQuizName());
-        System.out.println(quizToPlay.getUsername().getUsername());
+        if(quizOptions.length == 0) {
+            System.out.println("No quizzes could be found!");
+        }
+        else {
+            int quizChoice = GetUserOption(quizOptions, "Please select a quiz to play:");
+            Quiz quizToPlay = quizSelection.get(quizChoice);
+            PlayAndSubmitQuiz(quizToPlay);
+        }
      }
+
+    private static List<QuestionMarkTuple> QuestionAnswerLoop(List<Question> questionsToAnswer) {
+         List<QuestionMarkTuple> questionMarkTuples = new ArrayList<>();
+        for(Question question: questionsToAnswer) {
+            if(question.getQuestionType().equalsIgnoreCase("SAQ")) {
+                System.out.println(String.format("%s", question.getQuestion()));
+                String userAnswer = scan.nextLine();
+                questionMarkTuples.add(DatabaseIO.MarkQuestionAnswer(question, userAnswer));
+            }
+            else if(question.getQuestionType().equalsIgnoreCase("MCQ")) {
+                List<QuestionOption> optionsForQuestion = DatabaseIO.GetQuestionOptionsForQuestion(question);
+                String[] questionOptions = new String[optionsForQuestion.size()];
+                for(int i = 0; i < optionsForQuestion.size(); i++) {
+                    questionOptions[i] = optionsForQuestion.get(i).getQuestionOption();
+                }
+                int userOption = GetUserOption(questionOptions,question.getQuestion());
+                String userAnswer = questionOptions[userOption];
+                questionMarkTuples.add(DatabaseIO.MarkQuestionAnswer(question, userAnswer));
+            }
+        }
+        return questionMarkTuples;
+    }
+
+    private static void DisplayMarks(List<QuestionMarkTuple> marks, List<Question> questions) {
+        int totalScore = 0;
+        int totalPossibleMarks = 0;
+        for(int i = 0; i < marks.size(); i++) {
+            System.out.println(String.format("Question %s - '%s'\nYour answer: '%s'\nCorrect answer: " +
+                    "'%s'\nScore: %s/%s", i, questions.get(i).getQuestion(), marks.get(i).get_userAnswer(),
+                    questions.get(i).getAnswer(), marks.get(i).GetMarksReceived(), questions.get(i).getMaximumMarks()));
+            totalPossibleMarks += questions.get(i).getMaximumMarks();
+            totalScore += marks.get(i).GetMarksReceived();
+        }
+        System.out.println(String.format("Your final score for that quiz was %s/%s",
+                totalScore, totalPossibleMarks));
+    }
+
+
+    /**
+     *
+     * @param quizToPlay
+     * @return null if no questions in a quiz or a quiz does not exist.
+     */
+    private static QuizSubmission PlayAndSubmitQuiz(Quiz quizToPlay) {
+        List<QuestionMarkTuple> questionsAndMarks = new ArrayList<>();
+        System.out.println(String.format("You are now playing '%s' created by '%s'.",
+                quizToPlay.getQuizName(), quizToPlay.getUsername().getUsername()));
+        if(!DatabaseIO.CheckQuizExists(String.valueOf(quizToPlay.getId()))) {
+            System.out.println("Error! it seems the chosen quiz does not exist.");
+            return null;
+        }
+        List<Question> questionsToAnswer = DatabaseIO.GetQuestionsFromQuiz(quizToPlay.getId());
+        if(questionsToAnswer.isEmpty()) {
+            System.out.println("This quiz is empty.");
+            return null;
+        }
+        questionsAndMarks = QuestionAnswerLoop(questionsToAnswer);
+        QuizSubmission submission = DatabaseIO.SubmitQuizResults(questionsAndMarks, user, quizToPlay);
+        System.out.println("Quiz complete and submitted!");
+        DisplayMarks(questionsAndMarks, questionsToAnswer);
+        //TEST THIS
+        return submission;
+    }
 
     private static void importFromCSV() {
         // unsure of necessary syntax for filepath, if it should be absolute or relative
