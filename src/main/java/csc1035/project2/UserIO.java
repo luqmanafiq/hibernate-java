@@ -85,8 +85,10 @@ public class UserIO {
                 exportToCSV();
                 break;
             case 6:
+                crudQuizSubmenu();
                 break;
             case 7:
+                crudQuestionSubmenu();
                 break;
             case 8:
                 randomQuizGenSubmenu();
@@ -102,7 +104,6 @@ public class UserIO {
                 System.out.println("This is not a valid option\n");
                 break;
         }
-
     }
 
     private static int GetUserOption(String[] userOptions, String question) {
@@ -208,6 +209,14 @@ public class UserIO {
                 System.out.println("Writing to file failed");
                 break;
         }          
+    }
+
+    private static void crudQuestionSubmenu() {
+
+    }
+    
+    private static void crudQuizSubmenu() {
+        
     }
     
     private static void listSubmenu() {
