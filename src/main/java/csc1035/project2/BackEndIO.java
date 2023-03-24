@@ -91,16 +91,3 @@ public class BackEndIO {
 
     }
 }
-
-
-
-/*
-COMMUNICATE WITH FRONT END USER
-To produce a short report of the quiz results,
-you will need to write code to read the quiz questions and user responses from the database. You will then need to compare the user responses to the correct answer and count the number of correct and incorrect answers.
-Finally, you will need to calculate the user's final mark based on the number of correct and incorrect answers.
-To log the user's quiz result,
-you will need to write code to store the user's quiz result in the database. This should include the user's responses to each question, the correct answer, and the user's final mark.
-To allow the user to review questions they have answered incorrectly in the past,
-you will need to write code to retrieve the user's results from the database. You will then need to compare the user's responses to the correct answer and display the questions that were answered incorrectly.
- */
