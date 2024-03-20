@@ -88,6 +88,5 @@ public class BackEndIO {
             System.out.println("Mark: " + mark.getScore());
             System.out.println("----------------");
         }
-
     }
 }

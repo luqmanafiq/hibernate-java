@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-public abstract class DatabaseIO {
+public class DatabaseIO {
     private static Session _session = HibernateUtil.getSessionFactory().openSession();
 
     //region Database Interaction
