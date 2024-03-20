@@ -3,7 +3,7 @@ CSC1035 Project 2 (Team Project)
 
 Details on how to connect with your database can be found on your Canvas group.
 
-Get overwritten part 3 - overwritten the overwritten - Kai D
+
 
 ## Relevant Links
 - Google Doc https://docs.google.com/document/u/0/d/1Qez-gaIznbHCW7S3rB0arWZpoPBggAEG2HvbgaswpEw/mobilebasic
