@@ -6,10 +6,6 @@ Details on how to connect with your database can be found on your Canvas group.
 Get overwritten part 3 - overwritten the overwritten - Kai D
 
 ## Relevant Links
-- https://ncl.instructure.com/courses/48552/pages/csc1035-project-2-team-project?module_item_id=2645028
-- https://ncl.instructure.com/courses/48552/pages/project-2-faqs-and-hints?module_item_id=2645037
-- https://ncl.instructure.com/courses/48552/pages/connecting-to-your-database-using-intellij-ultimate-on-campus-cluster-room?module_item_id=2645033
-- https://ncl.instructure.com/groups/44138/pages/resources
 - Google Doc https://docs.google.com/document/u/0/d/1Qez-gaIznbHCW7S3rB0arWZpoPBggAEG2HvbgaswpEw/mobilebasic
 
 ## Class Structure
@@ -85,7 +81,7 @@ Get overwritten part 3 - overwritten the overwritten - Kai D
 FooterNote:
 Essay-style questions can be added in the future via displaying the answer to the user and asking them to self-mark, but as of right now, Single Answer and Multiple Choice Questions are the priority.
 
-### Olis suggested Database Modification
+### suggested Database Modification
 tblQuiz
 -    UserID (Auto Number) (foreign key)
 -    QuizID (primary key) (Number)
@@ -131,7 +127,7 @@ tblMark
      Explanation: Stores the mark for each question submitted. Query can be made with the submissionID (representing the quiz submitted) to get all marks for questions taken in that quiz.
 
 
-Suggestion:
+Other Suggestion:
 tblQuestionStatement 
 - Stores the QuestionID (foreign key)
 - QuestionString (A question or question item if multiple choice)
